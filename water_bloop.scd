@@ -180,7 +180,7 @@ r = Routine.new({
 	Pbindef(\water_drop, \amp, ~fade.(0.8, 0.0, 15));
 
 	30.wait;
-	o
+
 	Pbindef(\olschool_mel, \amp, Pseg([0,0.4,0],1,'lin',inf)).play(t, quant:1);
 
 	30.wait;

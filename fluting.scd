@@ -1,5 +1,10 @@
 //fluting on cheap glass
+Server.killAll
+("Setup/Setup.scd").loadRelative // load this file
 
+
+
+t = TempoClock.default.tempo = 1;
 (
 
 Pbind(\instrument,\flute_waveguide,

@@ -17,7 +17,7 @@ b.add(\foldernames -> PathName("C:/Users/William Willoughby/Documents/SuperColli
 (
 /////////////////////groan
 (
-~a = Pbind(\instrument,\vplay,\buf,b["spica"][4],\rate,Pseq([1,1.01]/[10,9.9,9.8,9.7,9.6,9.5,9.4,9.3,9.2,9.1].mirror,inf),\dur,Pseq([1/4],inf),\amp,0.5,\rel,3.5,\sus,0,\atk,0.5,);
+~a = Pbind(\instrument,\vplay,\buf,b["spica"][4],\rate,Pseq([1,1.01]/[10,9.9,9.8,9.7,9.6,9.5,9.4,9.3,9.2,9.1].mirror,inf),\dur,Pseq([1/4],inf),\amp,-6.dbamp,\rel,3.5,\sus,0,\atk,0.5,);
 );
 
 
@@ -51,8 +51,8 @@ b.add(\foldernames -> PathName("C:/Users/William Willoughby/Documents/SuperColli
 		\rel, 2.5,
 	    \cAtk,0.001,
         \cRel,-0.001,
-	    //\lsf,1,
-		\amp, 0.1,
+	    \lsf,1200,
+		\amp, -25.dbamp,
 		\out, 0,
 		\cRatio,[4,1/20],
 		);
@@ -81,15 +81,15 @@ k = Prewrite(1, // start with 1
 
 /////////////////////drum
 (
-~d = Pbind(\instrument,\bplay,\buf,b["spica"][4],\rate,Pwhite(800,2000,inf).round(100),\dur,k,\amp,1.0,\out,~out,);
+~d = Pbind(\instrument,\bplay,\buf,b["spica"][4],\rate,Pwhite(800,2000,inf).round(100),\dur,k,\amp,3.dbamp,\out,~out,\pan,0.4);
 );
 
 /////////////////////hard drum
-~x = Pbind(\instrument,\metaldrum, \amp,0.05,\dur,Pseq([1],1),\ibase,2,\ringfreq,220,\roomsize, 20, \revtime, 0.5, \damping, 0.1, \inputbw, 0.46);
+~x = Pbind(\instrument,\metaldrum, \amp,-20.dbamp,\dur,Pseq([1],1),\ibase,2,\ringfreq,220,\roomsize, 20, \revtime, 0.5, \damping, 0.1, \inputbw, 0.46);
 
 /////////////////////melody
 ~f = Pbind(
-    \instrument, \sinfb,
+    \instrument, \sinfb, //fm5
 	\degree, Pseq([0,Pbrown(0, Scale.minorPentatonic.size, 5)],1),
     \scale, Scale.minorPentatonic,
 	\root, -3,
@@ -98,35 +98,52 @@ k = Prewrite(1, // start with 1
         [4,1].normalizeSum,
         85
     ),
+	/*\seed, 30,
+	\seedDrift, 4,
+	\seedDriftCurve, 4,
+	\legato, 1.1,
+	\freqMin, -10,
+	\freqMax, 10,
+	\freqRound, 0,
+	\matrixCut, 0.1,*/
     \dur, l,
-    \pan, Pwhite(-0.2,0.2),
+	\legato,0.2,
+    \pan, -0.4,
 	\sus,0.2,
-	\amp, 0.008,
+	\amp, -25.dbamp,
+	\out,~bus[\reverb]
 );
 
 );
 
+//// testing
 ~f.play;
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
+//the piece
+////////////////////////
 
 (
 t = TempoClock(60/60,4);
+StageLimiter.deactivate;
 r = Routine.new({
 	//var i = 0, n = 0, b=4;
 
+	//groan
 	~a_play = ~a.play(t, quant:1);
 
 	//~a_play.stop;
 
 	8.wait;
 
+	//drum
 	~d_play = ~d.play(t, quant:1);
 	//~d_play.stop;
 
 	16.wait;
 
+	//chord progression
 	(~b_r = Pchain(Pbind(
 	\strum,0.5,
 	\dur,2,
@@ -136,33 +153,37 @@ r = Routine.new({
 	\mRatio,2,
 	\cRatio,1,
 	\iScale, 1,
-	\amp,0.04,
+	//\amp,-15.dbamp,
 	//\lag,0.25, //lag sounds bad
 	)
 	,~b);
 	);
 
+	// set up a tone shift for the chord prog
 	(
-		~q_r = Ppar(
-			[Pseq([~b_r], 1),
-			 Pseq([
-					Pbindf(~b_r,
-						\iScale,Pwrand([1,2,3],[5,2,1],inf),
-						\rel,2.0,
-						\cRatio,
-					Pwrand([1,2,3],[5,2,1],inf))], 1)
-		]);
+	~q_r = Ppar(
+	[Pseq([~b_r], 1),
+	Pseq([
+	Pbindf(~b_r,
+	\iScale,Pwrand([1,2,3],[5,2,1],inf),
+	\rel,2.0,
+	\cRatio,
+	Pwrand([1,2,3],[5,2,1],inf))], 1)
+	]);
 	~r_r = Psetp(\index, Pseq([1,3,1/10], inf), ~q_r);
 	~b_play_r = ~r_r.play(t, quant:0);
 	);
-
 	24.wait;
 
+
+
+	//melody
 	~f.play(t, quant:0);
 
 
 	8.wait;
 
+	//change the groan pattern
 	(
 	~a_play.pause;
 	~a_2 = Pchain(Pbind(
@@ -173,9 +194,12 @@ r = Routine.new({
 
 	16.wait;
 
+
+	//launch the melody again
 	~f.play(t, quant:1);
 
 
+	//switch drum pattern, have it in sync with the melody
 	(
 		~d_play.pause;
 		~d_2 = Pchain(Pbind(
@@ -189,6 +213,7 @@ r = Routine.new({
 
 	//~f.play;
 
+	// change the groan pattern
 	(
 	~a_play.pause;
 	~a_2 = Pchain(Pbind(
@@ -199,9 +224,9 @@ r = Routine.new({
 
 	16.wait;
 
-		(~b_r2 = Pchain(Pbind(
+	// bolder progression, drop vol 25>30
+	(~b_r2 = Pchain(Pbind(
 	\index,8,
-	\amp,0.01,
 	\cRatio,8,
 	\mRatio,20,
 	)
@@ -209,6 +234,7 @@ r = Routine.new({
 	~b_play_r2 = ~b_r2.play(t, quant:0);
 	);
 
+	// switch drum pattern
 	16.wait;
 
 		(
@@ -225,17 +251,20 @@ r = Routine.new({
 
 	8.wait;
 
+	//play mel
 	~f_play = ~f.play(t, quant:0);
 
 
 
 	8.wait;
 
+	// make drum resonant/clicky
 	(
 		~d_play.pause;
 		~d_2 = Pchain(Pbind(
 			\rate,Pwhite(10,80,inf).round(10),
-			\out,~bus[\reverb]
+			\out,~bus[\reverb],
+			\amp,5.dbamp,
 		),~d);
 		~d_play = ~d_2.play(t, quant:0);
 	);
@@ -244,15 +273,17 @@ r = Routine.new({
 
 	~f_play.stop;
 
+	// play both chord progressions simultaneously
 	~b_play_r2 = ~b_r2.play(t, quant:0);
 
 	24.wait;
 
+	// switch groan, bit louder
 	(
 	~a_play.pause;
 	~a_2 = Pchain(Pbind(
 		\dur,k,
-		\amp,2,
+		\amp,-1.dbamp,
 		),~a);
 		~a_play = ~a_2.play(t, quant:0);
 	);
@@ -265,17 +296,29 @@ r = Routine.new({
 	~b_play_r.pause;
 	~b_play_r2.pause;
 
-	(
-	~r = Psetp(\index, Pseq([1,2], inf), ~b);
-	~b_play = ~r.play(t, quant:0);
+	// closing progression
+	(~r = Pchain(Pbind(\amp,-15.dbamp),
+		~b);
 	);
 
+
+	~r_r = Psetp(\index, Pseq([1,2], inf), ~r);
+	~b_play_r = ~r_r.play(t, quant:0);
+
+
+	//////
+	//(
+	//~r = Psetp(\index, Pseq([1,2], inf), ~b);
+	//~b_play = ~r.play(t, quant:0);
+	//);
+
+	//////
 		(
 	~f_2 = Pchain(Pbind(
 				\octave, Pwrand(
 		[6,5],
         [4,1].normalizeSum,
-        3500
+        4000
     ),
 			\dur,Pseq([l**k],inf),
 			\amp, Pgeom(0.11,0.999999,inf),
@@ -285,7 +328,7 @@ r = Routine.new({
 
 	96.wait;
 
-	~b_play.stop;
+	~b_play_r.stop;
 	~f_play.stop;
 
 	16.wait;

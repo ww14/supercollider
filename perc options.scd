@@ -46,7 +46,7 @@ SynthDef(\kick3, {
 
 Synth(\kick3, [amp: 0.4]);
 
-
+2e
 (
 var base;
 //
@@ -415,7 +415,6 @@ SynthDef(\technokick, {
 ~song = Pseq([~kickIntro, ~kick]);
 ~song.play(quant: 4);
 )
-
 
 
 

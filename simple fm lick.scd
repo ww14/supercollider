@@ -12,29 +12,6 @@
 e.pause;
 e.play;
 
-(
-~one54 = ChordSymbol.degreeProgression([
-    \Cdom7, \Fdom7, \Cdom7, \Cdom7,
-    \Fdom7, \Fdom7, \Cdom7, \Cdom7,
-    \Gdom7, \Fdom7, \Cdom7, \Cdom7
-], Scale.major)
-)
-
-(
-~twelveBar = ChordSymbol.degreeProgression([
-    \Cdom7, \Fdom7, \Cdom7, \Cdom7,
-    \Fdom7, \Fdom7, \Cdom7, \Cdom7,
-    \Gdom7, \Fdom7, \Cdom7, \Cdom7
-], Scale.major)
-)
-
-(f = Pbind(\instrument,\ring1, \degree, Pseq(~twelveBar1,inf), \mRatio,1,\iScale,10,\octave,4,\dur,Pseq([1,2,3]/4,inf),\atk,0.1,\rel,2,\amp,0.1,\pan,Pwhite(-0.1,0.1)))
-
-(
-~twelveBar1 = ChordSymbol.degreeProgression([
-    \Dm7, \Em7, \F7, \Gm7, \Am7,\Bb7,\C7,\Dm7
-], Scale.major)
-)
 
 
 e.play;

@@ -29,8 +29,21 @@ SynthDef(\kraftySnr, { |amp = 1, freq = 2000, rq = 3, decay = 0.3, pan, out|
 }).add;
 )
 
-Pbind(\instrument,\fm1, \freq, Pxrand([45,46,44]*,inf).midicps,\dur,1/2,\atk,0.5,\rel,1,\amp,0.1,\pan,Pwhite(-0.2,0.2)).play;
+Pbind(\instrument,\fm1, \freq, Pxrand([45,46,44],inf).midicps,\dur,1/2,\atk,0.5,\rel,1,\amp,0.1,\pan,Pwhite(-0.2,0.2)).play;
 
+
+j = Pbind(\instrument,\brush_m, \dur, Psubdivide(
+		Pseq([1!8,2!4,1,1,9,1].flat,inf),
+		Pn(Pshuf([Rest(1),1,Rest(1),1],2),inf)
+	),\atk,0.5,\rel,1,\amp,0.1,\pan,-0.2).play;
+
+Pbind(\instrument,\kraftySnr, \freq, Pseg([40,50,40],30).midicps,
+		\dur,Pseg([1/2,1],30),
+	\atk,0.5,
+	\rel,1,
+	\amp,0.1,
+	\pan,Pwhite(-0.2,0.2),
+	\decay,Pseg([0.3,5],30),).play;
 
 //test
 1000.do({b["spica"][56.0.linrand.round(0)].play;});
@@ -45,7 +58,11 @@ b["viol"][1].play;
 r = Routine.new({
 	var i = 0, n = 0;
 
-	e = Pbind(\instrument,\harpsichord_pluck, \freq, 50 * Pxrand([45,46,44],inf).midicps,\dur,1/2,\atk,0.5,\rel,1,\amp,0.1,\pan,Pwhite(-0.2,0.2)).play;
+	/*e = Pbind(\instrument,\harpsichord_pluck, \freq, 50 * Pxrand([45,46,44],inf).midicps,\dur,1/2,\atk,0.5,\rel,1,\amp,0.1,\pan,Pwhite(-0.2,0.2)).play;*/
+	j = Pbind(\instrument,\brush_m, \dur, Psubdivide(
+		Pseq([1!8,2!4,1,1,9,1].flat,inf),
+		Pn(Pshuf([Rest(1),1,Rest(1),1],2),inf)
+	),\atk,0.5,\rel,1,\amp,0.5,\pan,-0.2,\out,~bus[\reverb]).play;
 
 	8.wait;
 
@@ -104,18 +121,19 @@ r = Routine.new({
 });
 	1.wait;
 
-	e.stop;
-
-	f = Pbind(\instrument,\kraftySnr, \freq, Pseg([40,50,40],30).midicps,
+	f = Pbind(\instrument,\kick_m, \freq, Pseg([40,50,40],30).midicps,
 		\dur,Pseg([1/2,1],30),
-	\atk,0.5,
-	\rel,1,
+	//\atk,0.5,
+	//\rel,1,
 	\amp,0.1,
-	\pan,Pwhite(-0.2,0.2),
-	\decay,Pseg([0.3,5],30),).play;
+	\pan,0.2,
+	\decay,Pseg([0.3,5],30),
+	\out,~bus[\reverb]).play;
 
 
 	30.wait;
+
+	j.stop;
 
 	2000.do({b["spica"][56.0.linrand.round(0)].play;});
 

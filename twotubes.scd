@@ -1,70 +1,11 @@
 //prewrite
 
+Server.killAll;
+("Setup/Setup.scd").loadRelative // load this file
 
+
+//our prewrite, two chord clusters and a twotube variant.
 (
-s = Server.local.waitForBoot({
-	~bus = Bus.audio(s,2);
-	SynthDef(\reverb_ef, {
-		arg		amp=1, lPos=0, mix=0.085, revTime=1.8, preDel=0.1, in, out;
-		var		sig, verbSig, totalSig, outSig;
-
-		//no wacky values please
-		mix = mix.clip(0,1);
-
-		sig = In.ar(in, 2);
-
-		//pre-delay
-		verbSig = DelayN.ar(sig, preDel, preDel);
-
-		totalSig = 0;
-		12.do{
-			verbSig = AllpassN.ar(verbSig, 0.06, {Rand(0.001,0.06)}!2, revTime);
-			verbSig = LPF.ar(verbSig, 4500);
-			totalSig = totalSig + verbSig;
-		};
-
-		//dry/wet mix
-		totalSig = XFade2.ar(sig, totalSig, mix.linlin(0,1,-1,1));
-
-		outSig = totalSig * amp;
-		Out.ar(out, outSig);
-	}).add;
-
-	SynthDef(\twotube,{arg preamp=0, delay1=100, delay2=50, k=0.0, loss=0.999, dur=0.5, pan=0.0, out=0, amp=1, minCf=30, maxCf=6000, minBpfHz=0.02, maxBpfHz=0.25,minRq=0.005, maxRq=0.04;
-		var sig, env, senv;
-
-		//k from -1 to 1
-
-		senv = EnvGen.ar(Env([1,1,0,0],[(delay1+delay2)/SampleRate.ir,0.0,1.0]));
-		sig = WhiteNoise.ar(preamp) * senv;
-
-
-		env = EnvGen.ar(Env([0,1,1,0],[0.001]++((dur-0.001)*[0.4,0.6])),doneAction:2);
-		sig = TwoTube.ar(sig,k,loss,delay1,delay2);
-		//sig = Compander(sig);
-
-		sig = BPF.ar(
-			sig,
-			LFNoise1.kr({LFNoise1.kr(0.13).exprange(minBpfHz,maxBpfHz)}!8).exprange(minCf, maxCf),
-			LFNoise1.kr({LFNoise1.kr(0.08).exprange(0.08,0.35)}!8).range(minRq, maxRq)
-		);
-
-		sig = sig * env *amp;
-		sig = Pan2.ar(sig,pan);
-
-		Out.ar(out,sig);
-	}).add;
-
-	SynthDef(\cowbell, {
-		var sig, excitation, tension, loss;
-		excitation = EnvGen.ar(Env.perc,levelBias:\levelBias.kr(0),timeScale:\timeScale.kr(0.1),doneAction:Done.freeSelf
-		) * PinkNoise.ar(1);
-		tension = \tension.kr(0.1);
-		loss = \loss.kr(0.999);
-		sig =  MembraneCircle.ar(excitation, tension, loss);
-		Out.ar(\out.kr(0), Pan2.ar(sig, \pan.kr(0), \amp.kr(0.5)));
-	}).add;
-
 	~cluster1 = {
 		var trnsp, bund, a;
 		bund = s.makeBundle(false, {});
@@ -154,83 +95,45 @@ s = Server.local.waitForBoot({
 		);
 	};
 
+SynthDef(\twotube,{arg preamp=0, delay1=100, delay2=50, k=0.0, loss=0.999, dur=0.5, pan=0.0, out=0, amp=1, minCf=30, maxCf=6000, minBpfHz=0.02, maxBpfHz=0.25,minRq=0.005, maxRq=0.04;
+ 		var sig, env, senv;
 
-	/* transC:
-	continuous transition, pars are set using a custom synth that writes to busses
-	- trans is defined as a dictionary of envelopes
-	e.g (amp: Env([0.1,0.5],1), ...)
-	- all envelopes are stretched to last transDur
-	- event-specific parameters like \legato are converted to Penvs and not written to busses
+		//k from -1 to 1
 
-	// \a for 3 seconds, then trans for 5 second
-	~transC.(\a,3,(
-	amp: Env([0.1,0.5],1)
-	),5)
-	*/
+ 		senv = EnvGen.ar(Env([1,1,0,0],[(delay1+delay2)/SampleRate.ir,0.0,1.0]));
+ 		sig = WhiteNoise.ar(preamp) * senv;
 
-	~transC = {|patA, durA, transDef, transDur|
-		Pspawner{|sp|
-			var trans = PatternProxy();
-			trans.source = Pbind();
-			sp.par(trans<>Pdef(patA));
-			durA.wait;
-			trans.source = Pbind(*~mapTrans.(transDef,transDur).asKeyValuePairs);
-			transDur.wait;
-			sp.suspendAll();
-		}
-	};
 
-	// used by transC
-	~mapTrans = {|parEnvs, transDur= 1|
-		var penvs = parEnvs.select{|v|v.class===Penv}.collect{|penv|
-			penv.times = penv.times*transDur
-		};
-		var busses = parEnvs
-		.select{|v,k| penvs.keys.includes(k).not}.collect{Bus.control(s,1)};
+ 		env = EnvGen.ar(Env([0,1,1,0],[0.001]++((dur-0.001)*[0.4,0.6])),doneAction:2);
+ 		sig = TwoTube.ar(sig,k,loss,delay1,delay2);
+ 		//sig = Compander(sig);
 
-		{
-			busses.collect{|bus, parName|
-				Out.kr(bus, EnvGen.kr(parEnvs[parName],timeScale:transDur));
-			};
-			Line.kr(0,1,transDur,doneAction:2);
-			Silent.ar;
-		}.play.onFree{
-			busses do: _.free
-		};
+ 		sig = BPF.ar(
+			sig,
+ 			LFNoise1.kr({LFNoise1.kr(0.13).exprange(minBpfHz,maxBpfHz)}!8).exprange(minCf, maxCf),
+ 			LFNoise1.kr({LFNoise1.kr(0.08).exprange(0.08,0.35)}!8).range(minRq, maxRq)
+ 		);
 
-		busses.collect(_.asMap) ++ penvs
-	};
+ 		sig = sig * env *amp;
+ 		sig = Pan2.ar(sig,pan);
 
-	/* transC example
-	Pdef(\a, Pbind(\note,Pseq((0..10)), \amp, 0.1, \pan, -1));
-	Pdef(\b, Pbind(\note,Pseq((0..10)), \amp, 0.5, \pan, 1));
+ 		Out.ar(out,sig);
+ 	}).add;
 
-	// \a for 3 seconds, then trans for 5 second, then \b for 3 seconds
-	Pspawner{|sp|
-	sp.seq(~transC.(\a,3,(
-	amp: Env([0.1,0.5],1),
-	pan: Env([-1,1])
-	),5));
-	sp.seq(Pfindur(3,Pdef(\b)))
-	}.play
-	*/
-
-});
 )
 
-
-
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//As a spawn routine
-
-
 // our pdefs first
+
+
 (
+
+a = (
+//Synth(\reverb_ef);
 Pdef.removeAll;
-Pdef(\shuffle,
-	Pbind(\instrument, \twotube,
+Pbindef(\shuffle,
+	\instrument, \twotube,
 		\dur,Pn(Pshuf([1,2,3,1,2,3,6,9,12],3),inf)/240,//Pseg([200,500,200],10,\lin,inf),
 		\k, Pseg([-0.2,0.2,-0.2],30,\step,inf),
 		\preamp,Prand([1,2],inf)*250,
@@ -244,24 +147,23 @@ Pdef(\shuffle,
 		\pan,-0.2,
 		\delay1,1,
 		\delay2,Pseq([Pn([1],120),Pn([2],120)],inf)*[1000,2000], //perceived pitch lower when this higher
-		\out,~bus,
-));
+		\out,~bus[\reverb],
+);
 
 
-Pdef(\drum,
-	Pbind(\instrument, \SOSkick,
+Pbindef(\drum,
+	\instrument, \SOSkick,
 		\dur,Pn(Pshuf([1,2,3,1,2,3,6,9,12],3),inf)/12,//Pseg([200,500,200],10,\lin,inf),
 		\freq,30,
 		\mod_freq, Pwrand([5,10,100,200],[10,2,1,0.5].normalizeSum,inf),
 		\mod_index,15,
 		\pan,0.2,
 		\amp,(0.4 - (1 / Pkey(\mod_freq))),
-		\out,~bus,
-));
+		\out,~bus[\reverb],
+);
 
-Pdef(\cowbell,
-	Pbind(
-		\instrument, \cowbell,
+Pbindef(\cowbell,
+		\instrument, \cowbell_m,
 		\dur, Psubdivide(
 			Pseq([1!24,2!12,1,1,9,1].flat,inf),
 			Pn(Pshuf([1,2,3,1,2,3,6,9,12],3),inf)/3 //Pseq([Rest(1),1,1,Rest(2),1,1,Rest(1),1],inf)
@@ -269,12 +171,12 @@ Pdef(\cowbell,
 		\tension,5*Prand([1e-3,1e-2,1e-1],inf), //pitch
 		\timeScale,0.3,  //prevent clipping
 		\amp,Plprand(2,3,inf),
-		\out,~bus,
-));
+		\out,~bus[\reverb],
+);
 
 
-Pdef(\egg,
-	Pbind(\instrument, \twotube,
+Pbindef(\egg,
+	\instrument, \twotube,
 		\dur,Pseq([1]/200,inf),
 		\k, -0.8,
 		\preamp,Pseq([1,2,3,4,5,6,7,8,9].mirror*5,inf),
@@ -287,10 +189,10 @@ Pdef(\egg,
 		//\delay2,Pseg([5,300,5],100,\exp,inf),
 		\pan,-0.4,
 		\out,0,
-));
+);
 
-Pdef(\pluck,
-	Pbind(\instrument, \twotube,
+Pbindef(\pluck,
+	\instrument, \twotube,
 		\dur,Pn(Pshuf([1,1,2,2,2,4]/6,3),inf),
 		\k, Pseg([-0.1,-0.9,-0.1],150,\exp,inf),
 		\preamp,Pseq([1,2,3,4,5,6,7,8,9].mirror*4,inf),
@@ -300,36 +202,56 @@ Pdef(\pluck,
 		\maxBpfHz,0.9,//0.75,
 		\delay1, Pn(Pn(Pxrand([23,35,47,50,52,59,61,63,64],1),12)),//Pseg([50,45,50],150,\exp,inf).round(1),
 		\delay2,Pseg([1,10,1],150,\exp,inf).round(1),
-		\out,~bus,
-));
+		\out,~bus[\reverb],
+);
 
-Pdef(\close,
-	Pbind(\instrument,\cowbell,
-		\dur,Pseq([1],1),
-		\tension,0.005,
-		\loss,0.9999999,
-		\timeScale,15,
-		\amp,6,
-		\out,~bus,
-));
-
-Pdef(\nil,
-	Pbind(
-		\amp,0,
-));
-
+Pbindef(\close,
+		\instrument, \cowbell_m,
+		\dur, Psubdivide(
+		Pseq((1..30),1),
+		Pseq([1],inf)//Pseq([Rest(1),1,1,Rest(2),1,1,Rest(1),1],inf)
+		),
+		\tension,5*Prand([1e-3,1e-2,1e-1],inf), //pitch
+		\loss,Pseg([0.999,0.9999],30,\lin,1),
+		\timeScale,Pseg([0.3,1],30,\exp,7),  //prevent clipping
+		\amp,~fade.(6, 0, 25,8),
+		\out,~bus[\reverb],
+);
+);
 )
 
-Pdef(\nil).play;
 
-////////////////////////////////////////////////////////////
+///testing
+
+Pbindef(\close).play;
+
+Synth(\cowbell_m,[\dur,1/4,\tension,8*1e-4, \timeScale,20, \amp,6,\out,0,])
+
+
+(Pbind(
+		\instrument, \cowbell_m,
+		\dur, Psubdivide(
+		Pseq((1..30),1),
+		Pseq([1],inf)//Pseq([Rest(1),1,1,Rest(2),1,1,Rest(1),1],inf)
+		),
+		\tension,5*Prand([1e-3,1e-2,1e-1],inf), //pitch
+	\loss,Pseg([0.999,0.9999],30,\lin,1),
+	\timeScale,Pseg([0.3,1],30,\exp,7),  //prevent clipping
+		\amp,Plprand(2,3,inf),
+	\amp,~fade.(6, 0, 25,8),
+		\out,~bus[\reverb],
+).play;)
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//As a spawn routine
 
 
 (
 //the piece is in 12/4
 StageLimiter.activate;
 t = TempoClock.default.tempo_(60/60);
-Synth(\reverb_ef, [\in, ~bus, \out, 0]);
 
 l = Task{{
 	~cluster2.value;
@@ -339,73 +261,63 @@ l = Task{{
 }.loop
 }.start;
 
-
+a;
 
 Pspawner({|sp|
 
-	sp.par( Pfindur(90, Pdef(\egg)));
+	sp.par( Pfindur(90, Pbindef(\egg,\amp,~fade.(0.4, 0.0, 90,-5)))); //
 
 	sp.wait(10);
 
-	sp.par( Pfindur(60, Pdef(\shuffle)));
+	sp.par( Pfindur(60, Pbindef(\shuffle, \amp,~fade.(0.0, 0.0025, 8,4)))); //
 
 	sp.wait(10);
 
-	sp.par(Pfindur(200,Pdef(\pluck)));
+	sp.par(Pfindur(210,Pbindef(\pluck)));
 
 	sp.wait(10);
 
-	sp.par( Pfindur(60, Pdef(\drum)));
+	sp.par( Pfindur(60, Pbindef(\drum)));
 
 	sp.wait(50);
 
-	sp.par(Pfindur(90,Pdef(\cowbell)));
+	sp.par(Pfindur(90,Pbindef(\cowbell)));
 
 	sp.wait(50);
 
-	sp.par(Pfindur(70,Pdef(\drum)),10);
-	sp.par( Pfindur(60, Pdef(\shuffle)),20);
+	sp.par(Pfindur(70,Pbindef(\drum)),10);
+	sp.par( Pfindur(60, Pbindef(\shuffle)),20);
 
 	sp.wait(70);
 
-	sp.par(Pfindur(20,Pdef(\cowbell)));
+	sp.par(Pfindur(25,Pbindef(\cowbell)));
 
 	sp.wait(20);
 
 	//add fadetime for the egg
-	sp.par( Pfindur(15, Pdef(\egg)));
+	sp.par( Pfindur(15, Pbindef(\egg,\amp,~fade.(0.0, 0.4, 15,2))));
 
 	sp.wait(10);
-
-	sp.par( Pfindur(9, Pdef(\close)));
-
-	sp.wait(9);
 
 	l.pause;
 
 	//this doesn't work as intended, porting over the ~fade function from huawei is
 
-	sp.seq(~transC.(\close,3,(amp: Env([0.1,0.5],1), pan: Env([-1,1])),5));
-	sp.seq(Pfindur(3,Pdef(\nil)))
+	sp.par(Pfindur(30,Pbindef(\close)));
+	//sp.seq(Pfindur(3,Pdef(\nil)))
+
+	sp.wait(25);
+
+	l.resume;
+
+	sp.wait(1);
+
+	l.pause;
 
 }).play(t, quant:1);
 )
 
 
-Synth(\cowbell,[\dur,1/4,\tension,8*1e-4, \timeScale,2, \amp,6,\out,0,])
-
-
-Pbind(
-	\instrument, \cowbell,
-	\dur, Psubdivide(
-		Pseq([1!12,2!12,3!12,4!12,5!12,6!12].flat,inf),
-		Pn(1/4,inf) //Pseq([Rest(1),1,1,Rest(2),1,1,Rest(1),1],inf)
-	),
-	\tension,8*Prand([1e-3],inf), //pitch
-	\timeScale,0.3,  //prevent clipping
-	\amp,Plprand(3,6,inf),
-	\out,0,
-).play;
 
 
 
@@ -507,175 +419,3 @@ t.stop;
 
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//Misc
-
-
-//water drops
-(
-Synth(\reverb_ef, [\in, ~bus, \out, 0]);
-q = Pbind(\instrument, \twotube,
-	\dur,Pn(Pshuf([1,1,1,1,6,3,3,3,3,9]/12,3),inf),
-	\k, 0.2,
-	\preamp,Pseq([1,2].mirror*10,inf),
-	\amp,0.8,
-	\maxRq,0.1,
-	\minBpfHz,3,
-	\maxBpfHz,4, //31
-	//\pan,Pkey(\preamp).wrap(-0.4,0.4),
-	\delay1,1,
-	\delay2,2,
-	\out,~bus,
-);
-q.play(quant:1)
-)
-
-//old school
-(
-Synth(\reverb_ef, [\in, ~bus, \out, 0]);
-Pbind(\instrument, \twotube,
-	\dur,1/20,//Pn(Pshuf([1,1,1,1,6,3,3,3,3,9]/12,3),inf),
-	\k, 0,
-	\preamp,Pseq([1,2].mirror*1000,inf),
-	\amp,0.4,
-	\minRq,0.001,
-	\maxRq,0.0015,
-	\minBpfHz,1/300,
-	\maxBpfHz,1/301, //31
-	//\minCf,1/2000,
-	//\minCf,1/2001,
-	\pan,0,
-	\delay1,1,
-	\delay2,2,
-	\out,~bus,
-).play(quant:1);
-)
-
-//detuned meander
-(
-Synth(\reverb_ef, [\in, ~bus, \out, 0]);
-Pbind(\instrument, \twotube,
-	\dur,Pn(Pshuf([1,1,1,1,6,3,3,3,3,9]/12,3),inf),
-	\k, 0,
-	\preamp,Pseq([1,2].mirror*250,inf),
-	\amp,0.8,
-	\minRq,0.005,
-	\maxRq,0.0055,
-	\minBpfHz,1/160,
-	\maxBpfHz,1/150, //31
-	\minCf,100,
-	\maxCf,2000,
-	\pan,0,
-	\delay1,8,
-	\delay2,16,
-	\out,~bus,
-).play(quant:1);
-)
-
-//mor detuned
-(
-Synth(\reverb_ef, [\in, ~bus, \out, 0]);
-Pbind(\instrument, \twotube,
-	\dur,Pn(Pshuf([1,1,1,1,6,3,3,3,3,9]/12,3),inf),
-	\k, 0,
-	\preamp,Pseq([1,2].mirror*10000,inf),
-	\amp,0.4,
-	\minRq,0.001,
-	\maxRq,0.0015,
-	\minBpfHz,1/300,
-	\maxBpfHz,1/301, //31
-	\minCf,1/200,
-	\pan,0,
-	\delay1,1,
-	\delay2,2,
-	\out,~bus,
-).play(quant:1);
-)
-
-
-//bass drum
-(
-Synth(\reverb_ef, [\in, ~bus, \out, 0]);
-Pbind(\instrument, \twotube,
-	\dur,Pn(Pshuf([1,1,1,1,6,3,3,3,3,9]/12,3),inf),
-	\k, Pseg([-0.2,0.2,-0.2],30,\step,inf),
-	\preamp,Prand([1,2],inf)*250,
-	\amp,0.1,
-	\minRq,0.9,
-	\maxRq,0.91,
-	\minBpfHz,1,
-	\maxBpfHz,2, //31
-	//\minCf,100,
-	//\minCf,1000,
-	\pan,0,
-	\delay1,20,
-	\delay2,Pseq([Pn([1],8),Pn([2],8)],inf)*[512,256], //perceived pitch lower when this higher
-	\out,~bus,
-).play(quant:1);
-)
-
-//synth lead, rq glitches out near 1.
-(
-Synth(\reverb_ef, [\in, ~bus, \out, 0]);
-Pbind(\instrument, \twotube,
-	\dur,Pn(Pshuf([1,1,1,1,6,3,3,3,3,9]/12,3),inf),
-	\k, 0,
-	\preamp,Pseq([1,2].mirror*200,inf),
-	\amp,0.4,
-	\minRq,0.9,
-	\maxRq,0.91,
-	\minBpfHz,1,
-	\maxBpfHz,2, //31
-	//\minCf,1/2000,
-	//\minCf,1/2001,
-	\pan,0,
-	\delay1,Pwrand([10,1,20,40],[10,2,1,1].normalizeSum,inf),
-	\delay2,Pwrand([2,10,20,40],[10,1,0.5,0.5].normalizeSum,inf),
-	\out,~bus,
-).play(quant:1);
-)
-
-
-(
-Synth(\reverb_ef, [\in, ~bus, \out, 0]);
-Pbind(\instrument, \twotube,
-	\dur,Pn(Pshuf([1,1,1,1,6,3,3,3,3,9]/12,3),inf),
-	\k, 0,
-	\preamp,Pseq([1,2].mirror*200,inf),
-	\amp,0.1,
-	\minRq,0.9,
-	\maxRq,0.91,
-	\minBpfHz,1,
-	\maxBpfHz,2, //31
-	//\minCf,1/2000,
-	//\minCf,1/2001,
-	\pan,0,
-	\delay1,Pseq([Pn([10],32),Pn([20],64),Pn([2,1],16),Pn([40],64)].mirror1,inf),
-	\delay2,Pseq([Pseq([2,10,20,40],176),Pseq([2,10,20,40],176)],inf),
-	\out,~bus,
-).play(quant:1);
-
-//64+64+16+32
-
-//a shuffling
-//
-//Synth(\reverb_ef, [\in, ~bus, \out, 0]);
-Pbind(\instrument, \twotube,
-	\dur,Pn(Pshuf([1,1,1,2,2,2,6,6,6,12],3),inf)/256,//Pseg([200,500,200],10,\lin,inf),
-	\k, Pseg([-0.2,0.2,-0.2],30,\step,inf),
-	\preamp,Prand([1,2],inf)*250,
-	\amp,0.0035,
-	\minRq,0.9,
-	\maxRq,0.91,
-	\minBpfHz,1,
-	\maxBpfHz,2, //31
-	//\minCf,100,
-	//\minCf,1000,
-	\pan,0,
-	\delay1,4,
-	\delay2,Pseq([Pn([1],8),Pn([2],8)],inf)*[400,800], //perceived pitch lower when this higher
-	\out,~bus,
-).play(quant:1);
-)

@@ -1,124 +1,16 @@
 // pspawner ref
 // https://scsynth.org/t/how-do-you-make-a-song/4110/5
 
-TempoClock.default.tempo_(120/60);
 
-(
-SynthDef(\brusselator, {
-	|  out=0, pan=0,amp=1, dur=0.5, reset=10,rate=0.1, mu=1.15, gamma=0.5, initx=0.5,inity=1.0, minCf=30, maxCf=1500, minBpfHz=0.02, maxBpfHz=0.25,minRq=0.005, maxRq=0.04 |
-	var reset1, rate1, env, sig;
-	reset1 = Impulse.kr(reset);
-	//reset = LPF.ar(HPF.ar(WhiteNoise.ar, 30), 80) * Env.linen(0.001, 0.01, 0.001).ar;
-	rate1 = rate;
-	env = EnvGen.ar(Env([0,1,1,0],[0.01]++((dur-0.001)*[0.4,0.6])),doneAction:2);
-	sig = Brusselator.ar(reset1,rate1,mu,gamma,initx,inity);
-	sig = BPF.ar(
-			sig,
-			LFNoise1.kr({LFNoise1.kr(0.13).exprange(minBpfHz,maxBpfHz)}!8).exprange(minCf, maxCf),
-			LFNoise1.kr({LFNoise1.kr(0.08).exprange(0.08,0.35)}!8).range(minRq, maxRq)
-		);
-	sig = LPF.ar(HPF.ar(sig,30),1500);
-
-	sig = sig * amp * env;
-	sig = Limiter.ar(sig, 0.95);
-	sig = Pan2.ar(sig,pan);
-	OffsetOut.ar(out, sig);
-}).add;
-
-
-//doesn't work great
-SynthDef(\brussel_perc, {
-	|  out=0, pan=0,amp=1, dur=0.5, reset=10,rate=0.1, mu=1.15, gamma=0.5, initx=0.5,inity=1.0|
-	var reset1, rate1, env, sig;
-	reset1 = Impulse.kr(reset);
-	//reset = LPF.ar(HPF.ar(WhiteNoise.ar, 30), 80) * Env.linen(0.001, 0.01, 0.001).ar;
-	rate1 = rate;
-	env = EnvGen.ar(Env([0,1,1,0],[0.001]++((dur-0.001)*[0.4,0.6])),doneAction:2);
-	sig = Brusselator.ar(reset1,rate1,mu,gamma,initx,inity);
-	sig = LPF.ar(HPF.ar(sig,10),3000);
-	sig = sig * amp * env;
-	sig = Limiter.ar(sig, 0.95);
-	sig = Pan2.ar(sig,pan);
-	OffsetOut.ar(out, sig);
-}).add;
-
-SynthDef(\reverb_ef, {
-		arg		amp=1, lPos=0, mix=0.085, revTime=1.8, preDel=0.1, in, out;
-		var		sig, verbSig, totalSig, outSig;
-
-		//no wacky values please
-		mix = mix.clip(0,1);
-
-		sig = In.ar(in, 2);
-
-		//pre-delay
-		verbSig = DelayN.ar(sig, preDel, preDel);
-
-		totalSig = 0;
-		12.do{
-			verbSig = AllpassN.ar(verbSig, 0.06, {Rand(0.001,0.06)}!2, revTime);
-			verbSig = LPF.ar(verbSig, 4500);
-			totalSig = totalSig + verbSig;
-		};
-
-		//dry/wet mix
-		totalSig = XFade2.ar(sig, totalSig, mix.linlin(0,1,-1,1));
-
-		outSig = totalSig * amp;
-		Out.ar(out, outSig);
-	}).add;
-)
-
-(
-SynthDef(\kick, {
-    var sig, excitation, tension, loss;
-	excitation = EnvGen.ar(Env.perc,levelBias:\levelBias.kr(0),timeScale:\timeScale.kr(0.3),doneAction:Done.freeSelf
-	   ) * PinkNoise.ar(1);
-	tension = \tension.kr(0.012);
-	loss = \loss.kr(0.999);
-	sig =  MembraneCircle.ar(excitation, tension, loss);
-	Out.ar(\out.kr(0), Pan2.ar(sig, \pan.kr(0), \amp.kr(0.5)));
-}).add;
+Server.killAll;
+("Setup/Setup.scd").loadRelative // load this file
 
 
 
-SynthDef(\cowbell, {
-    var sig, excitation, tension, loss;
-	excitation = EnvGen.ar(Env.perc,levelBias:\levelBias.kr(0),timeScale:\timeScale.kr(0.1),doneAction:Done.freeSelf
-	   ) * PinkNoise.ar(1);
-	tension = \tension.kr(0.1);
-	loss = \loss.kr(0.999);
-	sig =  MembraneCircle.ar(excitation, tension, loss);
-	Out.ar(\out.kr(0), Pan2.ar(sig, \pan.kr(0), \amp.kr(0.5)));
-}).add;
-
-
-
-SynthDef(\brush, {
-    var sig, excitation, tension, loss;
-	excitation = EnvGen.ar(Env.perc,levelBias:\levelBias.kr(0),timeScale:\timeScale.kr(0.2),doneAction:Done.freeSelf
-	   ) * PinkNoise.ar(2);
-	tension = \tension.kr(0.005);
-	loss = \loss.kr(0.7);
-	sig =  MembraneCircle.ar(excitation, tension, loss);
-	Out.ar(\out.kr(0), Pan2.ar(sig, \pan.kr(0), \amp.kr(2)));
-}).add;
-
-SynthDef(\tom, {
-    var sig, excitation, tension, loss;
-	excitation = EnvGen.ar(Env.perc,levelBias:\levelBias.kr(-0.01),timeScale:\timeScale.kr(1),doneAction:Done.freeSelf
-	   ) * PinkNoise.ar(0.5);
-	tension = \tension.kr(0.05);
-	loss = \loss.kr(0.995);
-	sig =  MembraneCircle.ar(excitation, tension, loss);
-	Out.ar(\out.kr(0), Pan2.ar(sig, \pan.kr(0), \amp.kr(2)));
-}).add;
-)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//testing
+//pdefs
 (
-Synth(\reverb_ef);
 Pdef.removeAll;
 
 // bell tones, very soft
@@ -128,14 +20,14 @@ Pdef(\bell,
 	\inity,Pseg([1,0,1],100,\lin,inf),
 	\gamma, 0.25,
 	\mu,10,
-	\dur, Pseq([2,1,2,4]*2, inf),
+	\dur, Pseq([2,1,2,4]*4, inf),
 	\rate,1e-4,
 	\minRq,0.001,
 	\maxRq,0.002,
 	\minBpfHz,1/300,
 	\maxBpfHz,1/310, //31
 	\amp,20,
-	\out,\reverb_ef
+	\out,~bus[\reverb],
 ));
 
 //occassional mel
@@ -149,7 +41,7 @@ Pdef(\partmel,
 	\dur, Pseq([2,1,2,4]/2, inf),
 	\rate, Prand([23,35,47,50,52,59,61,63,64,76,78].midicps.linlin(100,1000,0,0.1),inf), //rate impacts percieved pitch so long as mu is > gamma**2 +1, linlin puts perceived pitch i nmice range
 	\amp,2,
-	\out,\reverb_ef
+	\out,~bus[\reverb],
 ));
 
 
@@ -215,49 +107,65 @@ Pdef(\close,
 	\dur, Pseq([2,1,2,4]/2, inf),
 	\rate,1e-4,
 	\amp,4,
-	\out,\reverb_ef
+	\out,~bus[\reverb],
 ));
 
 
 //kick
 Pdef(\kick,
-	Pbind(\instrument, \kick,
+	Pbind(\instrument, \kick_m,
 	\dur,Pseq([1,Rest(2),2,1,Rest(2.5),0.5],inf),
 		\amp,0.2,
-	\out,\reverb_ef
+	\out,~bus[\reverb],
 ));
 
 Pdef(\brush,Pbind(
-		\instrument, \brush,
+		\instrument, \brush_m,
 	\dur, Psubdivide(
 		Pseq([1!27,2!9,1,1,9,1].flat,inf),
 		Pn(Pshuf([Rest(1),1,1,Rest(1),1,1,Rest(1),1,1],3),inf) //Pseq([Rest(1),1,1,Rest(2),1,1,Rest(1),1],inf)
 	),
 	\tension,5*Prand([1e-3,1e-2,1e-1],inf),
 	\amp,Plprand(0.2,2,inf),
-	\out,\reverb_ef
+	\out,~bus[\reverb],
 ));
 
 
 Pdef(\brush_2,Pbind(
-		\instrument, \tom,
+		\instrument, \tom_m,
 	\dur, Psubdivide(
 		Pseq([1!27,2!9,1,1,9,1].flat,inf),
 		Pn(Pshuf([Rest(2),1,Rest(2),1,Rest(2),1],3),inf) //Pseq([Rest(1),1,1,Rest(2),1,1,Rest(1),1],inf)
 	),
-	\levelBias,-0.9,
+	\levelBias,0.01,
 	\timeScale,0.1,
 	\tension,0.5,
-	\loss,0.9,
-	\amp,Plprand(0.2,2,inf),
-	\out,\reverb_ef
+	\loss,0.95,
+	\amp,Plprand(1,2,inf),
+	\out,~bus[\reverb],
 ));
 
 //Synth(\tom,[\levelBias,-0.9,\timeScale,0.1,\tension,0.5,\loss,0.9]);
 )
 
+
 (
-Synth(\reverb_ef);
+Pbind(
+		\instrument, \tom_m,
+	\dur, 1/4,//Psubdivide(
+		//Pseq([1!27,2!9,1,1,9,1].flat,inf),
+		//Pn(Pshuf([Rest(2),1,Rest(2),1,Rest(2),1],3),inf) //Pseq([Rest(1),1,1,Rest(2),1,1,Rest(1),1],inf)
+	//),
+	\levelBias,0.01,
+	\timeScale,0.1,
+	\tension,0.5,
+	\loss,0.91,
+	\amp,Plprand(1,2,inf),
+	\out,~bus[\reverb],
+).play;
+)
+
+(
 Pdef(\mel_3).play;
 Pdef(\kick).play;
 Pdef(\brush).play;
@@ -272,8 +180,6 @@ Pdef(\brush_2).play;
 //the piece is in 9/4
 StageLimiter.activate;
 t = TempoClock.default.tempo_(120/60);
-Synth(\reverb_ef);
-
 
 Pspawner({|sp|
 
@@ -398,3 +304,49 @@ Ppar([
 ]).play(TempoClock(2.3 * 4))
 )
 
+
+//////////////////////////////////////////////////////////////////////////////////
+//synthdef testing
+
+
+//doesn't work great
+SynthDef(\brussel_perc, {
+	|  out=0, pan=0,amp=1, dur=0.5, reset=10,rate=0.1, mu=1.15, gamma=0.5, initx=0.5,inity=1.0|
+	var reset1, rate1, env, sig;
+	reset1 = Impulse.kr(reset);
+	//reset = LPF.ar(HPF.ar(WhiteNoise.ar, 30), 80) * Env.linen(0.001, 0.01, 0.001).ar;
+	rate1 = rate;
+	env = EnvGen.ar(Env([0,1,1,0],[0.001]++((dur-0.001)*[0.4,0.6])),doneAction:2);
+	sig = Brusselator.ar(reset1,rate1,mu,gamma,initx,inity);
+	sig = LPF.ar(HPF.ar(sig,10),3000);
+	sig = sig * amp * env;
+	sig = Limiter.ar(sig, 0.95);
+	sig = Pan2.ar(sig,pan);
+	OffsetOut.ar(out, sig);
+}).add;
+
+SynthDef(\reverb_ef, {
+		arg		amp=1, lPos=0, mix=0.085, revTime=1.8, preDel=0.1, in, out;
+		var		sig, verbSig, totalSig, outSig;
+
+		//no wacky values please
+		mix = mix.clip(0,1);
+
+		sig = In.ar(in, 2);
+
+		//pre-delay
+		verbSig = DelayN.ar(sig, preDel, preDel);
+
+		totalSig = 0;
+		12.do{
+			verbSig = AllpassN.ar(verbSig, 0.06, {Rand(0.001,0.06)}!2, revTime);
+			verbSig = LPF.ar(verbSig, 4500);
+			totalSig = totalSig + verbSig;
+		};
+
+		//dry/wet mix
+		totalSig = XFade2.ar(sig, totalSig, mix.linlin(0,1,-1,1));
+
+		outSig = totalSig * amp;
+		Out.ar(out, outSig);
+	}).add;

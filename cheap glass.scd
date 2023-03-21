@@ -26,7 +26,7 @@ a = Plambda(
 		///Phrase A
 		Pfindur(108,Ppar([
 			//arpeggi
-			Pbindef(\p,
+		                                                         	Pbindef(\p,
 				\instrument, \harpsichord_pluck,
 				\atk,0.005,
 				\rel,0.7,
@@ -55,7 +55,7 @@ a = Plambda(
 			\amp,0.2,
 			\decaytime, Pwhite(5,10,inf),
 					\coef,Pseg([0.1,0.6,0.1,0.6],108,\exp,inf),
-				\pan,0.3,
+					\pan,0.3,`
 			\out, Pwrand([0,~bus[\reverb]],[0.7,0.3],inf),
 		)<> Pbindef(\p)
 				,

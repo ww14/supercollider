@@ -114,8 +114,9 @@ TempoClock.default.tempo = 104 / 60;
 	Pbindf(
 		Pbind(
 			\instrument, \kik,
-			\preamp, 4,
-
+			\preamp, 2,
+			\basefreq,16,
+			\ratio,32,
 			\dur, 0.25,
 			*(~pbindPairs.value(#[amp, decay2]))
 		),
@@ -124,7 +125,7 @@ TempoClock.default.tempo = 104 / 60;
 		// the event is a rest and no synth will be played
 		\freq, Pif(Pkey(\amp) > 0, 1, \rest)
 	)
-}), inf)).play(quant: 4);
+}), inf));
 ~snr = Penvir(~snrEnvir, Pn(Plazy({
 	~init.value;
 	~addNotes.value;
@@ -136,30 +137,40 @@ TempoClock.default.tempo = 104 / 60;
 		),
 		\freq, Pif(Pkey(\amp) > 0, [500,2500], \rest)
 	)
-}), inf)).play(quant: 16);
+}), inf));
 ~hh = Penvir(~hhEnvir, Pn(Plazy({
 	~init.value;
 	~addNotes.value;
 	Pbindf(
 		Pbind(
 			\instrument, \kraftySnr,
-			\rq, 0.01,
+			\rq, Plprand(3,15),//0.01,
 			\amp, 15,
 			\decay, 0.009,
 			*(~pbindPairs.value(#[amp, dur]))
 		),
 		\freq, Pif(Pkey(\amp) > 0, [1100,1000], \rest)
 	)
-}), inf)).play(quant: 16);
+}), inf));
 )
 
 ///////////////////////////////////////////////////////////////////////////////
 
 // stop just before barline
-t = TempoClock.default;
+(t = TempoClock.default;
 t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 	[~kik, ~snr, ~hh].do(_.stop);
-});
+});)
+
+
+// start it
+(
+~kik.play(quant: 4);
+~snr.play(quant: 16);
+~hh.play(quant: 16);
+)
+
+
 
 //test
 // ~snrEnvir.put(\baseAmp, #[1, 0, 0, 0, 0, 0, 0.5, 0, 1, 0, 0, 0, 0.5, 0, 1, 0] * 50);
