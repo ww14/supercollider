@@ -18,14 +18,15 @@ t = TempoClock.new(60/60).permanent_(true);
 	\iScale,Pwrand([0.9,0.09],[0.9,0.1],inf),
 	\mRatio, 450,
 	\cRatio, Pwrand([1,1000],[0.95,0.05],inf),
-	\amp,0.008
+	\amp,-40.dbamp
 );
 
 ~pat_f = Pbind(
-	\instrument, \ring4,
+	\instrument, \ring1,
     \dur, Pseq([ Pshuf(#[1,1,4,2,2,1,1,]/8, 3) ], inf),
 	//\degree, Pseq([1,5,4,[7,8],0,5,4,5,6,3,2,1,],inf),
-    \freq,1000*Pseq([ Pshuf(#[60, 61, 62, 63, 64, 65, 66, 67], 3) ].sputter, inf).midicps
+    \freq,1000*Pseq([ Pshuf(#[60, 61, 62, 63, 64, 65, 66, 67], 3) ].sputter, inf).midicps,
+	\amp,-30.dbamp
 
 );
 
@@ -92,7 +93,7 @@ t = TempoClock.new(60/60).permanent_(true);
 )
 
 
-.(
+(
 
 var rhythm = Array.fill(rrand(4,10),{rrand(1,10)}).normalizeSum * rrand(1,4);
 l = Prewrite(1,

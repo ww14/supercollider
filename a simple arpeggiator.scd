@@ -1,4 +1,4 @@
-{ (SinOsc.ar(GbmanN.ar(10,2.1,10.4)*100+250)*0.4)!2 }.play(s);
+{ (SinOsc.ar(GbmanN.ar(10,2.1,10.4)*100+250)*0.2)!2 }.play(s);
 (
 (SynthDef(\gbman,{
 	var sig, env, freq_s;

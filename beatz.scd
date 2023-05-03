@@ -116,7 +116,7 @@ TempoClock.default.tempo = 104 / 60;
 			\instrument, \kik,
 			\preamp, 2,
 			\basefreq,16,
-			\ratio,32,
+			\ratio,15,
 			\dur, 0.25,
 			*(~pbindPairs.value(#[amp, decay2]))
 		),
@@ -165,9 +165,9 @@ t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 
 // start it
 (
-~kik.play(quant: 4);
-~snr.play(quant: 16);
-~hh.play(quant: 16);
+~kik.play(t,quant: 4);
+~snr.play(t,quant: 16);
+~hh.play(t,quant: 16);
 )
 
 

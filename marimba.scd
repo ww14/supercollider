@@ -209,12 +209,21 @@ d.set(\fundamental,20,\mul,50);
 d.set(\fundamental,90,\mul,15);
 d.set(\fundamental,200,\mul,20);
 
+//////////////////////////////////////////
+//////////////////////////////////////////
+//////////////////////////////////////////
+//////////////////////////////////////////
+//////////////////////////////////////////
+//////////////////////////////////////////
+//////////////////////////////////////////
+
 
 (
- d = {arg fundamental = 50;
+ d = {arg fundamental = 50, amp=1, release=12, gate=1;
 	  var harmonics = [1, 2, 3, 4, 5, 6, 7, 8, 9,10];
-      var snd, klank;
+      var snd, klank, env;
 	//var env = EnvGen.ar(Env.linen.circle,doneAction:2);
+	env = Env.asr(1, amp, release).kr(2, gate);
 	snd = LFPulse.ar(harmonics.midiratio, width:  Klang.ar(`[ [10,400, 800, 1000, 1200], [0.05,1,0.5,0.5,0.1], nil], 1, 0));
 	klank =  LFTri.ar(10*harmonics, mul:snd);
 	snd = BPF.ar(
@@ -227,8 +236,13 @@ d.set(\fundamental,200,\mul,20);
 	//snd = Compander.ar(snd,snd,0.09,1,0.5,0.01,0.01);
 	snd = IIRFilter.ar(snd,3000 + (20*fundamental),30);
 	snd = BHiPass4.ar(snd,fundamental,1);
-	snd = LeakDC.ar(snd);
+	snd = LeakDC.ar(snd) * env;
 	snd = SplayAz.ar(4,snd,0.1,4);
 	Out.ar(0,snd);
 }.play;
  )
+
+//d.set(\fundamental,30.midicps,\mul,100);
+//https://ccrma.stanford.edu/~ruviaro/texts/A_Gentle_Introduction_To_SuperCollider.pdf p.94
+SystemClock.sched(0, {d.set(\fundamental, [30,35,33,38,42].choose.midicps); rrand(5, 10)});
+d.set(\gate,0);

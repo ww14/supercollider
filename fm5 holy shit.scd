@@ -342,3 +342,8 @@ Pdef(\fm1_a, Pbind(
 ) <> Pdef(\fmBase)
 )
 )
+
+(
+Pdef(\fm1_a).play(quant:4);
+Pdef(\fm1).stop;
+)

@@ -54,7 +54,7 @@ SynthDef(\tball, {
     rate = rate * sc.size.reciprocal;
     z = sc.collect { |u,i|
         var f, in;
-        in = Decay.ar(
+        in = -10.dbamp * Decay.ar(
 			Mix(Impulse.ar(rate, [1.0, LFNoise0.kr(rate/12)].rand, 0.1)),
 			0.001);
 		in = Ringz.ar(in,
@@ -86,7 +86,7 @@ t = Task({
 
     24.wait;//29.wait;
 
-	a.set(\gravity,1,\damp,0.00001,\amp,0.5);
+	a.set(\gravity,1,\damp,0.00001,\amp,0.4);
 
 	16.wait;
 
@@ -94,7 +94,7 @@ t = Task({
 
 	16.wait;
 
-	a.set(\speed,0.5,\damp,0.00001);
+	a.set(\speed,0.5,\damp,0.00001,\zmp,0.4);
 
 	16.wait;
 
@@ -102,7 +102,7 @@ t = Task({
 
 	16.wait;
 
-	a.set(\speed,500,\damp,0.75,\gravity,100);
+	a.set(\speed,500,\damp,0.75,\gravity,100,\amp,0.2);
 
 	16.wait;
 
@@ -110,7 +110,7 @@ t = Task({
 
 	12.wait;
 
-	a.set(\damp,0.25);
+	a.set(\damp,0.25,\amp,0.15);
 
 	6.wait;
 

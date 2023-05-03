@@ -62,8 +62,8 @@ Pbindef(\two_bass, \dur, ~fade.(k, l, 15));
 Pbindef(\two_bass, \dur, ~fade.(l,k,20));
 
 
-Pbindef(\two_bass, \amp, ~fade.(0.1,0,20));
-
+(Pbindef(\two_bass, \amp, ~fade.(0.1,0,20));
+Pbindef(\two_bass, \delay1, ~fade.(1,500,20));)
 
 
 

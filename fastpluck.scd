@@ -264,7 +264,7 @@ Pbindef(\perc_high,
 ).play;
 
 //overwrite original pdef. i had a hard time merging for whatever reason
-(Pbindef(\perc_high, \freq,[35,70],\mod_index,[1000,10000],\mod_freq, Pwrand([5,4,3,2,1,1000],[10,2,1,0.5,0.1].normalizeSum,inf),\amp,(0.15 - (1 / Pkey(\mod_freq)).linlin(0,25,0,0.15)),\dur,Psubdivide(
+(Pbindef(\perc_high, \freq,[35,70],\mod_index,[1000,10000],\mod_freq, Pwrand([5,4,3,2,1,1000],[10,2,1,0.5,0.1].normalizeSum,inf),\amp,(0.15 - (1 / Pkey(\mod_freq)).linlin(0,25,0,0.15)),\dur,2*Psubdivide(
 			Pseq([1!24,2!6,1!6,4!6,2!6].flatten,inf),
 			Pseq(#[6,1,3,4,2],inf)
 )/4,));

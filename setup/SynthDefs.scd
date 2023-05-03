@@ -100,6 +100,9 @@ Synth(\clap_electro)
 
 //Others
 Synth(\ring1)
+Synth(\ring2)
+Synth(\ring3)
+Synth(\ring4)
 Synth(\blips1)
 Synth(\sawSynth)
 Synth(\noisy)
@@ -232,6 +235,7 @@ SynthDef.new(\fm1, {
 
 //
 //https://gist.github.com/scztt/f889e72d11ddcfb0879dbff82d531747
+/*
 (
 SynthDef(\fm5, {
 	var sig, env, gate, freqs, freqEnv, freqCurve, octs, phases, amps, matrix, freq;
@@ -357,7 +361,7 @@ SynthDef(\fm5, {
 	OffsetOut.ar(\out.kr(0), sig);
 }).add;
 );
-
+*/
 /*
 
 sinfb: General purpose SinOscFB Ugen designed to mutate between pure sine waves and noise using the feedback argument.
@@ -1429,6 +1433,43 @@ out = channels out
 	};
 ).add;);
 
+
+
+(SynthDef(\ring2,
+	{
+		arg f = 9000, a = 2, d = 0.1, amp = 1, pan = 2, out = 0;
+		var sig, env;
+		env = Line.kr(0,1,d);
+		env = FreeSelfWhenDone.kr(env);
+		sig = Impulse.ar(0);
+		sig = Ringz.ar(sig,f,d,a);
+		Out.ar(out,Pan2.ar(sig.tanh,pan) * amp)
+	};
+).add;);
+
+(SynthDef(\ring3,
+	{
+		arg f = 50, a = 3, d = 1, pan = 0, amp = 1, out = 0;
+		var sig, env;
+		env = Line.kr(0,1,d);
+		env = FreeSelfWhenDone.kr(env);
+		sig = Impulse.ar(0);
+		sig = Ringz.ar(sig,f,d,a);
+		Out.ar(out,Pan2.ar(sig.tanh,pan) * amp)
+	};
+).add;);
+
+(SynthDef(\ring4,
+	{
+		arg f = 8000, a = 1, d = 0.3, pan = 0, amp = 1, out = 0;
+		var sig, env;
+		env = Line.kr(0,1,d);
+		env = FreeSelfWhenDone.kr(env);
+		sig = Impulse.ar(0);
+		sig = Ringz.ar(sig,f,d,a);
+		Out.ar(out,Pan2.ar(sig.tanh,pan) * amp)
+	};
+).add);
 
 
 SynthDef(\blips1, {arg out = 0, freq = 25, numharm = 10, atk = 0.01, rel = 1, amp = 0.1, pan = 0.5, beatsPercentage = 1.001;

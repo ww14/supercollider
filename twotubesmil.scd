@@ -32,13 +32,13 @@ j = [1, 0.7, 1, 0.25]
 
 ///////////////////main pbind//////////////////////////////////////////////////////////////
 
-(~d = Pbind(\instrument, \twotubes,
+(~d = Pbind(\instrument, \twotube2,
 	\dur, 1/Prand([32,64],inf),
 	\k, -0.001, // -0.001
 	\loss,0.1, //0.1
 	\rand,Pwhite(-4,4,inf),
 	\out,~bus[\reverb],
-	\amp,1,
+	\amp,10,
 );)
 
 ~d.play;
@@ -60,7 +60,7 @@ j = [1, 0.7, 1, 0.25]
 
 
 
-x = Synth("twotubes",[\dur,20,\k, 0.9999999,\loss, 0.9999999,\freq,220,\out,~bus[\reverb]]);
+x = Synth("twotube2",[\dur,20,\k, 0.9999999,\loss, 0.9999999,\freq,220,\out,~bus[\reverb]]);
 x.set(\dur,20,\k, -0.9999999,\loss, 0,\freq,440,\out,~bus[\reverb]);
 x.set(\dur,20,\k, -0.9999999,\loss, -1,\freq,2200,\out,~bus[\reverb]);
 

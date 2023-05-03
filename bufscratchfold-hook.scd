@@ -4,7 +4,7 @@ Server.killAll
 (
 ~spica = PathName(thisProcess.nowExecutingPath).parentPath++"setup/cellospica/";
 b = Dictionary.new;
-b.add(\foldernames -> PathName("C:/Users/William Willoughby/Documents/SuperCollider/composition/setup/cellospica/").entries);
+b.add(\foldernames -> PathName(~spica).entries);
 	for (0, b[\foldernames].size-1,
 		{arg i; b.add(b[\foldernames][i].folderName -> b[\foldernames][i].entries.collect({
 			arg sf;

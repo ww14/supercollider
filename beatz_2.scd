@@ -373,7 +373,7 @@ a = Plambda(
 				),
 			])),
 		//phrase B
-		Pfindur(54,Ppar([
+		Pfindur(8,Ppar([
 			//pads
 				Pbindef(\pads_1a,
 					\ctranspose, 9,
@@ -387,9 +387,9 @@ a = Plambda(
 			\dur, 3/8 * Pseq([14,Pseq([12,12,10],1)],inf),
 			\amp,0.2,
 			\decaytime, Pwhite(5,10,inf),
-					\coef,Pseg([0.1,0.6,0.1,0.6],108,\exp,inf),
-					\pan,0.3,`
-					\ctranspose, 0,  //9 doesn't work either; it's dissonant with the pads
+					\coef,Pseg([0.6,0.1,0.6,0.1],54,\exp,inf),
+					\pan,0.3,
+					\ctranspose, 9,  //9 doesn't work either; it's dissonant with the pads
 			\out, Pwrand([0,~bus[\reverb]],[0.7,0.3],inf),
 		)<> Pbindef(\pads)
 				,
@@ -399,7 +399,7 @@ a = Plambda(
 					\dur, Pseq([0.00001, Pshuf(#[24,12,12]*3/8, 3) ], inf),
 					\midinote, -12 + Pseq([Pget(\mod)],inf),
 					\pan,-0.5,
-					\ctranspose, 0,
+					\ctranspose, 9,
 					\amp,0.15,//Pseg([0.005,0.01,0.005],27,\exp,inf)
 					\out,~bus[\reverb],
 				),
@@ -407,7 +407,7 @@ a = Plambda(
 			],2)
 		),
 		////  Phrase C
-		Pfindur(54,
+	/*	Pfindur(54,
         Ppar([
 			Pbindef(\pads_2,
 				\midinote, Plet(\tonic, Pseq([0,2,4], 2)) //this ending triggers a new loop
@@ -439,7 +439,7 @@ a = Plambda(
 					\out,~bus[\reverb]
 				),
 			],1)
-		),
+		),*/
 		//// Phrase A'
 		Pfindur(54,
         Ppar([

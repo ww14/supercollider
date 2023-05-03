@@ -1,6 +1,10 @@
 (
-~bus = Bus.audio(s,2);
+//~bus = Bus.audio(s,2);
+Server.killAll;
+("Setup/Setup.scd").loadRelative;
 
+)
+(
 SynthDef(\reverb_ef, {
 		arg		amp=1, lPos=0, mix=0.085, revTime=1.8, preDel=0.1, in, out;
 		var		sig, verbSig, totalSig, outSig;
@@ -43,17 +47,19 @@ SynthDef(\reverb_ef, {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 (
-Synth(\reverb_ef, [\in, ~bus, \out, 0]);
+//Synth(\reverb_ef, [\in, ~bus, \out, 0]);
 Pbind(
 		\instrument, \cowbell,
 		\dur, Psubdivide(
-			Pseq([1!12,2!4].flat,inf),
-		Pn(Pshuf([1,2,1,1]/4,3),inf)), //Pseq([Rest(1),1,1,Rest(2),1,1,Rest(1),1],inf)
-
-		\tension,1e-2*Pseq([3,7,5].stutter,inf), //pitch 1e-3, 1e-2, 1e-3
+		Pseq([1!12,2!4].flat,inf),
+		Pn(Pshuf([1,2,1,1]/4,3),inf)) / Pstep([1,2,1,3],[36,8,4,4],inf), //Pseq([Rest(1),1,1,Rest(2),1,1,Rest(1),1],inf)
+		\tension,1e-2*Pseq([Pseq([3,7,5],36),
+		                    Pseq([3,3,7,7,5,5],36),
+                     		Pseq([3,7,5]+1,36),
+		                    Pseq([3,7,5]-1,36)],inf),//pitch 1e-3, 1e-2, 1e-3
 		\timeScale,0.3,  //prevent clipping
 		\amp,Plprand(0.4,1.2,inf),
-		\out,~bus,
+	\out,~bus[\reverb2],
 ).play;
 
 /*Pbind(

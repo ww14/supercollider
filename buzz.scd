@@ -32,7 +32,7 @@ SynthDef(\reverb_ef, {
 
 SynthDef(\buzz, {arg fundamental = 5, mul=100,trigger=32,amp=1, lagu=0.1, lagd=0.1,center=0;
 	  var harmonics = [1, 2, 3, 4, 5, 6, 7, 8, 9,10];
-      var snd, chain, detect_p, perc2,trig;
+      var snd, chain, detect_p, perc2,trig, env;
 	//var env = EnvGen.ar(Env.linen.circle,doneAction:2);
 	snd = LFPulse.ar(harmonics.cpsmidi, width:  Klang.ar(`[ [10,400, 800, 1000, 1200], [0.1,1,0.5,0.25,0.25], nil], 1, 0));
 	snd = LFTri.ar(10*harmonics, mul:snd);
@@ -51,16 +51,23 @@ SynthDef(\buzz, {arg fundamental = 5, mul=100,trigger=32,amp=1, lagu=0.1, lagd=0
 	snd = LeakDC.ar(snd);
 	//center = Select.kr(LFSaw.kr(0.1,0.0,1,1),[0,1]);
 	snd = SplayAz.ar(2,snd,1,4*amp,center:center);
+
+	env = Env.asr(1, amp, \release.kr(16)).kr(2, \gate.kr(1));
+	snd = snd * env;
+
 	Out.ar(~bus,snd);
 }).add;
 );
 
-Select
 
 (
 Synth(\reverb_ef, [\in, ~bus, \out, 0]);
-d = Synth(\buzz);
+d = Synth(\buzz).asStream;
 )
+
+d.release(3);
+
+d.mute;
 
 /*
 //d.play;
@@ -95,12 +102,14 @@ d.set(\fundamental,200,\mul,100);
 d.set(\fundamental,200,\mul,10);
 */
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//176 seconds
+//~176 seconds
 (
 t = Task({
     var d;
 	Synth(\reverb_ef, [\in, ~bus, \out, 0]);
     d = Synth(\buzz);
+	// intro
+	/*
 	d.set(\fundamental,10,\mul,1,\lagu,2,\lagd,3);
 	8.wait;
 	//d.set(\fundamental,5,\mul,10);
@@ -120,29 +129,35 @@ t = Task({
 	4.wait;
 	d.set(\fundamental,10,\mul,2);
 	16.wait;
+
 	//////////////////////////////////////////////
+	// first phrase
 	//d.set(\fundamental,10,\mul,5);
 	d.set(\fundamental,50,\mul,2,\lagu,0.3);
 	24.wait;
 	d.set(\fundamental,30,\mul,10,\lagd,0.5,\center,0);
 	16.wait;
-	d.set(\fundamental,50,\mul,5,\center,1);
+	d.set(\fundamental,50,\mul,5,\center,1,\lagu,0.45);
 	16.wait;
 	d.set(\fundamental,30,\mul,10);
 	16.wait;
 	d.set(\fundamental,50,\mul,5,\center,0);
-	16.wait;
+	24.wait;
+	*/
     ////////////////////////////////////////////
-	d.set(\fundamental,60,\mul,100);
+	// higher, new beat
+	d.set(\fundamental,60,\mul,100,\lagu,0.3);
 	8.wait;
 	d.set(\fundamental,40,\mul,100);
 	8.wait;
 	d.set(\fundamental,20,\mul,50,\center,1);
-	16.wait;
+	24.wait;
+
+	//////////////////////////////////////////
+	// first phrase
 	d.set(\fundamental,30,\mul,5);
 	16.wait;
-    //////////////////////////////////////////
-	d.set(\fundamental,50,\mul,5);
+	d.set(\fundamental,50,\mul,5, \lagu,0.5);
 	8.wait;
 	d.set(\fundamental,50,\mul,3,\center,0);
 	2.wait;
@@ -155,7 +170,9 @@ t = Task({
 	8.wait;
 	d.set(\fundamental,50,\mul,5);
 	36.wait;
+
 	//////////////////////////////////////////
+	//outro
 	d.set(\fundamental,200,\mul,0.5,\lagu,0.5,\center,0);
 	4.wait;
 	d.set(\fundamental,200,\mul,100);
@@ -163,7 +180,7 @@ t = Task({
 	d.set(\fundamental,200,\mul,20,\center,1);
 	4.wait;
 
-	d.set(\amp,0);
+	d.release(4);
    });
 )
 

@@ -96,6 +96,236 @@ SynthDef(\SOSkick,
 ).add;
 )
 
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+// the pre-write
+
+(
+Pdef.removeAll;
+~a = [1,3,5]; // dorian
+
+// 96 beat loop in 3/8
+(
+Pbindef(\piano,
+	\instrument, \help_dwgpluckedstiff,
+    //\delta, 1,
+	//\rho, 0.3,//Pseg([0.4,0.1,0.4],60,\wel,inf).trace, //Pwrand([Pn(10,3),Pn(0.1,3),Pn(1,3)],[1,1,1].normalizeSum,inf).trace,
+	\fB,100,
+	//\c1,1.5,
+	\c3,50,
+	\dur, 1/8, //+ Pwhite(-0.01,0.01,inf),
+	//\gain, 1,//Pseg([2,3,2],60,\wel,inf),
+	\degree, Pseq([
+		Pseq([Pfuncn({~a})].flatten,4),
+		Pseq([Pfuncn({~a})].flatten-5,2),
+		Pseq([Pfuncn({~a})].flatten-3,1),
+		Pseq([Pfuncn({~a})].flatten-1,1),
+		Pseq([Pfuncn({~a})].flatten,4),
+		Pseq([Pfuncn({~a})].flatten+2,2),
+		Pseq([Pfuncn({~a})].flatten+4,1),
+		Pseq([Pfuncn({~a})].flatten+1,1),
+		Pseq([Pfuncn({~a})].flatten.pyramid,4),
+		Pseq([Pfuncn({~a})].flatten.pyramid-5,2),
+		Pseq([Pfuncn({~a})].flatten-3,1),
+		Pseq([Pfuncn({~a})].flatten-1,1),
+		Pseq([Pfuncn({~a})].flatten.pyramid,4),
+		Pseq([Pfuncn({~a})].flatten.pyramid+2,2),
+		Pseq([Pfuncn({~a})].flatten+4,1),
+		Pseq([Pfuncn({~a})].flatten+1,1),
+	], inf),
+
+	\amp,-24.dbamp,
+	\pan,Pwhite(-0.3,-0.05,inf),
+    \out, 20,
+);
+
+
+Pbindef(\duet,
+    \instrument, \help_blowhole,
+	\dur,1/8,
+	\octave,4,
+    \degree, Pseq([
+		Pseq([Pfuncn({~a})].flatten,4),
+		Pseq([Pfuncn({~a})].flatten-5,2),
+		Pseq([Pfuncn({~a})].flatten-3,1),
+		Pseq([Pfuncn({~a})].flatten-1,1),
+		Pseq([Pfuncn({~a})].flatten,4),
+		Pseq([Pfuncn({~a})].flatten+2,2),
+		Pseq([Pfuncn({~a})].flatten+4,1),
+		Pseq([Pfuncn({~a})].flatten+1,1),
+		Pseq([Pfuncn({~a})].flatten.pyramid,4),
+		Pseq([Pfuncn({~a})].flatten.pyramid-5,2),
+		Pseq([Pfuncn({~a})].flatten-3,1),
+		Pseq([Pfuncn({~a})].flatten-1,1),
+		Pseq([Pfuncn({~a})].flatten.pyramid,4),
+		Pseq([Pfuncn({~a})].flatten.pyramid+2,2),
+		Pseq([Pfuncn({~a})].flatten+4,1),
+		Pseq([Pfuncn({~a})].flatten+1,1),
+	], inf),
+	\pan,Pwhite(0.1,0.5,inf),
+	\mul,8,
+	\reedstiffness,Pwrand([64,48],[0.9,0.1],inf),
+	\out,Pwrand([0,~bus],[0.9,0.1],inf),
+);
+
+
+Pbindef(\harmony,
+    \instrument, \help_blowhole,
+	\dur,Prand([6,3],inf),
+	\pan,Pwhite(0,0.15,inf),
+	\breathpressure,60,//Pseg([5,30,5],30,\wel,inf),
+	\reedstiffness,50,
+	\octave,3,//Pwrand([5,[6,5],3,7],[4,3,2,1].normalizeSum,inf),
+    \degree, Pseq([Pfuncn({~a})].flatten, inf),
+	\mul,12,
+	\out,~bus,
+);
+
+Pbindef(\perc_high,
+	\instrument, \SOSkick,
+	\dur,Pn(Pshuf([3,1,1,1],3),inf)/8,//Pseg([200,500,200],10,\lin,inf),
+	\freq,30,
+	\mod_freq, Pwrand([5,10,100,200],[10,2,1,0.5].normalizeSum,inf),
+	\mod_index,[1000],
+	\pan,-0.1,
+	\amp,(0.251 - (1 / Pkey(\mod_freq))),
+	\out,~bus,
+);
+
+Pbindef(\perc_low,
+	\instrument, \SOSkick,
+	\dur,Pn(Pshuf([3,1,1,1],3),inf)/8,//Pseg([200,500,200],10,\lin,inf),
+	\freq,30,
+	\mod_freq, Pwrand([5,10,100,200],[10,2,1,0.5].normalizeSum,inf),
+	\mod_index,[1],
+	\pan,-0.2,
+	\amp,(0.2 - (1 / Pkey(\mod_freq))),
+	\out,~bus,
+);
+);
+)
+
+// the routine
+
+(
+t = TempoClock.default.tempo_(1);
+r = Task({ //12 sec segments, mostly; a full phrase is 16.5 (for 3 beat phrase), 90 (9) and 46.5 (6
+	~a = [1,3,5];
+	x = Synth.tail(1,\piano_soundboard);
+	//instantiate reverb synth
+	y = Synth(\reverb_ef, [\in, ~bus, \out, 0]);
+
+	Pbindef(\piano).play(t);
+	Pbindef(\duet).play(t);
+
+	12.wait;
+
+	~a = [1,7,3];
+	4.wait;
+	Pbindef(\perc_high).play(t);
+	8.wait;
+
+    ~a = [1,3,5];
+	4.wait;
+	Pbindef(\perc_low).play(t);
+	8.wait;
+
+	Pbindef(\harmony).play(t);
+	~a = [1,7,3];
+	12.wait;
+
+	~a = [1,7,4,5,6,2,6,8,4];
+	18.wait;
+
+	~a = [1,Rest(1),7,1,5,-4];
+	Pbindef(\harmony).pause(t);
+	Pbindef(\perc_high).pause(t);
+	Pbindef(\perc_low).pause(t);
+	15.wait;
+
+	Pbindef(\perc_high).resume(t);
+
+	Pbindef(\piano, \amp,Pseg(Pseq([-24.dbamp, Pn(-30.dbamp)]), 20));
+	4.wait;
+
+	Pbindef(\harmony).resume(t);
+
+	~a = [1,2,3].rotate(1);
+
+	18.wait;
+
+	Pbindef(\perc_low).resume(t);
+
+    (Pbindef(\perc_low,
+	\freq,(36 + Pseq([Pfuncn({~a})].flatten,inf)).midicps, //[80,64,32],  .linexp(1,8,110,220)
+	\mod_index,[1000,100,1],
+	\mod_freq, Pwrand([5,10,25,2000],[10,2,1,0.5].normalizeSum,inf),
+	\amp,(0.05 - (1 / Pkey(\mod_freq)).linlin(0,25,0,0.15)),
+	\dur,Psubdivide(Pseq([1!9,3!3].flatten,inf),Pseq(#[1],inf))/8, //Pbjorklund2(Prand([6,10,18],inf),32,inf)/8 //
+	));
+
+
+	18.wait;
+
+	~a = [1,5,-4];
+
+	18.wait;
+
+	~a = [1,3,5].rotate(2);
+	Pbindef(\piano, \amp,Pseg(Pseq([-30.dbamp, Pn(-21.dbamp)]), 18));
+
+	18.wait;
+
+	~a = [1,3,5].rotate(2).pyramidg;
+	Pbindef(\piano, \amp,-19.dbamp);
+	(Pbindef(\perc_high,\mod_index,10,\mod_freq, [10,100],\amp,0.11,\dur,Psubdivide(
+			Pseq([1!9,3!3,1!9,3!2,4!1].flatten,inf),
+			Pseq(#[3,1,2],inf)
+	)/8,));
+
+	36.wait;
+
+	~a = [1,3,5];
+	Pbindef(\duet,\reedstiffness,Pwrand([64,32],[0.9,0.1],inf));
+
+	14.wait;
+
+	Pbindef(\piano, \amp,Pseg(Pseq([-20.dbamp, Pn(0.0)]), 10));
+
+	8.wait;
+
+	Pbindef(\perc_high, \amp,Pseg(Pseq([0.11, Pn(0.0)]), 10));
+	Pbindef(\harmony, \mul,Pseg(Pseq([8.0, Pn(0.0)]), 10));
+
+	4.wait;
+
+	Pbindef(\perc_low, \amp,Pseg(Pseq([0.05, Pn(0.0)]), 10));
+
+	4.wait;
+
+	Pbindef(\duet, \mul,Pseg(Pseq([4.0, Pn(0.0)]), 10));
+
+   });
+)
+
+
+// play the routine
+r.play(t)
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//testing
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Use bowed.
 (
@@ -244,226 +474,6 @@ y = Synth(\reverb_ef, [\in, ~bus, \out, 0]);
 
 
 Pbindef(\piano).resume(t);
-
-////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////
-
-(
-(
-TempoClock.default.tempo_(1);
-Pdef.removeAll;
-~a = [1,3,5]; // dorian
-x = Synth.tail(1,\piano_soundboard);
-	//instantiate reverb synth
-y = Synth(\reverb_ef, [\in, ~bus, \out, 0]);
-);
-// 96 beat loop in 3/8
-(
-Pbindef(\piano,
-	\instrument, \help_dwgpluckedstiff,
-    //\delta, 1,
-	//\rho, 0.3,//Pseg([0.4,0.1,0.4],60,\wel,inf).trace, //Pwrand([Pn(10,3),Pn(0.1,3),Pn(1,3)],[1,1,1].normalizeSum,inf).trace,
-	\fB,100,
-	//\c1,1.5,
-	\c3,50,
-	\dur, 1/8, //+ Pwhite(-0.01,0.01,inf),
-	//\gain, 1,//Pseg([2,3,2],60,\wel,inf),
-	\degree, Pseq([
-		Pseq([Pfuncn({~a})].flatten,4),
-		Pseq([Pfuncn({~a})].flatten-5,2),
-		Pseq([Pfuncn({~a})].flatten-3,1),
-		Pseq([Pfuncn({~a})].flatten-1,1),
-		Pseq([Pfuncn({~a})].flatten,4),
-		Pseq([Pfuncn({~a})].flatten+2,2),
-		Pseq([Pfuncn({~a})].flatten+4,1),
-		Pseq([Pfuncn({~a})].flatten+1,1),
-		Pseq([Pfuncn({~a})].flatten.pyramid,4),
-		Pseq([Pfuncn({~a})].flatten.pyramid-5,2),
-		Pseq([Pfuncn({~a})].flatten-3,1),
-		Pseq([Pfuncn({~a})].flatten-1,1),
-		Pseq([Pfuncn({~a})].flatten.pyramid,4),
-		Pseq([Pfuncn({~a})].flatten.pyramid+2,2),
-		Pseq([Pfuncn({~a})].flatten+4,1),
-		Pseq([Pfuncn({~a})].flatten+1,1),
-	], inf),
-
-	\amp,-24.dbamp,
-	\pan,Pwhite(-0.3,-0.05,inf),
-    \out, 20,
-);
-
-
-Pbindef(\duet,
-    \instrument, \help_blowhole,
-	\dur,1/8,
-	\octave,4,
-    \degree, Pseq([
-		Pseq([Pfuncn({~a})].flatten,4),
-		Pseq([Pfuncn({~a})].flatten-5,2),
-		Pseq([Pfuncn({~a})].flatten-3,1),
-		Pseq([Pfuncn({~a})].flatten-1,1),
-		Pseq([Pfuncn({~a})].flatten,4),
-		Pseq([Pfuncn({~a})].flatten+2,2),
-		Pseq([Pfuncn({~a})].flatten+4,1),
-		Pseq([Pfuncn({~a})].flatten+1,1),
-		Pseq([Pfuncn({~a})].flatten.pyramid,4),
-		Pseq([Pfuncn({~a})].flatten.pyramid-5,2),
-		Pseq([Pfuncn({~a})].flatten-3,1),
-		Pseq([Pfuncn({~a})].flatten-1,1),
-		Pseq([Pfuncn({~a})].flatten.pyramid,4),
-		Pseq([Pfuncn({~a})].flatten.pyramid+2,2),
-		Pseq([Pfuncn({~a})].flatten+4,1),
-		Pseq([Pfuncn({~a})].flatten+1,1),
-	], inf),
-	\pan,Pwhite(0.1,0.5,inf),
-	\mul,8,
-	\reedstiffness,Pwrand([64,48],[0.9,0.1],inf),
-	\out,Pwrand([0,~bus],[0.9,0.1],inf),
-);
-
-
-Pbindef(\harmony,
-    \instrument, \help_blowhole,
-	\dur,Prand([6,3],inf),
-	\pan,Pwhite(0,0.15,inf),
-	\breathpressure,60,//Pseg([5,30,5],30,\wel,inf),
-	\reedstiffness,50,
-	\octave,3,//Pwrand([5,[6,5],3,7],[4,3,2,1].normalizeSum,inf),
-    \degree, Pseq([Pfuncn({~a})].flatten, inf),
-	\mul,12,
-	\out,~bus,
-);
-
-Pbindef(\perc_high,
-	\instrument, \SOSkick,
-	\dur,Pn(Pshuf([3,1,1,1],3),inf)/8,//Pseg([200,500,200],10,\lin,inf),
-	\freq,30,
-	\mod_freq, Pwrand([5,10,100,200],[10,2,1,0.5].normalizeSum,inf),
-	\mod_index,[1000],
-	\pan,-0.1,
-	\amp,(0.251 - (1 / Pkey(\mod_freq))),
-	\out,~bus,
-);
-
-Pbindef(\perc_low,
-	\instrument, \SOSkick,
-	\dur,Pn(Pshuf([3,1,1,1],3),inf)/8,//Pseg([200,500,200],10,\lin,inf),
-	\freq,30,
-	\mod_freq, Pwrand([5,10,100,200],[10,2,1,0.5].normalizeSum,inf),
-	\mod_index,[1],
-	\pan,-0.2,
-	\amp,(0.2 - (1 / Pkey(\mod_freq))),
-	\out,~bus,
-);
-);
-
-{ //12 sec segments, mostly; a full phrase is 16.5 (for 3 beat phrase), 90 (9) and 46.5 (6
-	~a = [1,3,5];
-
-	Pbindef(\piano).play(t);
-	Pbindef(\duet).play(t);
-
-	12.wait;
-
-	~a = [1,7,3];
-	4.wait;
-	Pbindef(\perc_high).play(t);
-	8.wait;
-
-    ~a = [1,3,5];
-	4.wait;
-	Pbindef(\perc_low).play(t);
-	8.wait;
-
-	Pbindef(\harmony).play(t);
-	~a = [1,7,3];
-	12.wait;
-
-	~a = [1,7,4,5,6,2,6,8,4];
-	18.wait;
-
-	~a = [1,Rest(1),7,1,5,-4];
-	Pbindef(\harmony).pause(t);
-	Pbindef(\perc_high).pause(t);
-	Pbindef(\perc_low).pause(t);
-	15.wait;
-
-	Pbindef(\perc_high).resume(t);
-
-	Pbindef(\piano, \amp,Pseg(Pseq([-24.dbamp, Pn(-30.dbamp)]), 20));
-	4.wait;
-
-	Pbindef(\harmony).resume(t);
-
-	~a = [1,2,3].rotate(1);
-
-	18.wait;
-
-	Pbindef(\perc_low).resume(t);
-
-    (Pbindef(\perc_low,
-	\freq,(36 + Pseq([Pfuncn({~a})].flatten,inf)).midicps, //[80,64,32],  .linexp(1,8,110,220)
-	\mod_index,[1000,100,1],
-	\mod_freq, Pwrand([5,10,25,2000],[10,2,1,0.5].normalizeSum,inf),
-	\amp,(0.05 - (1 / Pkey(\mod_freq)).linlin(0,25,0,0.15)),
-	\dur,Psubdivide(Pseq([1!9,3!3].flatten,inf),Pseq(#[1],inf))/8, //Pbjorklund2(Prand([6,10,18],inf),32,inf)/8 //
-	));
-
-
-	18.wait;
-
-	~a = [1,5,-4];
-
-	18.wait;
-
-	~a = [1,3,5].rotate(2);
-	Pbindef(\piano, \amp,Pseg(Pseq([-30.dbamp, Pn(-21.dbamp)]), 18));
-
-	18.wait;
-
-	~a = [1,3,5].rotate(2).pyramidg;
-	Pbindef(\piano, \amp,-19.dbamp);
-	(Pbindef(\perc_high,\mod_index,10,\mod_freq, [10,100],\amp,0.11,\dur,Psubdivide(
-			Pseq([1!9,3!3,1!9,3!2,4!1].flatten,inf),
-			Pseq(#[3,1,2],inf)
-	)/8,));
-
-	36.wait;
-
-	~a = [1,3,5];
-	Pbindef(\duet,\reedstiffness,Pwrand([64,32],[0.9,0.1],inf));
-
-	14.wait;
-
-	Pbindef(\piano, \amp,Pseg(Pseq([-20.dbamp, Pn(0.0)]), 10));
-
-	8.wait;
-
-	Pbindef(\perc_high, \amp,Pseg(Pseq([0.11, Pn(0.0)]), 10));
-	Pbindef(\harmony, \mul,Pseg(Pseq([8.0, Pn(0.0)]), 10));
-
-	4.wait;
-
-	Pbindef(\perc_low, \amp,Pseg(Pseq([0.05, Pn(0.0)]), 10));
-
-	4.wait;
-
-	Pbindef(\duet, \mul,Pseg(Pseq([4.0, Pn(0.0)]), 10));
-
-}.fork(t);
-
-
-)
-
-
-
-
-
-
-
-
-
 
 
 

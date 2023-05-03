@@ -149,6 +149,7 @@ TempoClock.default.tempo_(1);
 Synth.tail(1,\piano_soundboard);
 Pbind(
 	\instrument, \help_oteypianostring,
+	\amp, -25.dbamp,
     \delta, 1,
 	\rho, Pseg([1.2,0.1,1.2],60,\wel,inf).trace, //Pwrand([Pn(10,3),Pn(0.1,3),Pn(1,3)],[1,1,1].normalizeSum,inf).trace,
 	\dur, 3 + Pwhite(-0.01,0.01,inf),
