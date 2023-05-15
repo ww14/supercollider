@@ -16,14 +16,14 @@ Server.killAll;
 	chain = FFT(LocalBuf(2048), in, 0.85, 1);
 		chain1 = PV_RandComb(chain, \wipe.kr(0.68), trig);//Impulse.kr(2)); // 0.68
 	    //chain1 = PV_RectComb(chain1, 1, LFTri.kr(0.097,0,0.4,0.5),LFTri.kr(0.24,0,-0.5,0.5));//Impulse.kr(2));
-	snd = IFFT(chain1,1).poll;
+	snd = \amp_snd.kr(1) * IFFT(chain1,1).poll;
 	//snd2 = IFFT(chain2,1).poll;
 
 
 
 	detect_g = PV_HainsworthFoote.ar(FFT(LocalBuf(2048), in), 0.3, 0.3, 0.90, 0.5);
 	gloop = Pluck.ar(detect_g,detect_g,0.05,0.05,0.5,0.8);
-	gloop = MoogFF.ar(gloop,  SinOsc.kr(LFNoise0.kr(1).linlin(-1,1,0.1, 200)).range(3, 400),3.4);
+	gloop = MoogFF.ar(gloop,  SinOsc.kr(LFNoise0.kr(1).linlin(-1,1,0.1, 200)).range(3, 400),3.4,0,\amp_gloop.kr(1));
 
 
 	detect_arp = PV_HainsworthFoote.ar(FFT(LocalBuf(2048), in), 0.5, 0.5, 0.7, 0.5);
@@ -35,11 +35,11 @@ Server.killAll;
 					[5,50,500,5000],0.5,0.5)
 	)
 			,1,0.5,1.2,1.5)
-		,15,5,0.2,0.5,50,2);
+		,15,5,0.2,0.5,50,2,mul:\amp_perc.kr(1));
 
 
 	detect_p = PV_HainsworthFoote.ar(FFT(LocalBuf(2048), in), 0.3, 0.25, 0.7, 0.5);
-	arp = -15.dbamp * RLPF.ar(GVerb.ar(
+	arp = \amp_arp.kr(1) * -15.dbamp * RLPF.ar(GVerb.ar(
 		SinGrain.ar(Mix.ar(detect_p),0.12,snd.linlin(-1e-2,1e-2,300,900).round(100),0.1)
 		,15,3,LFNoise1.kr(1).linexp(-1,1,0.1,0.9)),
 	1000,LFNoise1.kr(1).linexp(-1,1,0.1,4));
@@ -52,7 +52,7 @@ Server.killAll;
 		in*200,
 		1, //LFNoise2.kr(1/4).linexp(-1,1,0.3,0.9),
 		0.5); */
-	arp2 = arp * SinGrain.ar(detect_arp,0.5,in.linlin(2.45,4.9,2000,2500),0.5);
+    arp2 = \amp_arp2.kr(1) * arp * SinGrain.ar(detect_arp,0.5,in.linlin(2.45,4.9,2000,2500),0.5) ;
 
 
 	snd = snd
@@ -73,44 +73,64 @@ Server.killAll;
 
 a= Synth(\foote);
 
+d = Synth("metaldrum",[\ibase,1,\t,1/20,\irange,300,\ringfreq,[33].midicps,\roomsize,50,\amp, -25.dbamp])
+d.set(\amp,-27.dbamp);
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////the piece ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 (
 TempoClock.default.tempo_(60/60);
 t = Task({
 	a= Synth(\foote);
-	d = Synth("metaldrum",[\ibase,1,\t,1/20,\irange,300,\ringfreq,[33].midicps,\roomsize,50,\amp, -25.dbamp]);
+	a.set(\amp_gloop, 0, \amp_perc, 0, \amp_snd, 0);
+	d = Synth("metaldrum",[\ibase,1,\t,1/20,\irange,300,\ringfreq,[33].midicps,\roomsize,50,\amp, -28.dbamp]);
 
-	24.wait;
+	12.wait;
+	a.set(\amp_snd, 1, \amp_arp2, 0);
+
+	12.wait;
 	a.set(\wipe,0.8);
+	a.set(\amp_arp2, 0.5, \amp_perc, 1);
 	d.set(\roomsize, 40);
 
 	24.wait;
 	a.set(\wipe,0.5);
+	a.set(\amp_perc, 0.5, \amp_gloop, 0.75);
 	d.set(\roomsize, 30);
 
 
 	24.wait;
 	a.set(\wipe,0.8);
+	a.set(\amp_snd, 0.75, \amp_arp2, 0.75, \amp_gloop, 0.5);
 	d.set(\roomsize, 20);
 
 	24.wait;
-		a.set(\wipe,0.68);
+	a.set(\wipe,0.68);
+	a.set(\amp_perc, 1, \amp_gloop, 0.5, \amp_arp,0.25);
 	d.set(\roomsize, 10);
 
 
 	24.wait;
+	a.set(\amp_snd, 1, \amp_arp, 0, \amp_gloop, 0, \amp_perc, 0.25);
 	a.set(\gate,0);
 
 	8.wait;
 	d.set(\ringfreq, 38.midicps);
 
-	16.wait;
+	12.wait;
 	d.set(\ibase, 10,\roomsize, 1);
 });
 )
 
+
 t.play;
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 a= Synth(\foote);
 a.set(\wipe,0.4)

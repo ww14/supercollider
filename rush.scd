@@ -12,7 +12,7 @@ SynthDef(\rush,{
 
 	fund = \fund.kr([52,53,57,60]);
 	a = fund +  .t[0, 4, 7, 9, 11, 14, -24]; //make it an array of chords (t for table)
-	a.postln;
+	a = a.lag3ud;
 	cycle = a.size * 0.5;
 	freqs = Select.kr(LFSaw.kr(30.reciprocal,0,cycle,cycle),a.midicps);
 	//freqs = (SinOsc.kr(180.reciprocal).linexp(-1, 1, 52, 60).round(2).poll(1) +  [0, 2, 4, 5, 7, 9, 10, 14, 24]).midicps; //
@@ -51,26 +51,43 @@ SynthDef(\rush,{
 }).add;
 )
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////testing////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+a = Synth(\rush);
+a.free;
+a.set(\fund,1);
+a.release(8);
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////the piece ////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 (
 TempoClock.default.tempo_(60/60);
 t = Task({
+	"start".postln;
 	a = Synth(\rush);
 
 	60.wait;
-
+	"shorter".postln;
 	a.set(\low,3,\high,10);
-	30.wait;
 
+	30.wait;
+	"wider".postln;
 	a.set(\low,1,\high,100);
-	30.wait;
 
-	a.set(\fund,[57, 53, 59, 55, 53,59]);
 	30.wait;
+	"new chords".postln;
+	a.set(\low,1,\high,100);
+	a.set(\fund,[55,59]);
 
+	30.wait;
+	"narrower".postln;
 	a.set(\low, 15, \high,40);
-	60.wait;
 
+	60.wait;
+	"orignal width, close".postln;
 	a.set(\fund,[52,53,57, 60]);
 	a.set(\low, 15, \high,20);
 
@@ -80,5 +97,7 @@ t = Task({
 )
 
 t.play;
-a = Synth(\rush);
-a.release(8);
+
+
+
+

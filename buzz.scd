@@ -157,7 +157,7 @@ t = Task({
 	// first phrase
 	d.set(\fundamental,30,\mul,5);
 	16.wait;
-	d.set(\fundamental,50,\mul,5, \lagu,0.5);
+	d.set(\fundamental,50,\mul,5, \lagu,0.3);
 	8.wait;
 	d.set(\fundamental,50,\mul,3,\center,0);
 	2.wait;
