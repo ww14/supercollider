@@ -12,7 +12,7 @@ Pdef(\a).stop;
 
 //windy shower
 (
-y = Synth(\bufScratchFold, [bufnum: d["cellospica"][0]]);
+y = Synth(\bufScratchFold, [bufnum: b[\cellospica][0]]);
 y.set(\preAmp, 0.1);
 y.set(\foldRange, 0.001);
 y.set(\localFreq, 0.0001);
@@ -29,13 +29,13 @@ Pbindef(\a,\preAmp, 1.0125,\foldRange, 100,\localFreq, 0.45,\localOscSize, 5.5,\
 )
 
 //to change tone
-x.set(\localOscSize, 7.5,\localOscSize, 15);
+Pbindef(\a,\localOscSize, 7.5,\localOscSize, 15);
 
 //nasty
-x.set(\localOscSize, 1/15,\globalFreq, 1);
+Pbindef(\a,\localOscSize, 1/15,\globalFreq, 1);
 
 //panting ghost
-x.set(\localOscSize, 1/50,\globalFreq, 1,\smoothAmount, 0.08);
+Pbindef(\a,\localOscSize, 1/50,\globalFreq, 1,\smoothAmount, 0.08);
 
 //////////////////////////////////
 (

@@ -144,7 +144,10 @@ Ppar([a, b]).play(c,quant:1);
 
    });
 )
-
+(
+c=TempoClock(185/60);
 t.play(c);
+)
+
 c
 c.beats;

@@ -1,4 +1,10 @@
 (
+//~bus = Bus.audio(s,2);
+Server.killAll;
+("Setup/Setup.scd").loadRelative;
+)
+
+(
 SynthDef(\gabor, {
 
 	var trig = \trig.tr;
@@ -40,7 +46,7 @@ TempoClock.default.tempo_(105/60);
 
 (
 ~bus = Bus.audio(s,2);
-Synth(\reverb_ef,[\in, ~bus, \out, 0,\rt60,0.1]);
+//Synth(\reverb_ef,[\in, ~bus, \out, 0,\rt60,0.1]);
 Pdef(\gabor,
 	Pbind(
 		\instrument, \gabor,
@@ -60,7 +66,7 @@ Pdef(\gabor,
 
 		\amp, 0.30,
 		\pan, 0,
-		\out, ~bus,
+		\out, ~bus[\reverb],
 	)
 );
 )

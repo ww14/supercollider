@@ -32,15 +32,15 @@ t= TempoClock.default.tempo = 100/60;
 Pbindef(\two_bass,
 	\instrument, \twotube2,
 	\dur,k,//Pseq([9,Pn(Pshuf([1,1,1,4,6,3,3,3,3,9]/12,3),inf)],1),
-	\k, Pseg([-0.2,0.2,-0.2],30,\step,inf),
-	\preamp,Prand([1,2],inf)*250,
+	\k, -0.7 + Pseg([-0.1,0.1,-0.1],30,\step,inf),
+	\preamp,Prand([1,2],inf)*50,
 	\amp,0.1,
-	\minRq,0.9,
+	\minRq,0.8,
 	\maxRq,0.91,
 	\minBpfHz,1,
-	\maxBpfHz,2, //31
-	//\minCf,100,
-	//\minCf,1000,
+	\maxBpfHz,1.1, //31
+	\minCf,100,
+	\maxCf,2000,
 	\pan,0,
 	\delay1,1,
 	\delay2,Pwrand([Pn([1],8),Pn([2],8),Pn([0.5],8),Pn([8],4),Pn([0.1],4)],[10,5,1,0.5,0.5].normalizeSum,inf)*Pwrand([[40,45],[45,52],[45,57]],[3,2,1].normalizeSum,inf).midicps, //*[512,256], //perceived pitch lower when this higher
@@ -55,7 +55,8 @@ Pbindef(\two_bass).play(t, quant:1);
 Pbindef(\two_bass).fadeTime = 10;
 //switching between the two
 Pbindef(\two_bass, \dur, l);
-Pbindef(\two_bass, \dur, k);
+Pbindef(\two_bass, \dur, k*l);
+Pbindef(\two_bass, \dur, l);
 
 // (2) or call the fade function
 Pbindef(\two_bass, \dur, ~fade.(k, l, 15));

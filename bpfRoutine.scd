@@ -1,10 +1,11 @@
 ("Setup/Setup.scd").loadRelative // load this file
 
 (
+// t= TempoClock.default.tempo_(60/60);
 r = Routine.new({
 	var i = 0, n = 0;
 
-	~e = Pbind(\instrument,\sinfb, \freq, Pseq([45,40,43,40,45,40],inf).midicps, \iScale,0.1,\dur,Pseq([1],inf)/12,\atk,0.5,\rel,1,\amp,0.2,\pan,Pwhite(-0.7,0.7));
+	~e = Pbind(\instrument,\sinfb, \freq, Pseq([45,40,43,40,45,40],inf).midicps, \iScale,0.1,\dur,Pseq([1],inf)/12,\atk,0.5,\rel,1,\amp,0.1,\pan,Pwhite(-0.7,0.7));
 
 	~play_e = ~e.play(t, quant:1);
 
@@ -54,7 +55,7 @@ r = Routine.new({
 	20.wait;
 
 	~play_h.stop;
-	~play_g .play;
+	~play_g.play;
 
 	10.wait;
 

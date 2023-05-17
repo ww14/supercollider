@@ -71,7 +71,7 @@ Pbindef(\twenty,
 	\instrument, \twotube,
 	\dur,Pn(Pshuf(1/[3,3,3,6],3),inf),
 	\k, -0.7,
-	\preamp,50*Pwhite(1,1.05,inf),
+	\preamp,30*Pwhite(1,1.05,inf),
 	\amp,-6.dbamp,
 	\minRq,0.01,
 	\maxRq,0.4,
@@ -91,7 +91,7 @@ Pbindef(\twenty,
 	\delay2,Pstep([[1, 2, 4],
 		           [1, 2, 4].rotate(1),
 		           [1, 2, 4].rotate(-1),
-		           [1,1,10],
+		           [1,2,10],
         		   [8,2,1].rotate(1), // 1 was 12500
 		           [8,2,10000],
 		           [2, 4, 8], //.pyramidg.flop,
@@ -120,7 +120,7 @@ Pbindef(\twenty,
 	Pbindef(\twenty,\dur,Pn(Pshuf(1/[3,3,3,6],3),inf));
 	3.wait;
 
-	"1-1-10 and 8-2-1 rotation".postln;
+	"1-2-10 and 8-2-1 rotation".postln;
 	Pbindef(\twenty,\dur,Pn(Pshuf(1/[60,60,60,3],3),inf),\delay2);
 	//Pbindef(\twenty,\dur,Pn(Pshuf(1/[60,60,60,3],3),inf));
 	21.wait;
@@ -138,9 +138,9 @@ Pbindef(\twenty,
 
 	"2-4-8 and 1-2-4".postln;
 	Pbindef(\twenty,\dur,Pn(Pshuf(1/[20,30,20,1],3),inf));
-	15.wait;
+	21.wait;
 	Pbindef(\twenty,\dur,Pn(Pshuf(1/[3,3,3,6],3),inf));
-	13.wait;
+	14.wait;
 	Pbindef(\twenty).stop;
    });
 )
