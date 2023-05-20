@@ -142,7 +142,7 @@ a = Synth(\marimba,[\fundamental,50]);
 
 // guitar line (add wrap)
 (
- d = {arg fundamental = 50;
+ d = {
 	  var harmonics = [1, 2, 3, 4, 5, 6, 7, 8, 9];
       var snd;
 	//var env = EnvGen.ar(Env.linen.circle,doneAction:2);
@@ -150,20 +150,20 @@ a = Synth(\marimba,[\fundamental,50]);
 	snd = Saw.ar(4, mul:snd);
 	snd = BPF.ar(
 		in: snd,
-		freq: fundamental * harmonics ,
+		freq: \fundamental.kr(50) * harmonics ,
 		rq: [0.005,0.015], //0.01
 		mul: 3 * [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],//harmonics.sqrt,
 	);
-	snd = IIRFilter.ar(snd, SinOsc.kr(SinOsc.kr(0.1),1.5pi,1550,1800),1).wrap(0,500);
+	snd = -50.dbamp * IIRFilter.ar(snd, SinOsc.kr(SinOsc.kr(0.1),1.5pi,1550,1800)).wrap(0,500);
 	snd = LeakDC.ar(snd);
-	snd = Splay.ar(snd,0.3);
-	Out.ar(0,snd);
+	snd = Splay.ar(snd,0.7);
+	Out.ar(0,snd * \amp.kr(1));
 }.play;
  )
 
 
 
-d.set(\fundamental, 50.midicps);
+d.set(\fundamental, 42.midicps);
 
 d.set(\fundamental, 90.midicps);
 
