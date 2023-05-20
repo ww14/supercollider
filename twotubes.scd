@@ -420,6 +420,8 @@ Pdef(\nil,
 
 )
 
+
+/// test the pdefs
 (
 Synth(\reverb_ef, [\in, ~bus, \out, 0]);
 
