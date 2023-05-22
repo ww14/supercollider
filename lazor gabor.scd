@@ -32,11 +32,9 @@ SynthDef(\gabor, {
 	sig = Pan2.ar(sig, \pan.kr(0), \amp.kr(0.25));
 	Out.ar(\out.kr(0), sig);
 }).add;
-)
-
-
 
 ~a = [40,45,44,47,39];
+)
 
 ~a = ~a.scramble;
 ~b =5;
@@ -45,7 +43,7 @@ SynthDef(\gabor, {
 TempoClock.default.tempo_(105/60);
 
 (
-~bus = Bus.audio(s,2);
+//~bus = Bus.audio(s,2);
 //Synth(\reverb_ef,[\in, ~bus, \out, 0,\rt60,0.1]);
 Pdef(\gabor,
 	Pbind(
@@ -66,7 +64,7 @@ Pdef(\gabor,
 
 		\amp, 0.30,
 		\pan, 0,
-		\out, ~bus[\reverb],
+		\out, ~bus[\reverb2],
 	)
 );
 )

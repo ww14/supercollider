@@ -116,11 +116,27 @@ Pdefn(\lpf, 20);
 )
 
 (
+t = TempoClock.default.tempo_(60/60);
 //overwriting multiple key-value pairs
 ~pat2 = Pchain(
 	Pbind(
 		\out, ~bus[\reverb],
 		\op2coef, 0.0001,
+	),
+	~basepat
+);
+~player2.stop;
+~player2 = ~pat2.play(t, quant:1);
+~player1.stop;
+)
+
+(
+t = TempoClock.default.tempo_(60/60);
+//overwriting multiple key-value pairs
+~pat2 = Pchain(
+	Pbind(
+		\out, ~bus[\reverb],
+		\op4coef, 0.1,
 	),
 	~basepat
 );

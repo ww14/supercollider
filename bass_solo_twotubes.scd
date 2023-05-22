@@ -1,8 +1,8 @@
 Server.killAll
 ("Setup/Setup.scd").loadRelative // load this file
 
-
-
+// pre-write
+(
 (
 k = Prewrite(1, // start with 1
         (    1: [0.25,2,0.25,2],
@@ -25,11 +25,10 @@ l = Prewrite(0.25,
 ),64);
 );
 
-t= TempoClock.default.tempo = 100/60;
 
-(
+
 //Synth(\reverb_ef, [\in, ~bus, \out, 0]);
-Pbindef(\two_bass,
+a = Pbindef(\two_bass,
 	\instrument, \twotube2,
 	\dur,k,//Pseq([9,Pn(Pshuf([1,1,1,4,6,3,3,3,3,9]/12,3),inf)],1),
 	\k, -0.7 + Pseg([-0.1,0.1,-0.1],30,\step,inf),
@@ -43,28 +42,70 @@ Pbindef(\two_bass,
 	\maxCf,2000,
 	\pan,0,
 	\delay1,1,
-	\delay2,Pwrand([Pn([1],8),Pn([2],8),Pn([0.5],8),Pn([8],4),Pn([0.1],4)],[10,5,1,0.5,0.5].normalizeSum,inf)*Pwrand([[40,45],[45,52],[45,57]],[3,2,1].normalizeSum,inf).midicps, //*[512,256], //perceived pitch lower when this higher
+	\delay2,Pwrand([Pn([1],8),Pn([2],8),Pn([0.5],8),Pn([8],4)],[10,5,1,0.5].normalizeSum,inf)*Pwrand([[40,45],[45,52],[45,57]],[3,2,1].normalizeSum,inf).midicps, //*[512,256], //perceived pitch lower when this higher
 	\out,Pwrand([~bus[\reverb],~bus[\comb]],[0.7,0.3],inf),
 );
-Pbindef(\two_bass).play(t, quant:1);
 )
 
+
+///////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// testing
 // two approaches to same effect
 
 // (1)-- call fadeTime
+t = TempoClock.default.tempo_(100/60);
+Pbindef(\two_bass).play(t, quant:1);
 Pbindef(\two_bass).fadeTime = 10;
 //switching between the two
 Pbindef(\two_bass, \dur, l);
 Pbindef(\two_bass, \dur, k*l);
 Pbindef(\two_bass, \dur, l);
 
+///
 // (2) or call the fade function
-Pbindef(\two_bass, \dur, ~fade.(k, l, 15));
-Pbindef(\two_bass, \dur, ~fade.(l,k,20));
 
 
 (Pbindef(\two_bass, \amp, ~fade.(0.1,0,20));
 Pbindef(\two_bass, \delay1, ~fade.(1,500,20));)
+
+///////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// a routine
+
+
+(
+a;
+t = TempoClock.default.tempo_(100/60);
+r = Task({
+	"start".postln;
+	Pbindef(\two_bass).play(t, quant:1);
+
+	64.wait;
+	"switch to l".postln;
+	Pbindef(\two_bass, \dur, ~fade.(k, l, 16));
+
+
+	32.wait;
+	"multiply k and l".postln;
+	Pbindef(\two_bass, \dur, ~fade.(l,k*l,16));
+
+
+	64.wait;
+	"back to l".postln;
+	Pbindef(\two_bass, \dur, ~fade.(k*l,l,8));
+
+	16.wait;
+	"straight seq".postln;
+	Pbindef(\two_bass, \dur, ~fade.(k*l,Pseq([1,1,1,1,1,1,2,8,2,8]/8,inf),2));
+
+	32.wait;
+	"fade out".postln;
+	Pbindef(\two_bass, \dur, Pseq([1,1,1,1,1,1,2,8,2,8]/8,5));
+});
+)
+
+r.play;
 
 
 
@@ -91,7 +132,7 @@ Pbindef(\olschool_clip,
 	\delay1,8,
 	\delay2,16,
 	\out,~bus[\reverb],
-)):
+));
 
 
 (

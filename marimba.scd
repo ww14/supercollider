@@ -22,7 +22,7 @@ LFTri
 ////////////// as a function
 (
  d = {arg fundamental = 50;
-	  var harmonics = [1, 2, 3, 4, 5, 6, 7, 8, 9,10];
+	  var harmonics = [1,2, 3, 4, 5, 6, 7, 8, 9,10];
       var snd;
 	//var env = EnvGen.ar(Env.linen.circle,doneAction:2);
 	snd = LFPulse.ar(harmonics, width:  Klang.ar(`[ [80, 400, 800, 1000, 1200], [0.5,1,1,1,1], nil], 1, 0),mul:0.5);
@@ -33,12 +33,12 @@ LFTri
 		rq: [0.005,0.015],//[0.0015,0.0015,0.002,0.005,0.0075,0.01,0.01,0.01,0.015],//, //0.01
 		mul: 15 * [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],//harmonics.sqrt,
 	);
-	//snd = HPF.ar(snd,30);
-	//snd = Compander.ar(snd,snd,0.09,1,0.5,0.01,0.01);
-	snd = IIRFilter.ar(snd,3000 + (20*fundamental),30);
+	snd = Compander.ar(snd,snd,0.3,1,0.5,0.01,0.01);
+	snd = IIRFilter.ar(snd,3000+(10*fundamental),30);
+	snd = RHPF.ar(snd,100,4);
 	//snd = BHiPass4.ar(snd,fundamental,1);
-	//snd = LeakDC.ar(snd);
-	snd = SplayAz.ar(2,snd,0.9,4,3);
+	snd = LeakDC.ar(snd);
+	snd = SplayAz.ar(2,snd,0.9,6,3);
 	Out.ar(0,snd);
 }.play;
  )
