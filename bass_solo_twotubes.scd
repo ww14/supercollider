@@ -32,7 +32,7 @@ a = Pbindef(\two_bass,
 	\instrument, \twotube2,
 	\dur,k,//Pseq([9,Pn(Pshuf([1,1,1,4,6,3,3,3,3,9]/12,3),inf)],1),
 	\k, -0.7 + Pseg([-0.1,0.1,-0.1],30,\step,inf),
-	\preamp,Prand([1,2],inf)*50,
+	\preamp,Pwhite(1,2)*25,// Prand([1,2],inf)*50,
 	\amp,0.1,
 	\minRq,0.8,
 	\maxRq,0.91,
@@ -42,7 +42,7 @@ a = Pbindef(\two_bass,
 	\maxCf,2000,
 	\pan,0,
 	\delay1,1,
-	\delay2,Pwrand([Pn([1],8),Pn([2],8),Pn([0.5],8),Pn([8],4)],[10,5,1,0.5].normalizeSum,inf)*Pwrand([[40,45],[45,52],[45,57]],[3,2,1].normalizeSum,inf).midicps, //*[512,256], //perceived pitch lower when this higher
+	\delay2,Pwrand([Pn([1],8),Pn([2],8),Pn([0.5],8),Pn([4],4)],[10,5,1,0.5].normalizeSum,inf)*Pwrand([[40,45],[45,52],[45,57]],[3,2,1].normalizeSum,inf).midicps, //*[512,256], //perceived pitch lower when this higher
 	\out,Pwrand([~bus[\reverb],~bus[\comb]],[0.7,0.3],inf),
 );
 )
