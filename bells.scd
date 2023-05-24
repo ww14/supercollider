@@ -20,10 +20,28 @@
 
 
 (
+Pbind(
+		\instrument, \alarm,
+		\bwr_1,0.003,
+		\bwr_2,0.5,
+		\freq, (74 + Pseq([
+		Pseq([2, 5, 10],4),
+		Pseq([0, 3, 8], 2),
+		Pseq([1, 4, 9] ,2),
+		Pseq([2, 5, 10] ,4),
+		Pseq([4, 7, 12] ,2),
+		Pseq([3, 6, 11],2),
+	],inf)).midicps,
+	\dur, Pseq([1,2,3]/3,inf),
+	\amp, -6.dbamp,
+	\pan,Pwhite(-0.1,0.1),
+).play;
+)
+
+(
 TempoClock.default.tempo_(300/60);
 
 Pdef(\long,
-
 	Pbind(
 		\instrument, \alarm,
 		\bwr_1,0.001,

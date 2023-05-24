@@ -40,14 +40,15 @@ t = TempoClock.default.tempo = 120 / 60;
 
 
 //non-enveloped synth
-(~a = Pbind(\instrument,\metaldrum,
+(
+~a = Pbind(\instrument,\metaldrum,
 	\dur,inf,
 	\ibase,0.9,
-	\roomsize,10,
+	\roomsize,10,o
 	\damping,0.05,
 	\inputbw,0.1,
-	\amp,0.1,
-).play(t,quant:1);
+	\amp,-25.dbamp,
+).play(t,quant:0);
 
 
 ~d = Pbind(\instrument, \impulsetrain2,
@@ -56,7 +57,7 @@ t = TempoClock.default.tempo = 120 / 60;
 	\num, Pseq([Pn([50],10),Pn([25],10),Pn([12],10),Pn([5],5)],inf), // -0.001
 	\cur,Pseq([5,-5,],inf),
 	//\out,~bus[\reverb],
-	\amp,1,
+	\amp,-6.dbamp,
 ).play(t,quant:8);
 
 )
