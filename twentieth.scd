@@ -140,7 +140,7 @@ Pbindef(\twenty,
 	Pbindef(\twenty,\dur,Pn(Pshuf(1/[20,30,20,1],3),inf));
 	21.wait;
 	Pbindef(\twenty,\dur,Pn(Pshuf(1/[3,3,3,6],3),inf));
-	14.wait;
+	15.wait;
 	Pbindef(\twenty).stop;
    });
 )

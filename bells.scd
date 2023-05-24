@@ -13,29 +13,27 @@
 	sig = filter.(sig, freq, \bwr_2.kr(0.5));
 	    sig = Pan2.ar(sig,\pan.kr(0));
 	sig = BLowPass4.ar(sig,1200,\rq.kr(1));
-		OffsetOut.ar(out, sig)
+	OffsetOut.ar(out, sig*\amp.kr(1))
 	}
 ).add;)
 	s.sync;
-(
-	Pbind(
-		\instrument, \alarm,
-	\bwr_1,0.001,//0.001,
-	\bwr_2,0.5,
-	\freq, (83 + Pseq([
-		             Pseq([2, 5, 10],4),
-		Pseq([0, 3, 8], 2),
-		Pseq([1, 4, 9] ,2),
-		Pseq([2, 5, 10] ,4),
-		Pseq([4, 7, 12] ,2),
-		Pseq([3, 6, 11],2),
-	],inf)).midicps,
-		\dur, Pseq([1,1,1],inf),
-	\pan,Pwhite(-0.3,0.3),
-).play;)
+
 
 (
 TempoClock.default.tempo_(300/60);
+
+Pdef(\long,
+
+	Pbind(
+		\instrument, \alarm,
+		\bwr_1,0.001,
+		\bwr_2,0.001,
+		\freq, (74 + [0,3,8] + Pseq([2,-2,2,4, 2,1,2,4,3, 2,-2,2,4, 2,0,2,4,3, 2,0,2,4,3,2],inf)).midicps,
+	\dur, Pseq([12!4, 12!3,6,6, 12!4, 12!3,6,6, 12,12,12,6,6,12].flatten,inf),
+	\amp,-10.dbamp,
+	\pan,Pwhite(-0.1,0.1),
+));
+
 	Pdef(\bell,
 	Pbind(
 		\instrument, \alarm,
@@ -51,7 +49,8 @@ TempoClock.default.tempo_(300/60);
 		Pseq([3, 6, 11],2),
 	],inf)).midicps,
 		\dur, Pseq([1,1,1],inf), //0.2!3
-	\pan,Pwhite(-0.3,0.3),
+	\pan,Pwhite(0.0,0.3),
+	\amp, 0.dbamp
 ));
 
 
@@ -61,8 +60,9 @@ Pdef(\drum,Pbind(
 	\bwr_1,0.1,//0.001,
 	\bwr_2,5,
 	\freq, 38.midicps,
-	\dur,Pseq([12,12,3],inf),// Pseq([0.2, 0.2, 0.2],inf), 2.4,2.4,0.6
-	\pan,Pwhite(-0.1,0.1),
+	\dur,Psubdivide(Pseq([1!6,2!6,4!6].flatten,inf), Pseq([12,12,3],inf)),// Pseq([0.2, 0.2, 0.2],inf), 2.4,2.4,0.6
+	\pan,Pwhite(-0.3,0.0),
+	\amp,0.dbamp
 ));
 
 //close
@@ -82,6 +82,7 @@ Pdef(\bell_close,
 		[2,5,10]
 	],1)).midicps,
 	\dur, Pseq([1!48,5].flatten,1),
+	\amp,0.dbamp,
 	\pan,Pwhite(-0.3,0.3),
 ));
 )
@@ -97,6 +98,7 @@ Pspawner({|sp|
 
 	sp.par( Pfindur(48*4, Pdef(\bell)));
 	sp.par( Pfindur(48*5, Pdef(\drum)));
+	sp.par( Pfindur(48*5+2, Pdef(\long)));
 
 	sp.wait(48*4);
 
@@ -105,4 +107,4 @@ Pspawner({|sp|
 }).play(t, quant:1);
 )
 
-Pdef(\bell_close).play
+Pdef(\long).play
