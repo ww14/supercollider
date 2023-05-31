@@ -105,7 +105,8 @@ t = Task({
 	a.set(\fund,[52,53,57, 60]);
 	a.set(\low, 15, \high,20);
 
-	// fade out
+	 //fade out
+	a.release(16); //could also use \gate
 });
 )
 
