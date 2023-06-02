@@ -2,12 +2,14 @@
 // non-enveloped
 (
 SynthDef(\chill, {
-	var trig, snd, freqs, perc, perc2, percVerb, out, env;
+	var trig, snd, freqs, freqs_inverted, perc, perc2, percVerb, out, env;
 	trig = Impulse.ar(LFDNoise3.kr(0.5).linexp(-1, 1, \lower.kr(1), \upper.kr(8))); //LFDNoise makes the higher freq steps less discrete/quantized
-	freqs = (LFNoise2.kr(4.reciprocal).linexp(-1, 1, 52, 64).round(4).poll(1/5) +  [0, 2, 4, 5, 7, 9, 10, 14]).midicps; //
+	freqs = (LFNoise2.kr(4.reciprocal).linexp(-1, 1, 52, 64).round(4).poll(1/5) +  [0, 2, 4, 5, 7, 9, 10, 14]);//
+	freqs_inverted = freqs.linlin(52,78,78,54).midicps;
+	freqs = freqs.midicps;
 	snd = FMGrain.ar(trig,\snd_tone.kr(0.95),freqs.lag3ud(\lagu.kr(0.015),\lagd.kr(0.1)),\snd_mod.kr(2)*freqs,mul:0.01);
-	perc = SinGrain.ar(trig,\drum_tone.kr(0.001).lag3(4),freqs/8,\drum_amp.kr(0.15).lag3(2));
-	perc2 = SinGrain.ar(trig,\drum_tone2.kr(0.005).lag3(0.1),freqs/0.1,\drum_amp2.kr(0.005).lag3(2));
+	perc = SinGrain.ar(trig,\drum_tone.kr(0.001).lag3(4),freqs/8,\drum_amp.kr(0.15).lag3(0.3));
+	perc2 = SinGrain.ar(trig,\drum_tone2.kr(0.005).lag3(0.1),freqs_inverted/0.1,\drum_amp2.kr(0.005).lag3(2));
 	//perc = perc + perc2;
 	percVerb = NHHall.ar([perc,perc2],5,0.5);
 	perc = XFade2.ar(perc, percVerb, \mix.kr(0.09))
@@ -36,7 +38,7 @@ a = Synth(\chill,[\lower,4,\upper,8,\snd_tone,0.35,\drum_amp,0.04,\drum_tone,0.0
 
 // a routine
 (
-TempoClock.default = 1;
+TempoClock.default.tempo_(60/60);
 t = Task({
 	"start".postln;
 	a = Synth(\chill,[\drum_tone,0.01,\drum_amp2,0]);
