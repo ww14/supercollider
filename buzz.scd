@@ -104,8 +104,11 @@ d.set(\fundamental,200,\mul,10);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //~176 seconds
 (
+s.prepareForRecord;
 t = Task({
     var d;
+	//s.record;
+	1.wait;
 	Synth(\reverb_ef, [\in, ~bus, \out, 0]);
     d = Synth(\buzz);
 	// intro
@@ -181,6 +184,9 @@ t = Task({
 	4.wait;
 
 	d.release(4);
+
+	10.wait;
+	//s.stopRecording;
    });
 )
 
