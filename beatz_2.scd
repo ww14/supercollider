@@ -221,8 +221,8 @@ Pbindef(\mel).play.play(t,quant:1);
 
 
 (
-Pbindef(\hihat).play(t,quant:1);
-Pbindef(\flatkik).play(t,quant:1);
+Pbindef(\hihat).play(t,quant:17);
+Pbindef(\flatkik).play(t,quant:9);
 Pbindef(\snare).play(t,quant:1);
 Pbindef(\rush).play(t,quant:1);
 Pbindef(\pads).play(t,quant:1);
@@ -231,15 +231,17 @@ Pbindef(\counterpoint).play(t,quant:5);
 
 Pbindef(\pads2).play(t,quant:1);
 
-(
+
 Pbindef(\hihat).stop;
-Pbindef(\flatkik).stop;
-Pbindef(\snare).stop;
 Pbindef(\rush).stop;
+Pbindef(\snare).stop;
+
+
 Pbindef(\pads).stop;
-Pbindef(\pads2).stop;
+
+Pbindef(\flatkik).stop;
 Pbindef(\counterpoint).stop;
-)
+
 
 Pbindef(\pads2).stop;
 
