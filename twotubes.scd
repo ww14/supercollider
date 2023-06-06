@@ -377,10 +377,10 @@ Pdef(\drum,
 
 Pdef(\perc,
 	Pbind(
-		\instrument, Pwrand([\tom,\brush],[0.1,0.9].normalizeSum,inf), // \brusselator
+		\instrument,\brush,// Pwrand([\tom,\brush],[0.1,0.9].normalizeSum,inf), // \brusselator
 		\dur, Psubdivide(
 			Pseq([2!10,1!10,2!10,1,1,9,1,3].flat,inf),
-			Pseq([0.125],inf) //
+			Pseq([0.25],inf) //
 		),
 		//\dur, Prand(#[0.2, 0.5, 1.1, 0.25, 0.15], inf),
 		\tension,Prand([0.15,0.01,0.1],inf), //pitch
@@ -403,11 +403,11 @@ Pdef(\perc_steady,
 
 
 Pdef(\close,
-	Pbind(\instrument,\cowbell,
-		\dur,Pseq([10],1),
-		\tension,[0.5,0.05],
-		\loss,0.5,
-		\timeScale,15,
+	Pbind(\instrument,\brush,
+		\dur,Pseq([20],1),
+		\tension,[0.5,0.5005],
+		\loss,0.9,
+		\timeScale,25,
 		\amp,6.dbamp, //  6
 		\out,~bus,
 ));
@@ -454,7 +454,7 @@ Pdef(\perc).play;
 
 (
 //the piece is in 12/4
-StageLimiter.deactivate;
+
 StageLimiter.activate;
 t = TempoClock.default.tempo_(60/60);
 Synth(\reverb_ef, [\in, ~bus, \out, 0]);
@@ -488,7 +488,6 @@ Pspawner({|sp|
 
 	sp.wait(50);
 
-	//sp.par(Pfindur(10,Pdef(\perc)));
 
 	sp.wait(20);
 
@@ -497,7 +496,7 @@ Pspawner({|sp|
 
 	sp.wait(70);
 
-	sp.par(Pfindur(20,Pdef(\perc)));
+	sp.par(Pfindur(30,Pdef(\perc)));
 
 	sp.wait(20);
 
