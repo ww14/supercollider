@@ -177,7 +177,7 @@ Pdef(\drum,
 		\mod_freq, Pwrand([5,10,100,200],[10,2,1,0.5].normalizeSum,inf),
 		\mod_index,15,
 		\pan,0,
-		\amp,(0.2 - (1 / Pkey(\mod_freq))),
+		\amp, Pkey(\mod_freq).linexp(5,200,-35.dbamp,-20.dbamp),
 		\out,\reverb_ef,
 ));
 
@@ -196,7 +196,7 @@ Synth(\j_reverb_ef);
 //Pdef(\gabor).play;
 //Pdef(\seq).play;
 //Pdef(\drum).play;
-Pdef(\chord).play;
+Pdef(\drum).play;
 )
 
 
@@ -227,7 +227,7 @@ Pspawner({|sp|
 
 	sp.wait(20);
 
-	sp.par( Pfindur(96, Pdef(\drum)));
+	sp.par( Pfindur(92, Pdef(\drum)));
 
 	sp.wait(10);
 	a = Scale.melodicMinor;

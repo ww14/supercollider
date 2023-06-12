@@ -21,10 +21,10 @@ a = nil;
 TempoClock.default.tempo = 102/60;
 //~n = (Pget(\tonic)+ Pget(\mod) + [-12,24]);
 a = Plambda(
-	Pseq([
+	Pseq([ //play ABA' twice then close
 		Pseq([
 		///Phrase A
-		Pfindur(108,Ppar([
+		Pfindur(54,Ppar([
 			//arpeggi
 		                                                         	Pbindef(\p,
 				\instrument, \harpsichord_pluck,
@@ -42,7 +42,7 @@ a = Plambda(
 						Pseq(#[0, 11, 4, 7], 1)],
 					[3,1,1,1,1,1].normalizeSum,1),
 				\dur, 3/8, //total loop is 228 * (3/8) =108 beats
-				\amp, 0.25,
+				\amp, Plprand(0.2,0.35),
 					\pan,Pseg([0,0.3,-0.3,0],30,\lin,inf),
 				\out,~bus[\reverb],
 		),
@@ -52,7 +52,7 @@ a = Plambda(
 			\midinote, Pseq([\rest,Pseq([
 						(Pget(\tonic)+ Pget(\mod) + [-12,24] + [0,4,11,14])],3)],inf) , //
 			\dur, 3/8 * Pseq([14,Pseq([12,12,10],1)],inf),
-			\amp,0.2,
+					\amp,Plprand(0.15,0.3),
 			\decaytime, Pwhite(5,10,inf),
 					\coef,Pseg([0.1,0.6,0.1,0.6],108,\exp,inf),
 					\pan,0.3,`
@@ -65,7 +65,7 @@ a = Plambda(
 					\dur, Pseq([0.00001, Pshuf(#[24,12,12]*3/8, 3) ], inf),
 					\midinote, -12 + Pseq([(Pget(\tonic)+ Pget(\mod))],inf),
 					\pan,-0.5,
-					\amp,0.15,//Pseg([0.005,0.01,0.005],27,\exp,inf)
+					\amp,Plprand(0.10,0.25),//Pseg([0.005,0.01,0.005],27,\exp,inf)
 					\out,~bus[\reverb],
 				),
 			],2)
@@ -117,7 +117,7 @@ a = Plambda(
 		Pbind(\instrument,\harpsichord_pluck,
 			\dur, 3/8,
 			\midinote, Pseq([
-				Pseq([48,52,57,60],1)+.x Pseq(#[0, 4, 7, 11],1) + -12,
+				Pseq([48,52,57,60,72],1)+.x Pseq(#[0, 4, 7, 11],1) + -12,
 				48 + [0, 4, 7, 11,12,-24]],1),
 			\amp,0.25,
 			\atk,0.005,
@@ -181,7 +181,7 @@ a = Plambda(
     ], inf).trace(\eventScope) // internally, the values are shared via \eventScope
 );
 
-b = Pbindf(a, \instrument, \sine, \legato, 0.1);
+b = Pbindf(a, \instrument, \fm1, \legato, 0.1);
 b.play
 )
 

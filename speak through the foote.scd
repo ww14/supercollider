@@ -14,18 +14,20 @@ Server.killAll;
 	trig = LFNoise1.kr([4.9,2.45],300,300); // LFNoise1.kr([4.9,2.45],300,300)
 	in = SinOscFB.ar(trig,trig/1000);
 	chain = FFT(LocalBuf(2048), in, 0.85, 1);
-		chain1 = PV_RandComb(chain, \wipe.kr(0.68), trig);//Impulse.kr(2)); // 0.68
+
+	// the lead voice
+	chain1 = PV_RandComb(chain, \wipe.kr(0.68), trig);//Impulse.kr(2)); // 0.68
 	    //chain1 = PV_RectComb(chain1, 1, LFTri.kr(0.097,0,0.4,0.5),LFTri.kr(0.24,0,-0.5,0.5));//Impulse.kr(2));
 	snd = \amp_snd.kr(1) * IFFT(chain1,1).poll;
 	//snd2 = IFFT(chain2,1).poll;
 
 
-
+		// the gloopy sound, less common
 	detect_g = PV_HainsworthFoote.ar(FFT(LocalBuf(2048), in), 0.3, 0.3, 0.90, 0.5);
 	gloop = Pluck.ar(detect_g,detect_g,0.05,0.05,0.5,0.8);
 	gloop = MoogFF.ar(gloop,  SinOsc.kr(LFNoise0.kr(1).linlin(-1,1,0.1, 200)).range(3, 400),3.4,0,\amp_gloop.kr(1));
 
-
+		// the boomy drum
 	detect_arp = PV_HainsworthFoote.ar(FFT(LocalBuf(2048), in), 0.5, 0.5, 0.7, 0.5);
 	perc = GVerb.ar(
 		CombC.ar(
@@ -37,7 +39,7 @@ Server.killAll;
 			,1,0.5,1.2,1.5)
 		,15,5,0.2,0.5,50,2,mul:\amp_perc.kr(1));
 
-
+		// the lead chords
 	detect_p = PV_HainsworthFoote.ar(FFT(LocalBuf(2048), in), 0.3, 0.25, 0.7, 0.5);
 	arp = \amp_arp.kr(1) * -15.dbamp * RLPF.ar(GVerb.ar(
 		SinGrain.ar(Mix.ar(detect_p),0.12,snd.linlin(-1e-2,1e-2,300,900).round(100),0.1)
@@ -52,6 +54,7 @@ Server.killAll;
 		in*200,
 		1, //LFNoise2.kr(1/4).linexp(-1,1,0.3,0.9),
 		0.5); */
+		// some feedback on the chords
     arp2 = \amp_arp2.kr(1) * arp * SinGrain.ar(detect_arp,0.5,in.linlin(2.45,4.9,2000,2500),0.5) ;
 
 

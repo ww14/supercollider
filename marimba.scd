@@ -18,7 +18,7 @@ y.set(\fundamental,150);
 LFTri
 
 ///////////////////////////////
-// the piece
+// the old piece
 ////////////// as a function
 (
  d = {arg fundamental = 50;
@@ -50,44 +50,88 @@ d.set(\fundamental,70);
 
 
 ///////////////////////////////
-// the piece
+// the piece, both versions
 ////////////// using jitlib
 (
- d = { |fundamental = 50|
-	  var harmonics = [1, 2, 3, 4, 5, 6, 7, 8, 9,10];
-      var snd;
+ d = {arg fundamental = 50, amp=1, release=12, gate=1;
+	  var harmonics = [1,2, 3, 4, 5, 6, 7, 8, 9,10];
+      var snd, env;
 	//var env = EnvGen.ar(Env.linen.circle,doneAction:2);
+	env = Env.asr(1, amp, release).kr(2, gate);
 	snd = LFPulse.ar(harmonics, width:  Klang.ar(`[ [80, 400, 800, 1000, 1200], [0.5,1,1,1,1], nil], 1, 0),mul:0.5);
 	snd = Saw.ar(4, mul:snd);
 	snd = BPF.ar(
 		in: snd,
-		freq: fundamental * harmonics ,
+		freq: fundamental.lag3ud * harmonics ,
 		rq: [0.005,0.015],//[0.0015,0.0015,0.002,0.005,0.0075,0.01,0.01,0.01,0.015],//, //0.01
 		mul: 15 * [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],//harmonics.sqrt,
 	);
-	//snd = HPF.ar(snd,30);
-	//snd = Compander.ar(snd,snd,0.09,1,0.5,0.01,0.01);
-	snd = IIRFilter.ar(snd,2000 + (10*fundamental),5);
-	snd = BHiPass4.ar(snd,fundamental,1);
-	snd = LeakDC.ar(snd);
-	snd = Splay.ar(snd,0.6,3);
-	//Out.ar(0,snd);
+	snd = Compander.ar(snd,snd,0.3,1,0.5,0.01,0.01);
+	snd = IIRFilter.ar(snd,3000+(10*fundamental),30);
+	snd = RHPF.ar(snd,100,4);
+	//snd = BHiPass4.ar(snd,fundamental,1);
+	snd = LeakDC.ar(snd)*env;
+	snd = SplayAz.ar(2,snd,0.9,6,3);
+	Out.ar(0,snd);
 };
+
+
+ e = {arg fundamental = 50, amp=1, release=12, gate=1;
+	  var harmonics = [1, 2, 3, 4, 5, 6, 7, 8, 9,10];
+      var snd, klank, env;
+	//var env = EnvGen.ar(Env.linen.circle,doneAction:2);
+	env = Env.asr(1, amp, release).kr(2, gate);
+	snd = LFPulse.ar(harmonics.midiratio, width:  Klang.ar(`[ [10,400, 800, 1000, 1200], [0.05,1,0.5,0.5,0.1], nil], 1, 0));
+	klank =  LFTri.ar(10*harmonics, mul:snd);
+	snd = BPF.ar(
+		in: snd,
+		freq: fundamental.lag3ud(0.025,0.025) * harmonics ,
+		rq: [0.0025,0.0075,0.01],//[0.0015,0.0015,0.002,0.005,0.0075,0.01,0.01,0.01,0.015],//, //0.01
+		mul: 25 * [ 0.1, 0.5, 0.8, 0.6, 0.5, 0.4, 0.3, 0.6, 0.3 ],//harmonics.sqrt,
+	);
+	//snd = HPF.ar(snd,40);
+	//snd = Compander.ar(snd,snd,0.09,1,0.5,0.01,0.01);
+	snd = IIRFilter.ar(snd,3000 + (20*fundamental),30);
+	snd = BHiPass4.ar(snd,fundamental,5);
+	snd = LeakDC.ar(snd) * env;
+	snd = SplayAz.ar(4,snd,0.2,10);
+	Out.ar(0,snd);
+};
+ )
+
+(
+TempoClock.default.tempo = 60 / 60;
+s.prepareForRecord;
+t = Task({
+	//s.record;
+	1.wait;
+	Ndef(\sound).play;
+    Ndef(\sound).fadeTime = 0;
+    Ndef(\sound,e);
+
+	60.wait;
+	Ndef(\sound).fadeTime = 4;
+    Ndef(\sound,d);
+
+
+	128.wait;
+	Ndef.clear(5);
+	//s.stopRecording;
+   });
 )
 
+t.play;
+
+/*
 Ndef(\sound).play;
-Ndef(\sound).fadeTime = 5;
+Ndef(\sound).fadeTime = 0;
 // set the source
+Ndef(\sound,e);
+Ndef(\sound).fadeTime = 5;
 Ndef(\sound,d);
-Ndef(\sound).lag(\fundamental, 2).set(\fundamental,62);
-
-Ndef(\sound).free(10);
-Ndef(\sound).clear;
-
-Ndef(\sound).edit;
-
-
-d.set(\fundamental,50);
+//Ndef(\sound).set(\fundamental,50);
+Ndef.clear(5);
+*/
 
 
 

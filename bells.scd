@@ -20,26 +20,47 @@
 
 
 (
-Pbind(
+Pbindef(\test,
 		\instrument, \alarm,
-		\bwr_1,0.003,
-		\bwr_2,0.5,
-		\freq, (74 + Pseq([
-		Pseq([2, 5, 10],4),
-		Pseq([0, 3, 8], 2),
-		Pseq([1, 4, 9] ,2),
-		Pseq([2, 5, 10] ,4),
-		Pseq([4, 7, 12] ,2),
-		Pseq([3, 6, 11],2),
+		\bwr_1,0.002,
+		\bwr_2,0.1,//0.25,
+		\freq, (50 + Pseq([
+		Pseq([2, 5, 10],2),
+		Pseq([0, 3, 8], 1),
+		Pseq([1, 4, 9] ,1),
+		Pseq([2, 5, 10] ,2),
+		Pseq([4, 7, 12] ,1),
+		Pseq([3, 6, 11],1),
 	],inf)).midicps,
-	\dur, Pseq([1,2,3]/3,inf),
-	\amp, -6.dbamp,
+	\dur, Pseq([1,2,1],inf),
+	\amp, 0.dbamp,
 	\pan,Pwhite(-0.1,0.1),
 ).play;
 )
 
 (
 TempoClock.default.tempo_(300/60);
+
+
+(
+Pdef(\intro,
+Pbind(\instrument, \alarm,
+		\bwr_1,0.002,
+		\bwr_2,0.2,//0.25,
+		\freq, (50 + Pseq([
+		Pseq([2, 5, 10],2),
+		Pseq([0, 3, 8], 1),
+		Pseq([1, 4, 9] ,1),
+		Pseq([2, 5, 10] ,2),
+		Pseq([4, 7, 12] ,1),
+		Pseq([3, 6, 11],1),
+	],inf)).midicps,
+	\dur, Pseq([1,2,1],inf),
+	\amp, 0.dbamp,
+	\pan,Pwhite(-0.1,0.1),
+))
+);
+
 
 Pdef(\long,
 	Pbind(
