@@ -33,7 +33,7 @@ SynthDef(\chill, {
 )
 
 // testing
-a = Synth(\chill,[\lower,4,\upper,8,\snd_tone,0.35,\drum_amp,0.04,\drum_tone,0.005]);
+a = Synth(\chill,[\lower,5,\upper,5,\snd_tone,0.35,\drum_amp,0.04,\drum_tone,0.005]);
 
 
 // a routine
@@ -41,29 +41,32 @@ a = Synth(\chill,[\lower,4,\upper,8,\snd_tone,0.35,\drum_amp,0.04,\drum_tone,0.0
 TempoClock.default.tempo_(60/60);
 t = Task({
 	"start".postln;
-	a = Synth(\chill,[\drum_tone,0.01,\drum_amp2,0]);
+	a = Synth(\chill,[\drum_tone,0.01,\drum_amp,0,\drum_amp2,0]);
 
-	32.wait;
+	8.wait;
+	a.set(\drum_amp,0.15);
+
+	24.wait;
 	"perc higher pitch".postln;
-	a.set(\drum_tone,0.001,\drum_amp2,0.005,\mix,0.2);
+	a.set(\drum_tone,0.001,\drum_amp2,0.0025);
 
 	16.wait;
 	"perc muted".postln;
-	a.set(\drum_amp,0.04,\drum_tone,0.005,\mix,0.09);
+	a.set(\drum_amp,0.04,\drum_tone,0.005,\mix,0.13);
 
 
 	///
 	16.wait;
 	"perc deep pitch, slow beat".postln;
-	a.set(\lower,1,\upper,2,\drum_amp,0.25,\drum_tone,0.1,\mix,0.9);
+	a.set(\lower,1,\upper,2,\drum_amp,0.25,\drum_tone,0.1,\mix,0.5,\drum_amp2,0.0);
 
 	12.wait;
 	"perc wider beat, middle pitch".postln;
-	a.set(\lower,1,\upper,8,\drum_amp,0.15,\drum_tone,0.01,\mix,0.09);
+	a.set(\lower,1,\upper,8,\drum_amp,0.15,\drum_tone,0.01,\mix,0.09,\drum_amp2,0.0025);
 
 	12.wait;
 	"perc tigher beat and faster, higher pitched".postln;
-	a.set(\lower,4,\upper,8,\drum_amp,0.1,\drum_tone,0.001);
+	a.set(\lower,4,\upper,8,\drum_amp,0.08,\drum_tone,0.001);
 
 
 	/////
@@ -80,9 +83,12 @@ t = Task({
 
 	12.wait;
 	"return chord, longer beat".postln;
-	a.set(\snd_tone,1,\snd_mod,3,\lower,1,\upper,4,\drum_amp,0.15,\drum_tone,0.01,\lagu,0.4,\lagd,0.1,\drum_amp2,0.005);
+	a.set(\snd_tone,1,\lower,4,\upper,4,\drum_amp,0.15,\drum_tone,0.01,\lagu,0.4,\lagd,0.1,\drum_amp2,0.0025);
 
-	32.wait;
+	4.wait;
+	a.set(\snd_mod,3,\lower,3,\upper,4);
+
+	28.wait;
 	"back to start".postln;
 	a.set(\lower,1,\upper,8,\drum_amp,0.15,\drum_tone,0.01,\lagu,0.9);
 
