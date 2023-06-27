@@ -35,20 +35,20 @@ SynthDef(\impulsetrain2,{arg
 //////////////////////////////////////////////////////////////
 
 
+
+
+(
 t=0;
 t = TempoClock.default.tempo = 120 / 60;
-
-
 //non-enveloped synth
-(
-~a = Pbind(\instrument,\metaldrum,
+a = Synth(\metaldrum,[
 	\dur,inf,
 	\ibase,0.9,
 	\roomsize,10,
 	\damping,0.05,
 	\inputbw,0.1,
 	\amp,-25.dbamp,
-).play(t,quant:0);
+]); //.play(t,quant:0);
 
 
 ~d = Pbind(\instrument, \impulsetrain2,
@@ -62,7 +62,8 @@ t = TempoClock.default.tempo = 120 / 60;
 
 )
 
-~a.stop;
+a.set(\ringfreq,0);
+a.free;
 ~d.stop;
 
 

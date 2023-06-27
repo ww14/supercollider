@@ -81,6 +81,7 @@ a.release(8);
 TempoClock.default.tempo_(60/60);
 t = Task({
 	"start".postln;
+	//the low high range starts at 15-20
 	a = Synth(\rush);
 
 	60.wait;
