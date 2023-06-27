@@ -97,7 +97,7 @@ t = Task({
 	d = Synth("metaldrum",[\ibase,1,\t,1/20,\irange,300,\ringfreq,[33].midicps,\roomsize,50,\amp, -28.dbamp]);
 
 	12.wait;
-	a.set(\amp_snd, 1, \amp_arp2, 0);
+	a.set(\amp_snd, 0.75, \amp_arp2, 0);
 
 	12.wait;
 	a.set(\wipe,0.8);
@@ -112,7 +112,7 @@ t = Task({
 
 	24.wait;
 	a.set(\wipe,0.8);
-	a.set(\amp_snd, 0.75, \amp_arp2, 0.75, \amp_gloop, 0.5);
+	a.set(\amp_snd, 0.65, \amp_arp2, 0.75, \amp_gloop, 0.5);
 	d.set(\roomsize, 20);
 
 	24.wait;
@@ -122,7 +122,7 @@ t = Task({
 
 
 	24.wait;
-	a.set(\amp_snd, 1, \amp_arp, 0, \amp_gloop, 0, \amp_perc, 0.25);
+	a.set(\amp_snd, 0.75, \amp_arp, 0, \amp_gloop, 0, \amp_perc, 0.25);
 	a.set(\gate,0);
 
 	8.wait;
