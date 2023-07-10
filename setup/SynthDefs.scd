@@ -1821,7 +1821,7 @@ SynthDef(\lplay,
 //https://pustota.basislager.org/_/sc-help/Help/Tutorials/Smooth_Clipping_and_Folding.html
 (
 SynthDef(\bufScratchFold, { |bufnum = 0, globalFreq = 0.7, localOscSize = 0.01, foldMin = -1,foldMax = 1,foldRange = 0.28,
-    localFreq = 0.87, preAmp = 1.4, smoothAmount = 0.36, out=0|
+    localFreq = 0.87, preAmp = 1.4, smoothAmount = 0.36, out=0, amp=1|
     var sig;
 	sig = BufRd.ar(
         2,
@@ -1840,7 +1840,7 @@ SynthDef(\bufScratchFold, { |bufnum = 0, globalFreq = 0.7, localOscSize = 0.01, 
         ) * BufFrames.ir(bufnum)
     );
     // as local oscillation can stick with positive or negative values, a dc leaker is recommended
-    Out.ar(0, LeakDC.ar(sig) * EnvGate.new)
+    Out.ar(0, LeakDC.ar(sig) * EnvGate.new * amp)
 }).add
 );
 
