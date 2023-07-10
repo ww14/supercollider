@@ -364,7 +364,7 @@ t = TempoClock.default.tempo_(60/60);
 a;
 
 Pspawner({|sp|
-	s.record;
+	//s.record;
 
 	sp.par(Pfindur(340,Pdef(\fm1))); //
 
@@ -379,7 +379,7 @@ Pspawner({|sp|
 
 	sp.wait(312);
 
-	s.stopRecording
+	//s.stopRecording
 
 
 	/*sp.wait(30);

@@ -44,10 +44,10 @@ SynthDef(\buzz, {arg fundamental = 5, mul=100,trigger=32,amp=1, lagu=0.1, lagd=0
 	);
 
 
-	snd = HPF.ar(snd,30);
-	snd = Compander.ar(snd,snd,0.09,1,0.5,0.01,0.01);
-	snd = IIRFilter.ar(snd,3000,30);
-	snd = BHiPass4.ar(snd,fundamental,1);
+	snd = Compander.ar(snd,snd,0.2,1,0.1,0.01,0.01);
+	snd = IIRFilter.ar(snd,3000,10);
+	snd = BHiPass4.ar(snd,fundamental*3,1);
+	snd = HPF.ar(HPF.ar(snd,100),80);
 	snd = LeakDC.ar(snd);
 	//center = Select.kr(LFSaw.kr(0.1,0.0,1,1),[0,1]);
 	snd = SplayAz.ar(2,snd,1,4*amp,center:center);
@@ -104,12 +104,15 @@ d.set(\fundamental,200,\mul,10);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //~176 seconds
 (
+s.prepareForRecord;
 t = Task({
     var d;
+	//s.record;
+	1.wait;
 	Synth(\reverb_ef, [\in, ~bus, \out, 0]);
     d = Synth(\buzz);
 	// intro
-	/*
+
 	d.set(\fundamental,10,\mul,1,\lagu,2,\lagd,3);
 	8.wait;
 	//d.set(\fundamental,5,\mul,10);
@@ -143,7 +146,7 @@ t = Task({
 	16.wait;
 	d.set(\fundamental,50,\mul,5,\center,0);
 	24.wait;
-	*/
+
     ////////////////////////////////////////////
 	// higher, new beat
 	d.set(\fundamental,60,\mul,100,\lagu,0.3);
@@ -157,7 +160,7 @@ t = Task({
 	// first phrase
 	d.set(\fundamental,30,\mul,5);
 	16.wait;
-	d.set(\fundamental,50,\mul,5, \lagu,0.5);
+	d.set(\fundamental,50,\mul,5, \lagu,0.3);
 	8.wait;
 	d.set(\fundamental,50,\mul,3,\center,0);
 	2.wait;
@@ -181,6 +184,9 @@ t = Task({
 	4.wait;
 
 	d.release(4);
+
+	10.wait;
+	//s.stopRecording;
    });
 )
 

@@ -259,7 +259,7 @@ Pbindef(\perc_high,
 	\mod_freq, Pwrand([5,10,100,200],[10,2,1,0.5].normalizeSum,inf),
 	\mod_index,[1000],
 	\pan,-0.2,
-	\amp,(0.21 - (1 / Pkey(\mod_freq))),
+	\amp,0.5*(0.21 - (1 / Pkey(\mod_freq))),
 	\out,~bus,
 ).play;
 

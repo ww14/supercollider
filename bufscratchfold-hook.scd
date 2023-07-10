@@ -15,7 +15,7 @@ b.add(\foldernames -> PathName(~spica).entries);
 
 
 
-x = Synth(\bufScratchFold, [bufnum: b["spica"][1],\amp,1])
+x = Synth(\bufScratchFold, [bufnum: b["spica"][1],\amp,7])
 
 
 
@@ -32,14 +32,14 @@ y.set(\smoothAmount, 1);
 
 //a beat
 (
-x.set(\preAmp, 1.0125,\foldRange, 100,\localFreq, 0.5,\localOscSize, 5,\globalFreq, 0.5,\smoothAmount, 0.3);
+x.set(\preAmp, 1.0125,\foldRange, 100,\localFreq, 0.5,\localOscSize, 5,\globalFreq, 0.5,\smoothAmount, 0.3, \amp, 1);
 )
 
 //to change tone
 x.set(\localOscSize, 7.5,\localOscSize, 15);
 
 //nasty
-x.set(\localOscSize, 1/15,\globalFreq, 1);
+x.set(\localOscSize, 1/7,\globalFreq, 1);
 
 //panting ghost
 x.set(\localOscSize, 1/50,\globalFreq, 1,\smoothAmount, 0.08);

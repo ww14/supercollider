@@ -73,7 +73,7 @@ SynthDef(\tball, {
 		in + Mix(Formlet.ar(f, u * Array.fill(4, { |i| (i+1) + rand2(0,0.2) *[1,3]})/2, 0.1))
 	    };
     snd = Splay.ar(z) * 0.8;
-	Out.ar(0, snd * \amp.kr(1));
+	Out.ar(0, snd * \amp.kr(1).lag3(1));
 	}).add;
 )
 
@@ -94,7 +94,7 @@ t = Task({
 
 	16.wait;
 
-	a.set(\speed,0.5,\damp,0.00001,\zmp,0.4);
+	a.set(\speed,0.5,\damp,0.00001,\amp,0.4);
 
 	16.wait;
 

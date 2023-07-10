@@ -1,11 +1,14 @@
+s.options.numWireBufs = (200);
+s.boot;
+
 (
 SynthDef(\gabor, {
 
-              var trig = Dust.kr(15,0.5); //Impulse.ar(LFNoise2.kr(1).linexp(-1, 1, 1, 10000));//Dust.ar(\trig.kr(1)); //\trig.tr; ////ToggleFF.ar(Dust.ar(\trig.kr(1)));//Dust.ar(\trig.kr(1)); ////;
+	var trig = Impulse.ar(LFNoise2.kr(1).linexp(-1, 1, 1, 10000))//Dust.kr(\dust.kr(12),0.5); //Impulse.ar(LFNoise2.kr(1).linexp(-1, 1, 1, 10000));//Dust.ar(\trig.kr(1)); //\trig.tr; ////ToggleFF.ar(Dust.ar(\trig.kr(1)));//Dust.ar(\trig.kr(1)); ////;
 
-              var freqEnv = EnvGen.kr(Env([1,2,1], [0.5, 0.01], \lin), trig, doneAction: 2);
-              var fltEnv = EnvGen.kr(Env([0.0125,1,0.0125], [\fAtk.kr(0.3), \fRel.kr(0.01)], \exp), trig, doneAction: 2);
-              var gainEnv = EnvGen.kr(Env([0,1,0], [\atk.kr(0.01), \rel.kr(0.3)], \lin), trig, doneAction: 2);
+	var freqEnv = EnvGen.kr(Env([1,2,1], [0.5, 0.01], \lin), trig, doneAction: 2);
+	var fltEnv = EnvGen.kr(Env([0.0125,1,0.0125], [\fAtk.kr(0.3), \fRel.kr(0.01)], \exp), trig, doneAction: 2);
+	var gainEnv = EnvGen.kr(Env([0,1,0], [\atk.kr(0.01), \rel.kr(0.3)], \lin), trig, doneAction: 2);
 
               var numPartials = 100;
               var n = (1..numPartials);
@@ -29,12 +32,14 @@ SynthDef(\gabor, {
 )
 
 (
-Pdef(\gabor,
-              Pbind(
+Pdef.removeAll;
+Pbindef(\gabor,
+
                              \instrument, \gabor,
 
                              \atk, 0.01,
                              \rel, 0.8,
+		\dur, Pseq([8],inf),
 
                              // Bandpass Filter sweep
                              \slope, -5,
@@ -45,16 +50,19 @@ Pdef(\gabor,
                              //\trig, 10,//Pseq([20,100,15,1],inf),
                              //\trig_dur, Pseq([1,0.5,0.25,1],inf),
 
-                             \freq,Pseq([[256,512,8]!8,[128,512,4]!4].flatten,inf),
+		\freq,(Pseq([52,60,64,40],inf) + [0,-24,12]).midicps,
+//Pseq([[256,512,8]!8,[128,512,4]!4].flatten,inf),
 
-                             \amp, 0.70,
+                             \amp, 0.1,
                              \pan, 0,
                              \out, 0,
               )
 );
-)
 
-Pdef(\gabor).play;
+
+Pbindef(\gabor).play;
+
+Pbindef(\gabor,\dust,8,\dur, 1,\freq,50.midicps);
 
 Pdef(\gabor).stop;
 
@@ -146,6 +154,6 @@ SynthDef(\phase, {
 });
 )
 
-x = Synth(\additive10, [\freq, 220, \decay, 0.5]);
+x = Synth(\additive5, [\freq, 220, \decay, 0.5]);
 
 x.set(\gate, 0);

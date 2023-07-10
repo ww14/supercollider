@@ -129,13 +129,16 @@ c=TempoClock(60/60);
 (
 Pbindef(\additive_env,
 	\instrument, \additive,
-	\freq,Pstep([45.midicps,33.midicps,45.midicps,33.midicps],[70,70,30,40]/4,inf), //30
-	\phaseModFreq,Pstep([1/4,0.1,1/4,1/3,1/2,0.1],[40,10,5,10,5,10]/4,inf),//Pseg([0.01,1,0.01],70,\exp,inf),
-	\dur,Pstep([1/4,6,1/4,1/3,1/2,10],[40,10,5,10,5,10]/4,inf),//Pseq([Pseq([2,1,2,4]/2, 8),Pseq([2,1,2,4].reverse/4, 8),8,Pseq([1]/8, 32)],inf),
+	//\freq, 30,//Pstep([45.midicps,33.midicps,45.midicps,33.midicps],[70,70,30,40]/4,inf), //30
+	\phaseModFreq,Pstep([1,0.1,1/4,1/3,1/2,0.1],[40,10,5,10,5,10]/4,inf),//Pseg([0.01,1,0.01],70,\exp,inf), //1
+	\dur,Pstep([3,1,6,1,2,1/2,10],[20,20,10,5,10,5,10]/4,inf),//Pseq([Pseq([2,1,2,4]/2, 8),Pseq([2,1,2,4].reverse/4, 8),8,Pseq([1]/8, 32)],inf),//// //4
+	\cRatio, 2.296417,
+	\mRatio, 0.051,
+	//\factor,40,
 	\time, Pfunc { |ev| ev.use { ~sustain.value } / thisThread.clock.tempo },
-	\width,Pstep([0.051,0.12,0.01],70/4,inf), //0.01,//
+	\width,0.25,//Pstep([0.051,0.12,0.051,0.01],[16,8,4,4],inf), //0.01,//
 	\amp,-10.dbamp,
-	//.\fundamental,Pwrand([60,67,65,72],[4,2,1,1].normalizeSum,inf)
+	\freq,30,//Pwrand([60,67,65,72],[4,2,1,1].normalizeSum,inf)
 
 ));
 
@@ -145,9 +148,9 @@ Pbindef(\additive_env,
 (
 Pbindef(\oldschool,\instrument, \twotube,
 	\dur,1/10,//Pn(Pshuf([1,1,1,1,6,3,3,3,3,9]/6,3),inf),
-	\k, 0,
+	\k, 0.5,
 	\preamp,Pseq([1,2].mirror*100,inf),
-	\amp,-50.dbamp,
+	\amp,-65.dbamp,
 	\minRq,0.2,
 	\maxRq,0.21,
 	\minBpfHz,1/300,
@@ -186,8 +189,28 @@ b=Pbind(
 
 
 (
-Pbindef(\additive_env).play(c,quant:1);
+c=TempoClock(60/60);
+Pbindef(\additive_env).play(c,quant:8);
 Pbindef(\oldschool).play(c,quant:1);
 
 //Ppar([a, b]).play(c,quant:1);
 )
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// vocal
+(
+Pbindef(\additive_env,
+	\instrument, \additive,
+	//\freq, 30,// Pstep([45.midicps,33.midicps,45.midicps,33.midicps],[70,70,30,40]/4,inf), //30
+	\phaseModFreq,1,//Pstep([1,0.1,1/4,1/3,1/2,0.1],[40,10,5,10,5,10]/4,inf),//Pseg([0.01,1,0.01],70,\exp,inf),
+	\dur,0.25,//Pstep([1/4,6,1/4,1/3,1/2,10],[40,10,5,10,5,10]/4,inf),//Pseq([Pseq([2,1,2,4]/2, 8),Pseq([2,1,2,4].reverse/4, 8),8,Pseq([1]/8, 32)],inf),
+	\cRatio, 1.96417,
+	\mRatio, 0.04,
+	\factor, 24,
+	\time, Pfunc { |ev| ev.use { ~sustain.value } / thisThread.clock.tempo },
+	\width,Pstep([0.051,0.12,0.051,0.01],[16,8,4,4],inf), //0.01,//
+	\amp,-10.dbamp,
+	\freq,50,//Pwrand([60,67,65,72],[4,2,1,1].normalizeSum,inf)
+
+));
+

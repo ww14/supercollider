@@ -154,7 +154,7 @@ Pdef(\fm,
                                                           \instrument, \fm,
 
                                                           \durMul, 0.5, //multiply duration
-                                                          \dur, Pkey(\durMul) * (Pn(Plazy{ Pstutter(Pseq(a.repetitions,1), seq(a.durations,1)) },inf)),
+                                                          \dur, Pkey(\durMul) * (Pn(Plazy{ Pdup(Pseq(a.repetitions,1), Pseq(a.durations,1)) },inf)),
 
                                                           \atk, 0.001,
                                                           \rel, 0.25,

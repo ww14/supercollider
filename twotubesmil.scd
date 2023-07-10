@@ -32,13 +32,13 @@ j = [1, 0.7, 1, 0.25]
 
 ///////////////////main pbind//////////////////////////////////////////////////////////////
 
-(~d = Pbind(\instrument, \twotube2,
+(~d = Pbind(\instrument, \twotube1,
 	\dur, 1/Prand([32,64],inf),
 	\k, -0.001, // -0.001
 	\loss,0.1, //0.1
 	\rand,Pwhite(-4,4,inf),
 	\out,~bus[\reverb],
-	\amp,10,
+	\amp,0.2,
 );)
 
 ~d.play;

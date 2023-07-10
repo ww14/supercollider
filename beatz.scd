@@ -29,7 +29,7 @@ Server.killAll;
 )
 
 (
-TempoClock.default.tempo = 104 / 60;
+t = TempoClock.default.tempo = 104 / 60;
 ~kikEnvir = (
 	parent: ~commonFuncs,
 	// rhythm pattern that is constant in each bar
@@ -157,7 +157,7 @@ TempoClock.default.tempo = 104 / 60;
 ///////////////////////////////////////////////////////////////////////////////
 
 // stop just before barline
-(t = TempoClock.default;
+(
 t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 	[~kik, ~snr, ~hh].do(_.stop);
 });)
@@ -222,9 +222,18 @@ t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 
 ~kikEnvir.put(\baseDecay, #[0.15, 0, 0, 0, 0, 0, 0.15, 0, 0, 0.15, 0.15, 0, 0, 0, 0, 0] * 0.5);
 
+~hhEnvir.put(\baseAmp,0!16,\baseDelta,0!16,\addNotes,0);
+~kikEnvir.put(\baseAmp,0!16);
+~snrEnvir.put(\baseAmp,0!16);
+
+
+~hh.stop(t)
+~kik.stop(t)
+~snr.stop(t)
+
+
 (
 // stop just before barline
-t = TempoClock.default;
 t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 	[~hh].do(_.stop);
 });
@@ -232,7 +241,6 @@ t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 
 (
 // stop just before barline
-t = TempoClock.default;
 t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 	[~kik].do(_.stop);
 });
@@ -240,7 +248,6 @@ t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 
 (
 // stop just before barline
-t = TempoClock.default;
 t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 	[~snr].do(_.stop);
 });

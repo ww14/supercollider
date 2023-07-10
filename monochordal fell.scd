@@ -75,6 +75,7 @@ x =
 
 //////////////////////////////////////////
 //
+// this is now its own file
 (
 SynthDef(\rush,{
 	var trig, snd, freqs, perc, fund, a, cycle;

@@ -19,7 +19,7 @@
 			totalSig = totalSig + verbSig;
 		};
 	*/
-	verbSig = NHHall.ar(sig,2.5);
+	verbSig = NHHall.ar(sig);
 
 		//dry/wet mix
 		totalSig = XFade2.ar(sig, verbSig, mix.linlin(0,1,-1,1));
@@ -38,7 +38,7 @@
 
 
 		env = EnvGen.ar(Env([0,1,1,0],[0.001]++((dur-0.001)*[0.4,0.6])),doneAction:2);
-		sig = TwoTube.ar(sig,k,loss,delay1,delay2);
+		sig = -2.dbamp * TwoTube.ar(sig,k,loss,delay1,delay2);
 		//sig = Compander(sig);
 
 		sig = BPF.ar(
@@ -57,10 +57,110 @@
 
 )
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////the piece ////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 (
-TempoClock.default.tempo_(95/60);
+c = TempoClock.default.tempo_(95/60);
 t = Task({
 Synth(\reverb_ef, [\in, ~bus, \out, 0]);
+Pbindef(\twenty,
+	\instrument, \twotube,
+	\dur,Pn(Pshuf(1/[3,3,3,6],3),inf),
+	\k, -0.7,
+	\preamp,30*Pwhite(1,1.05,inf),
+	\amp,-6.dbamp,
+	\minRq,0.01,
+	\maxRq,0.4,
+	\minBpfHz,30,
+	\maxBpfHz,60,//Pstep([150,70,350],14,inf), //31
+	\minCf,100,//Pseg([125,100,125],96,\lin,inf),
+	\maxCf,400,//Pseg([400,500,400],96,\lin,inf),
+	\pan,0,
+	\delay1,Pstep([[3, 9, 18],
+		           [4 ,8, 19],
+		           [6, 5, 22],
+		           [3, 9, 18],
+		           [4, 1, 19],
+		           [6, 9, 22],
+		           [3, 9, 17]],
+	             2,inf),
+	\delay2,Pstep([[1, 2, 4],
+		           [1, 2, 4].rotate(1),
+		           [1, 2, 4].rotate(-1),
+		           [1,2,10],
+        		   [8,2,1].rotate(1), // 1 was 12500
+		           [8,2,10000],
+		           [2, 4, 8], //.pyramidg.flop,
+	],[
+			28, //first
+			14, //first rotation
+			14, //second rotation
+			14, //1-1-10
+			14, //8-2-1
+			28, //8-2-1 rotaion
+			14  // 2-4-8
+		]//[28, 14, 14,14,14, 14]
+	,2), //Pseg([[8, 1, 24],[4, 10, 12],[8, 1, 24]],6,\step,inf),  //
+	\out,~bus,
+).play(quant:1);
+
+	21.wait;
+	Pbindef(\twenty,\dur,Pn(Pshuf(1/[6,6,6,3],3),inf));
+	7.wait;
+
+	"first and second rotation".postln;
+	Pbindef(\twenty,\dur,Pn(Pshuf(1/[3,3,3,6],3),inf));
+	18.wait;
+	Pbindef(\twenty,\dur,Pn(Pshuf(1/[6,6,6,3],3),inf));
+	7.wait;
+	Pbindef(\twenty,\dur,Pn(Pshuf(1/[3,3,3,6],3),inf));
+	3.wait;
+
+	"1-2-10 and 8-2-1 rotation".postln;
+	Pbindef(\twenty,\dur,Pn(Pshuf(1/[60,60,60,3],3),inf),\delay2);
+	//Pbindef(\twenty,\dur,Pn(Pshuf(1/[60,60,60,3],3),inf));
+	21.wait;
+	Pbindef(\twenty,\dur,Pn(Pshuf(1/[3,3,3,6],3),inf));
+	7.wait;
+
+
+	"8-2-1".postln;
+	Pbindef(\twenty,\dur,Pn(Pshuf(1/[60,60,60,3],3),inf));
+	18.wait;
+	Pbindef(\twenty,\dur,Pn(Pshuf(1/[6,6,6,3],3),inf));
+	7.wait;
+	Pbindef(\twenty,\dur,Pn(Pshuf(1/[3,3,3,6],3),inf));
+	3.wait;
+
+	"2-4-8 and 1-2-4".postln;
+	Pbindef(\twenty,\dur,Pn(Pshuf(1/[20,30,20,1],3),inf));
+	21.wait;
+	Pbindef(\twenty,\dur,Pn(Pshuf(1/[3,3,3,6],3),inf));
+	15.wait;
+	Pbindef(\twenty).stop;
+   });
+)
+
+
+// play it
+t.play(c);
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////testing////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+Pbindef{
+
+
+Synth(\reverb_ef, [\in, ~bus, \out, 0]);
+(
+c = TempoClock.default.tempo_(95/60);
 Pbindef(\twenty,
 	\instrument, \twotube,
 	\dur,Pn(Pshuf(1/[3,3,3,6],3),inf),
@@ -82,44 +182,13 @@ Pbindef(\twenty,
 		           [6, 9, 22],
 		           [3, 9, 17]],
 	             2,inf),
-	\delay2,Pstep([[1, 2, 4],
-		           [1, 2, 4].rotate(1),
-		           [1, 2, 4].rotate(-1),
-		[1,1,10],
-		[8,2,12500],
-		[8,2,12500].rotate(1),
-		           [2, 4, 8], //.pyramidg.flop,
-	],[28,14,14,14,14,28,14]//[28, 14, 14,14,14, 14]
-	,inf), //Pseg([[8, 1, 24],[4, 10, 12],[8, 1, 24]],6,\step,inf),  //
+	\delay2,[8,2,20], //Pseg([[8, 1, 24],[4, 10, 12],[8, 1, 24]],6,\step,inf),  //
 	\out,~bus,
-).play(quant:1);
+		).play(c);
+	)
 
-	21.wait;
-	Pbindef(\twenty,\dur,Pn(Pshuf(1/[6,6,6,3],3),inf));
-	7.wait;
-
-	Pbindef(\twenty,\dur,Pn(Pshuf(1/[3,3,3,6],3),inf));
-	18.wait;
-	Pbindef(\twenty,\dur,Pn(Pshuf(1/[6,6,6,3],3),inf));
-	7.wait;
-	Pbindef(\twenty,\dur,Pn(Pshuf(1/[3,3,3,6],3),inf));
-	3.wait;
-	//
-
-
-
-
-Pbindef(\twenty,\dur,Pn(Pshuf(1/[60,60,60,3],3),inf));
-	28.wait;
-Pbindef(\twenty,\dur,Pn(Pshuf(1/[20,30,20,1],3),inf));
-
-   });
-)
-
-t.play;
-
-
-
-Pbindef{
-
-Pstep
+(
+Pbindef(\twenty,
+			\delay2,[8,2,10000].rotate(-1), //Pseg([[8, 1, 24],[4, 10, 12],[8, 1, 24]],6,\step,inf),  //
+		);
+	)

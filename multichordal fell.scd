@@ -245,12 +245,13 @@ y.free;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+s.prepareForRecord;
 (
 v;
 StageLimiter.deactivate;
 t = Task({
     var x, y;
+	//s.record;
     x =  Synth.new(\x);
     29.wait;//29.wait;
 	x.release(2.0);
@@ -273,6 +274,8 @@ t = Task({
 	32.wait;
 	y.release(8);
 	y.set(\trigger,80);
+	12.wait;
+	//s.stopRecording
    });
 )
 

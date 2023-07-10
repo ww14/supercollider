@@ -17,10 +17,11 @@ SynthDef(\brusselator, {
 			LFNoise1.kr({LFNoise1.kr(0.13).exprange(minBpfHz,maxBpfHz)}!8).exprange(minCf, maxCf),
 			LFNoise1.kr({LFNoise1.kr(0.08).exprange(0.08,0.35)}!8).range(minRq, maxRq)
 		);
-	sig = LPF.ar(HPF.ar(sig,30),1500);
+	sig = -6.dbamp * LPF.ar(HPF.ar(sig,100),1500);
 
 	sig = sig * amp * env;
 	sig = Limiter.ar(sig, 0.95);
+	sig = LeakDC.ar(sig);
 	sig = Pan2.ar(sig,pan);
 	OffsetOut.ar(out, sig);
 }).add;
@@ -201,7 +202,7 @@ Pdef(\mel_3,
 	\minBpfHz,2,
 	\maxBpfHz,3,
 	\rate, Pn(Pshuf([23,35,47,50,52,59,61,63,64].midicps.linlin(0,1000,0,0.5),3),inf),
-	\amp,1.1 - Pkey(\minRq),
+		\amp,0.8 * (1.1 - Pkey(\minRq)),
 	\out,0
 ));
 
@@ -224,7 +225,7 @@ Pdef(\close,
 Pdef(\kick,
 	Pbind(\instrument, \kick,
 	\dur,Pseq([1,Rest(2),2,1,Rest(2.5),0.5],inf),
-		\amp,0.2,
+		\amp,-23.dbamp,
 	\out,\reverb_ef
 ));
 
@@ -268,7 +269,7 @@ Pdef(\brush_2).play;
 s.meter;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //composition
-
+s.prepareForRecord;
 //pbindef is recursively(?) overwritten by downstream commands. FIX
 (
 //the piece is in 9/4
@@ -281,6 +282,9 @@ s.plotTree;
 s.meter;
 
 Pspawner({|sp|
+	//s.record;
+
+	sp.wait(1);
 
 	sp.par( Pfindur(110, Pdef(\bell)));
 
@@ -311,6 +315,10 @@ Pspawner({|sp|
 
 	sp.par(Pfindur(45,Pdef(\mel_2)));
 	sp.par(Pfindur(70,Pdef(\close)));
+
+	sp.wait(80);
+
+	//s.stopRecording;
 
 }).play(t, quant:1);
 )
