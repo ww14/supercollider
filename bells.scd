@@ -95,19 +95,31 @@ Pdef(\long,
 	],inf)).midicps,
 		\dur, Pseq([1,1,1],inf), //0.2!3
 	\pan,Pwhite(0.0,0.3),
-	\amp, 0.dbamp
+	\amp, -6.dbamp,
+		\out,~bus[\reverb],
 ));
 
 
 
 Pdef(\drum,Pbind(
 		\instrument, \alarm,
-	\bwr_1,0.1,//0.001,
+	\bwr_1,0.6,//0.001,
 	\bwr_2,5,
 	\freq, 38.midicps,
 	\dur,Psubdivide(Pseq([1!6,2!6,4!6].flatten,inf), Pseq([12,12,3],inf)),// Pseq([0.2, 0.2, 0.2],inf), 2.4,2.4,0.6
 	\pan,Pwhite(-0.3,0.0),
-	\amp,0.dbamp,
+	\amp,-10.dbamp,
+	\out,~bus[\reverb],
+));
+
+Pdef(\hihat,Pbind(
+		\instrument, \alarm,
+	\bwr_1,1,//0.001,
+	\bwr_2,100.reciprocal,
+	\freq, (Pwrand([81,86],[0.2,0.8],inf)).midicps,
+	\dur,Psubdivide(Pseq([1!8,2!8].flatten,inf), Pseq([6,3,2,1],inf)),// Pseq([0.2, 0.2, 0.2],inf), 2.4,2.4,0.6
+	\pan,Pwhite(-0.5,0.5),
+	\amp,-27.dbamp,
 	\out,~bus[\reverb],
 ));
 
@@ -128,10 +140,13 @@ Pdef(\bell_close,
 		[2,5,10]
 	],1)).midicps,
 	\dur, Pseq([1!48,5].flatten,1),
-	\amp,0.dbamp,
+	\amp,-2.dbamp,
 	\pan,Pwhite(-0.3,0.3),
+		\out,~bus[\reverb],
 ));
 )
+
+Pbindef(\hihat).play
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -143,6 +158,7 @@ t = TempoClock.default.tempo_(300/60);
 
 
 Pspawner({|sp|
+
 	t = TempoClock.default.tempo_(60/60);
 	sp.par( Pfindur(32, Pdef(\test)));
 	sp.wait(32);
@@ -152,7 +168,12 @@ Pspawner({|sp|
 	sp.par( Pfindur(48*5, Pdef(\drum)));
 	sp.par( Pfindur(48*5+2, Pdef(\long)));
 
-	sp.wait(48*4);
+	sp.wait(48*2);
+	//sounds bad
+	//sp.par( Pfindur(48*2.5, Pdef(\hihat)));
+
+
+	sp.wait(48*2);
 
 	sp.par( Pfindur(60, Pdef(\bell_close)));
 
@@ -160,3 +181,44 @@ Pspawner({|sp|
 )
 
 Pdef(\long).play
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////
+
+TempoClock.default.tempo_(120/60);
+Pdef.removeAll;
+(Pbindef(\hihat,
+		\instrument, \alarm,
+	\bwr_1,76.reciprocal,//0.001,
+	\bwr_2,76.reciprocal,
+	\freq, 66.midicps,
+	\dur,\dur,Psubdivide(Pseq([1!24,2!6,4!6].flatten,inf), Pseq([2,4,2],inf)),// Pseq([0.2, 0.2, 0.2],inf), 2.4,2.4,0.6
+	\pan,Pwhite(-0.5,0.5),
+	\amp,-10.dbamp,
+	\out,~bus[\comb],
+));
+
+Pbindef(\hihat).play
+Pbindef(\hihat,\out,~bus[\reverb]);
+Pbindef(\hihat,\bwr_1,76);
+Pbindef(\hihat,\bwr_2,8);
+Pbindef(\hihat,\bwr_2,76);
+
+
+
+Pbindef(\hihat,\bwr_2,20);
+
+
+
+
+
+Pbindef(\hihat,\freq, 66.midicps,)
+
+Pbindef(\hihat,\freq, 67.midicps,\dur,Plprand(2,5,inf))

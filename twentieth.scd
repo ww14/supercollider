@@ -114,11 +114,11 @@ Pbindef(\twenty,
 
 	"first and second rotation".postln;
 	Pbindef(\twenty,\dur,Pn(Pshuf(1/[3,3,3,6],3),inf));
-	18.wait;
+	14.wait;
 	Pbindef(\twenty,\dur,Pn(Pshuf(1/[6,6,6,3],3),inf));
 	7.wait;
 	Pbindef(\twenty,\dur,Pn(Pshuf(1/[3,3,3,6],3),inf));
-	3.wait;
+	7.wait;
 
 	"1-2-10 and 8-2-1 rotation".postln;
 	Pbindef(\twenty,\dur,Pn(Pshuf(1/[60,60,60,3],3),inf),\delay2);
@@ -130,11 +130,11 @@ Pbindef(\twenty,
 
 	"8-2-1".postln;
 	Pbindef(\twenty,\dur,Pn(Pshuf(1/[60,60,60,3],3),inf));
-	18.wait;
+	14.wait;
 	Pbindef(\twenty,\dur,Pn(Pshuf(1/[6,6,6,3],3),inf));
 	7.wait;
 	Pbindef(\twenty,\dur,Pn(Pshuf(1/[3,3,3,6],3),inf));
-	3.wait;
+	7.wait;
 
 	"2-4-8 and 1-2-4".postln;
 	Pbindef(\twenty,\dur,Pn(Pshuf(1/[20,30,20,1],3),inf));

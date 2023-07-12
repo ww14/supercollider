@@ -6,8 +6,8 @@
 (
     {
     var sc, g, d, z, lfo, rate;
-    g = MouseX.kr(0.01, 100, 1);
-    d = MouseY.kr(0.00001, 0.2);
+    g = MouseX.kr(0.01, 100, 1).poll;
+    d = MouseY.kr(0.00001, 0.2).poll;
 	sc = [55,220,440,523,659,1318]; //[451, 495.5, 595, 676, 734.5];//azande harp tuning by B. Guinahui
     lfo = LFNoise1.kr(1, 0.005, 1);
     rate = LFNoise1.kr(1, LFNoise1.kr(10, 1, 0),1);
@@ -40,17 +40,17 @@
 /////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TempoClock.default.tempo_(60/60);
+
 
 (
 SynthDef(\tball, {
 		//arg		amp=1, lPos=0, mix=0.085, revTime=1.8, preDel=0.1, in, out;
-		var sc, z, lfo, rate, snd;
+		var sc, z, lfo, rate, snd, env;
 
 
 	sc = \sc.kr([110,220,440,523,659,1318]); //[451, 495.5, 595, 676, 734.5];//azande harp tuning by B. Guinahui
     lfo = LFNoise1.kr(1, 0.005, 1);
-	rate = LFNoise1.kr([1,10], LFNoise0.kr(10, \speed.kr(1), 0),1);
+	rate = LFNoise1.kr([1,10], LFNoise0.kr(10, \speed.kr(1).lag3, 0),1);
     rate = rate * sc.size.reciprocal;
     z = sc.collect { |u,i|
         var f, in;
@@ -68,29 +68,38 @@ SynthDef(\tball, {
 	   in = Compander.ar(in);
 		in = IIRFilter.ar(in,3000,1,0.5);
 
-		f = TBall.ar(in * 10, \gravity.kr(0.01), \damp.kr(0.00001), 0.001);
+		f = TBall.ar(in * 10, \gravity.kr(0.025).lag3, \damp.kr(0.0125).lag3, 0.001); // \gravity.kr(0.01), \damp.kr(0.00001), 0.001);
 
 		in + Mix(Formlet.ar(f, u * Array.fill(4, { |i| (i+1) + rand2(0,0.2) *[1,3]})/2, 0.1))
 	    };
     snd = Splay.ar(z) * 0.8;
+	env = Env.asr(1, \amp.kr(1), \release.kr(16)).kr(2, \gate.kr(1));
+	snd = snd *env;
 	Out.ar(0, snd * \amp.kr(1).lag3(1));
 	}).add;
 )
 
+
 a = Synth(\tball);
 
+a.set(\gravity,2,\damp,0.00001,\amp,0.4);
+a.set(\speed,10,\amp,0.6,\damp,0.01);
+a.set(\speed,0.5,\damp,0.00001,\amp,0.4);
+a.set(\speed,500,\damp,0.95,\gravity,100,\amp,0.2);
+
 (
+TempoClock.default.tempo_(60/60);
 t = Task({
     var a;
     a = Synth(\tball);
 
     24.wait;//29.wait;
 
-	a.set(\gravity,1,\damp,0.00001,\amp,0.4);
+	a.set(\gravity,2,\damp,0.00001,\amp,0.4);
 
 	16.wait;
 
-	a.set(\speed,2,\amp,0.6,\damp,0.01);
+	a.set(\speed,10,\amp,0.6,\damp,0.01);
 
 	16.wait;
 
@@ -98,7 +107,7 @@ t = Task({
 
 	16.wait;
 
-	a.set(\gravity,50,\damp,0.2,\amp,0.4,\speed,1);
+	a.set(\gravity,10,\damp,0.2,\amp,0.4,\speed,1);
 
 	16.wait;
 
@@ -109,6 +118,10 @@ t = Task({
 	a.set(\sc,[451, 495.5, 595, 676, 734.5]);
 
 	12.wait;
+
+	a.set(\damp,0.95);
+
+	6.wait;
 
 	a.set(\damp,0.25,\amp,0.15);
 
@@ -126,31 +139,15 @@ t = Task({
 
 	6.wait;
 
-	a.set(\amp,0.8);
+	a.release(32);
 
-	6.wait;
-
-	a.set(\amp,0.7);
-
-	4.wait;
-	a.set(\amp,0.5);
-	4.wait;
-	a.set(\amp,0.3);
-	3.wait;
-	a.set(\amp,0.1);
-	2.wait;
-	a.set(\amp,0.05);
-	4.wait;
-	a.set(\amp,0.01);
-	4.wait;
-	a.set(\amp,0);
    });
 )
 
 t.play;
 
-Ndef
 
+////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 // I commonly want to use a Pdef in a routine and it doesn't work. I often forget why
 (

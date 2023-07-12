@@ -154,14 +154,14 @@ c = Pbind(
 
 d = Pbind(
 	\instrument, \chord,
-	\degree, Pswitch(#[0, 4, 2],Ptime(8).round(2)/2),
+	\degree, Pswitch(#[0, 3, 5b],Ptime(8).round(2)),
 	\dur,Prand(#[0.2, 0.5, 1.1, 0.25, 0.15], inf),
 	//\rel,1,
     //\dur, 2,
-	\ncycles,Plprand(1,10), /// Pwrand([1,2,3,4],[4,3,2,1].normalizeSum,inf),
-	\ctranspose, [0,-14],
+	\ncycles,Plprand(10,20), /// Pwrand([1,2,3,4],[4,3,2,1].normalizeSum,inf),
+	\ctranspose, [0,-7],
 	\amp, -15.dbamp,
-	\out,0,
+	\out,~bus,
 );
 
 Pseq([
@@ -182,7 +182,7 @@ Pseq([
 	Prand([Event.silent(0.75)],1),
 	Ptpar([0.5,a,0,c],1),
 	Prand([Event.silent(0.5)],1),
-	Ppar([c,d]),
+	Ptpar([0,a,0.5,c],1),
 	Prand([Event.silent(0.5)],1),
 	Ppar([c,d]),
 	Prand([Event.silent(0.5)],1),

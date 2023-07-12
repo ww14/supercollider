@@ -65,7 +65,7 @@ TempoClock.default.tempo_(60/60);
 t = Task({
 	"start".postln;
 	a = Synth(\chill,[\drum_tone,0.01,\drum_amp,0,\drum_amp2,0]);
-
+/*
 	8.wait;
 	a.set(\drum_amp,0.15);
 
@@ -82,17 +82,27 @@ t = Task({
 
 	///
 	16.wait;
+	*/
 	"perc deep pitch, slow beat".postln;
-	a.set(\lower,1,\upper,4,\drum_amp,0.25,\drum_tone,0.1,\mix,0.9,\snd_amp,0.05,\snd2_amp,1.5,\res_short,4);
+	a.set(\lower,1,\upper,4,\drum_amp,0.25,\drum_tone,0.1,\drum_amp2,0.1,\mix,0.9,\snd_amp,0.01,\snd2_amp,0.5,\res_short,4);
+
+
+	8.wait;
+	a.set(\snd_amp,0.03);
+	8.wait;
+	a.set(\snd_amp,0.075);
+	4.wait;
+	a.set(\snd_amp,0.15);
+
 
 	//////////////////////////////
-	24.wait;
+	4.wait;
 	"perc wider beat, middle pitch".postln;
-	a.set(\lower,1,\upper,8,\drum_amp,0.15,\drum_tone,0.01,\mix,0.09,\snd_amp,0.25,\snd2_amp,1,\res_short,0.5);
+	a.set(\lower,1,\upper,8,\drum_amp,0.15,\drum_tone,0.01,\drum_amp2,0.01,\mix,0.09,\snd_amp,0.25,\snd2_amp,1,\res_short,0.5);
 
 	8.wait;
 	"perc tigher beat and faster, higher pitched".postln;
-	a.set(\lower,4,\upper,8,\drum_amp,0.08,\drum_tone,0.001,\snd_amp,6);
+	a.set(\lower,4,\upper,8,\drum_amp,0.08,\drum_tone,0.001,\drum_amp2,0.0025,\snd_amp,6);
 
 	//////////////////////////////
 	1.wait;
