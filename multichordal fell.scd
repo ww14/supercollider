@@ -256,14 +256,18 @@ t = Task({
     29.wait;//29.wait;
 	x.release(2.0);
 	1.5.wait;
+	"chords get louder as the piece progresses; bubble texture more up front".postln;
 	y = Synth(\y);
     48.wait;
 	//y.set(\rate,2.0);
+	"grinding fast perc".postln;
 	y.set(\trigger,80);
 	32.wait;  //32
+	"faster chords; normal perc".postln;
 	y.set(\cycle_rate,8.reciprocal);
     y.set(\trigger,32);
 	32.wait; // 48
+	"slower chords; slower perc".postln;
 	y.set(\cycle_rate,16.reciprocal);
 	y.set(\trigger,5);
 	8.wait;
@@ -273,6 +277,7 @@ t = Task({
 	y.set(\trigger,1.01);
 	32.wait;
 	y.release(8);
+	"grinding fast perc for tail end of piece".postln;
 	y.set(\trigger,80);
 	12.wait;
 	//s.stopRecording
