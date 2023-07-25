@@ -221,7 +221,7 @@ Pbindef(\shuffle,
 //with hop bass
 
 (
-TempoClock.default.tempo_(105/60);
+TempoClock.default.tempo_(95/60);
 Pdef.removeAll;
 
 Synth(\reverb_ef, [\in, ~bus, \out, 0]);

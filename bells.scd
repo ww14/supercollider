@@ -44,6 +44,9 @@ Pbindef(\test,
 
 Pbindef(\test).play;
 
+
+///////
+// write the pdefs
 (
 TempoClock.default.tempo_(300/60);
 
@@ -104,13 +107,16 @@ Pdef(\long,
 Pdef(\drum,Pbind(
 		\instrument, \alarm,
 	\bwr_1,0.6,//0.001,
-	\bwr_2,5,
-	\freq, 38.midicps,
+	\bwr_2,15,
+	\freq,24.midicps,
 	\dur,Psubdivide(Pseq([1!6,2!6,4!6].flatten,inf), Pseq([12,12,3],inf)),// Pseq([0.2, 0.2, 0.2],inf), 2.4,2.4,0.6
 	\pan,Pwhite(-0.3,0.0),
-	\amp,-10.dbamp,
+	\amp,-4.dbamp,
 	\out,~bus[\reverb],
 ));
+
+// old drum
+// \bwr_2,5,\freq, 38.midicps,\amp,-10.dbamp
 
 Pdef(\hihat,Pbind(
 		\instrument, \alarm,
@@ -146,7 +152,9 @@ Pdef(\bell_close,
 ));
 )
 
-Pbindef(\hihat).play
+Pbindef(\drum,\bwr_2,15,\freq,24.midicps,\amp,-5.dbamp).play;
+
+Pdef(\long).play;
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -180,7 +188,7 @@ Pspawner({|sp|
 }).play(t, quant:1);
 )
 
-Pdef(\long).play
+
 
 
 
