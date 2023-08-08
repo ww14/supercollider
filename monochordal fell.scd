@@ -177,23 +177,75 @@ t.play;
 
 /////////////////////////////////////////////
 
+/// chugging
 
+(
+SynthDef(\rush2,{
+	var trig, snd, freqs, perc, env;
 
-( x =
-{
-	var trig, snd, freqs, perc;
-	trig = Impulse.ar(LFDNoise3.kr(1).linexp(-1, 1, 1, 48)); //LFDNoise makes the higher freq steps less discrete/quantized
-	freqs = (LFNoise2.kr(1/32).linexp(-1, 1, 48, 64).round(4).poll(1/5) +  [0, 2, 4, 5, 7, 9, 10, 14]).midicps; //
-	perc = SinGrain.ar(trig,0.001,freqs/4,2);
-	snd = perc ;
-	      //   + DelayC.ar(snd, 0.01, SinOsc.ar(0.5, [0, pi]).range(0, 0.001));
+	trig = Impulse.ar(LFDNoise3.kr(0.1).linexp(-1, 1, \lower.kr(14), \upper.kr(28))); //LFDNoise makes the higher freq steps less discrete/quantized
+	freqs = (\fund.kr(52).lagud +  [0, 2, 4, 5, 7, 9, 10, 14]).midicps; //
+	perc = SinGrain.ar(trig,0.006,freqs*[1/4,1,8,1/8],1);
+	perc = Pluck.ar(perc,trig,freqs.reciprocal,freqs.reciprocal,0.15,[-0.7,0.8]);
+	snd = perc
+	     + -6.dbamp*DelayC.ar(perc, 0.01, SinOsc.ar(12.reciprocal, [0, pi]).range(0, 0.01));
 	//snd = CombN.ar(snd,0.9);
+	env = Env.asr(0.01, \dur.kr(1), \release.kr(0.5)).kr(0, \gate.kr(1));
+	snd = snd *env *\amp.kr(1);
 	snd = snd ! 2;
-	snd;
-}.play(fadeTime: 0);
+	Out.ar(0,snd);
+}).add;
+)
+/*
+(
+SynthDef(\echo, { arg out=0, maxdtime=0.2, dtime=0.2, decay=2, gate=1;
+    var env, in;
+    env = Linen.kr(gate, 0.05, 1, 0.1, 2);
+    in = In.ar(out, 2);
+    XOut.ar(out, env, CombL.ar(in * env, maxdtime, dtime, decay, 1, in));
+}, [\ir, \ir, 0.1, 0.1, 0]).add;
 )
 
+a = Synth(\rush2);
 
+Pdef(\rush2,Pbind(\instrument,\rush2,\dur,inf));
+
+q = Pfx(a, \echo, \dtime, 0.2, \decay, 3);
+
+a.stop;q.play
+*/
+
+a = Synth(\rush2);
+a.set(\fund,2,\lower,10,\upper,14); //helicopter
+a.set(\fund,52,\lower,14,\upper,28);
+a.set(\fund,46,\lower,6,\upper,10);
+a.set(\fund,6,\lower,400,\upper,450); //airplane engines
+a.set(\fund,48);
+
+//testing a pdef
+(
+Pdef(\intro,
+Pbind(\instrument, \rush2,
+		\fund, (48 + Pseq([
+		Pseq([2, 5, 10],2),
+		Pseq([0, 3, 8], 1),
+		Pseq([1, 4, 9] ,1),
+		Pseq([2, 5, 10] ,2),
+		Pseq([4, 7, 12] ,1),
+		Pseq([3, 6, 11],1),
+	],inf)),
+	\dur, Pseq([4,6,2]/8,inf),
+	\amp, 4.dbamp,
+	\pan,Pwhite(-0.1,0.1),
+))
+);
+Pfx
+
+
+Pdef(\intro).play
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //https://scsynth.org/t/what-kind-of-synthesis-is-this/4318/3
 

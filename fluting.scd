@@ -23,7 +23,7 @@ Pbind(\instrument,\flute_waveguide,
 	\ipress,Pwhite(0.88,0.92,inf),
 	\ibreath, 0.1 + Pwrand([0.001,0.01,0.1],[5,3,1].normalizeSum,inf),
 	\ifeedbk1, 0.4,
-	\ifeedbk2, 0.4,
+	\ifeedbk2, Pseg([0.4,0.7,0.6],60,\exp,1),
 			\amp,0.1,
 			\out, Pwrand([0,~bus[\reverb]],[0.5,0.5],inf),
 		).play;

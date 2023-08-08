@@ -264,7 +264,7 @@ Pbindef(\sleep,\op3, 0.5,\m3_3, 0.25pi); //orig 0 and 0pi
 // really marks a change
 Pbindef(\sleep,\op1ratio, [0.25,2]); // \op1ratio, 1,
 Pbindef(\sleep,\legato, 0.25); //\legato, 0.9,
-//key change
+//key change, not super obvious
 Pbindef(\sleep,\scale, Scale.minor); //\scle, dorian
 Pbindef(\sleep,\legato, 10); //\legato, 0.9,
 Pbindef(\sleep,\legato, 1); //\legato, 0.9,
@@ -283,7 +283,7 @@ Pbindef(\sleep,\hpf, 200); // \hpf=80
 Pbindef(\sleep,\detunehz, 3); // 1
 Pbindef(\sleep, \vdepth, 0.0001); // 0.003
 Pbindef(\sleep,\op1, 0,\op2, 0,\op3, 0,\op4, 0);
-Pbindef(\sleep,\amp,Pseg(Ps                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  eq([0.3, Pn(0)]), 20))
+Pbindef(\sleep,\amp,Pseg(Pseq([0.3,Pn(0)]),20))
 
 
 Scale
