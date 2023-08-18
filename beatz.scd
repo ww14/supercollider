@@ -33,7 +33,7 @@ t = TempoClock.default.tempo = 104 / 60;
 ~kikEnvir = (
 	parent: ~commonFuncs,
 	// rhythm pattern that is constant in each bar
-	baseAmp: #[1, 0, 0, 0, 0, 0, 0.7, 0, 0, 1, 0.25, 0, 0, 0, 0, 0] * 1.5,
+	baseAmp: #[1, 0, 0, 0, 0, 0, 0.7, 0, 0, 1, 0.25, 0, 0, 0, 0, 0] * 2.5,
 	baseDecay: #[0.15, 0, 0, 0, 0, 0, 0.15, 0, 0, 0.15, 0.15, 0, 0, 0, 0, 0],
 	addNotes: {
 		var beat16pos = (thisThread.clock.beats - ~startTime) % 16,
@@ -114,9 +114,9 @@ t = TempoClock.default.tempo = 104 / 60;
 	Pbindf(
 		Pbind(
 			\instrument, \kik,
-			\preamp, 2,
-			\basefreq,16,
-			\ratio,15,
+			\preamp, 0.15,
+			\basefreq,33,
+			\ratio,16,
 			\dur, 0.25,
 			*(~pbindPairs.value(#[amp, decay2]))
 		),
@@ -152,6 +152,12 @@ t = TempoClock.default.tempo = 104 / 60;
 		\freq, Pif(Pkey(\amp) > 0, [1100,1000], \rest)
 	)
 }), inf));
+)
+
+~kik.play(t,quant: 4);
+
+(
+~kikEnvir.put(\baseAmp, 0);
 )
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -227,11 +233,13 @@ t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 ~snrEnvir.put(\baseAmp,0!16);
 
 
-~hh.stop(t)
-~kik.stop(t)
-~snr.stop(t)
+// hack but it ends the envs
+~hhEnvir.put(\baseAmp,0);
+~kikEnvir.put(\baseAmp,0);
+~snrEnvir.put(\baseAmp,0);
 
 
+// this code no longer works. unsure why
 (
 // stop just before barline
 t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
