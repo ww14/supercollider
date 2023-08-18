@@ -56,8 +56,9 @@ SynthDef(\chill, {
 // testing
 a = Synth(\chill,[\lower,1,\upper,3,\drum_amp,0.2,\drum_tone,0.001,\mix,0.9,\snd2_amp,2]);
 
-a.set(\fund,[0]);
+a.set(\lower,1,\upper,4,\drum_amp,0.25,\drum_tone,0.1,\drum_amp2,0.05,\mix,0.9,\snd_amp,0.01,\snd2_amp,0.5,\res_short,4);
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 // a routine
 /// do I add lag to snd_tone?
 (
@@ -84,7 +85,8 @@ t = Task({
 	16.wait;
 
 	"perc deep pitch, slow beat".postln;
-	a.set(\lower,1,\upper,4,\drum_amp,0.25,\drum_tone,0.1,\drum_amp2,0.09,\mix,0.9,\snd_amp,0.01,\snd2_amp,0.5,\res_short,4);
+	// bird sounds is drum_amp2
+	a.set(\lower,1,\upper,4,\drum_amp,0.25,\drum_tone,0.1,\drum_amp2,0.05,\mix,0.9,\snd_amp,0.01,\snd2_amp,0.5,\res_short,4);
 
 
 	8.wait;
@@ -128,7 +130,7 @@ t = Task({
 	4.wait;
 	a.set(\snd_mod,3,\lower,3,\upper,4);
 
-	28.wait;
+	28.wait;o
 	"back to start".postln;
 	a.set(\lower,1,\upper,8,\drum_amp,0.15,\drum_tone,0.01,\lagu,0.9,\snd2_amp,1);
 

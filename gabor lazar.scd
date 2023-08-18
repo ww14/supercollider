@@ -3,7 +3,7 @@
 
 SynthDef(\gabor, {
 
-	var trig = Impulse.ar(LFNoise2.kr(\trig.tr(1)).linexp(-1,1,\trig_low.kr(1),\trig_high.kr(1000)));//Dust.ar(\trig.kr(1)); //\trig.tr; ////ToggleFF.ar(Dust.ar(\trig.kr(1)));//Dust.ar(\trig.kr(1)); //Dust.kr(15,0.5);//; //LFNoise2.kr(\trig.tr(1)
+	var trig = Impulse.ar(LFDNoise3.kr(0.5).linexp(-1, 1, \trig_low.kr(1), \trig_high.kr(8))); //Impulse.ar(LFNoise2.kr(\trig.tr(1)).linexp(-1,1,\trig_low.kr(1),\trig_high.kr(1000)));//Dust.ar(\trig.kr(1)); //\trig.tr; ////ToggleFF.ar(Dust.ar(\trig.kr(1)));//Dust.ar(\trig.kr(1)); //Dust.kr(15,0.5);//; //LFNoise2.kr(\trig.tr(1)
 
 	var freqEnv = EnvGen.kr(Env([1,2,1], [0.5, 0.01], \lin), trig, doneAction: 2);
 	var fltEnv = EnvGen.kr(Env([0.0125,1,0.0125], [\fAtk.kr(0.3), \fRel.kr(0.01)], \exp), trig, doneAction: 2);
@@ -61,9 +61,8 @@ SynthDef(\reverb_ef, {
 
 )
 
-a = Synth(\reverb_ef, [\in, ~bus, \out, 0]);
-
 (
+a = Synth(\reverb_ef, [\in, ~bus, \out, 0]);
 Pbindef(\gabor,
 
 		\instrument, \gabor,
@@ -93,15 +92,35 @@ Pbindef(\gabor,
 Pbindef(\gabor).play;
 
 
+( ~b1 = [
+				[33,45,48,55,57], //A
+				[29,41,45,48,53], //F
+		        [33,43,47,50,55], //G
+		        [33,45,49,55,57], //A
+]);
+
+( ~b2 = [
+			[33,45,48,55,57], //A
+			[40,44,47,52], //E
+			[31,34,38,43,46,50], //g
+			[38,42,45,50,57], //D
+]);
+
+
 (Pbindef(\gabor,
-		\slope, 1,
-		\fltRange, 750, //1400 lower bound at slope 5
-	\freq,Pseq([[30,10],[30,50],[30,60],[10,60]],inf),
-		\trig_low,5,
-		\trig_high, 100,
+		\slope, -2.0, //0.005
+	\dur, 1/4 * Pbjorklund2(5, 8),//Pseq([1,2,1],inf)/4,
+	\fRel,Pwhite(0.1,0.5),
+	\fAtk,Pwhite(0.01,0.2),
+	\rel,2,
+	\freq,[60,48,72,24].midicps,// (Pseq([Pseq(~b1,2),Pseq(~b2,1),],inf)).midicps,
+	\fltRange,Pkey(\freq)*10,//800, //1400 lower bound at slope 5
+//	\freq,Pseq([[100],[150,300]],inf),
+		\trig_low,1,
+	\trig_high, Pwrand([8,32,64],[3,2,0.5].normalizeSum,inf),
 );)
 
-
+///////////////////////////////////////////////////////////////////////////
 (Pbindef(\gabor,
 		\slope, 2,
 		\fltRange, 30, //1400 lower bound at slope 5

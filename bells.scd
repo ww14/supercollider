@@ -104,15 +104,27 @@ Pdef(\long,
 
 
 
+Pdef(\hat,Pbind(
+		\instrument, \alarm,
+	\bwr_1,0.5,//0.001,0.6
+	\bwr_2,4, //15
+	\rq, 0.025,//1
+	\freq,24.midicps,
+	\dur,Psubdivide(Pseq([1!6,2!6,4!6].flatten,inf), Pseq([12,12,3],inf)),// Pseq([0.2, 0.2, 0.2],inf), 2.4,2.4,0.6
+	\pan,Pwhite(-0.2,0.1),
+	\amp,-8.dbamp, //-4.dbamp
+	\out,~bus[\reverb],
+));
+
 Pdef(\drum,Pbind(
 		\instrument, \alarm,
 	\bwr_1,0.5,//0.001,0.6
 	\bwr_2,4, //15
-	\rq, [10,0.025],//1
+	\rq, 10,//1
 	\freq,24.midicps,
-	\dur,Psubdivide(Pseq([1!6,2!6,4!6].flatten,inf), Pseq([12,12,3],inf)),// Pseq([0.2, 0.2, 0.2],inf), 2.4,2.4,0.6
-	\pan,Pwhite(-0.3,0.0),
-	\amp,-8.dbamp, //-4.dbamp
+	\dur,Pwrand([3,6],[2,1].normalizeSum,inf),// Pseq([0.2, 0.2, 0.2],inf), 2.4,2.4,0.6
+	\pan,Pwhite(0.2,0.4),
+	\amp,-13.dbamp, //-4.dbamp
 	\out,~bus[\reverb],
 ));
 
@@ -147,7 +159,7 @@ Pdef(\bell_close,
 		[2,5,10]
 	],1)).midicps,
 	\dur, Pseq([1!48,5].flatten,1),
-	\amp,-2.dbamp,
+	\amp,-4.dbamp,
 	\pan,Pwhite(-0.3,0.3),
 		\out,~bus[\reverb],
 ));
@@ -158,7 +170,7 @@ Pdef(\bell_close,
 /////////////////////////////////////////////
 //testing
 
-(Pbindef(\drum,
+(Pbindef(\drum
 		\instrument, \alarm,
 	\bwr_1,0.5,//0.001,
 	\bwr_2,4,
@@ -170,8 +182,9 @@ Pdef(\bell_close,
 	\out,~bus[\reverb],
 );)
 
-Pbindef(\drum).play;
+Pdef(\drum).play;
 
+Pdef(\drum).play
 
 (
 TempoClock.default.tempo_(60/60);
@@ -193,10 +206,12 @@ Pspawner({|sp|
 	t = TempoClock.default.tempo_(60/60);
 	sp.par( Pfindur(32, Pdef(\intro)));
 	sp.wait(32);
+
 	t = TempoClock.default.tempo_(300/60);
 
 	sp.par( Pfindur(48*4, Pdef(\bell)));
 	sp.par( Pfindur(48*5, Pdef(\drum)));
+	sp.par( Pfindur(48*5, Pdef(\hat)));
 	sp.par( Pfindur(48*5+2, Pdef(\long)));
 
 	sp.wait(48*2);
