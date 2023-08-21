@@ -283,7 +283,7 @@ r = Task({ //12 sec segments, mostly; a full phrase is 16.5 (for 3 beat phrase),
 	~a = [1,3,5].rotate(2).pyramidg;
 	Pbindef(\piano, \amp,-19.dbamp);
 	(Pbindef(\perc_high,\mod_index,10,\mod_freq, [10,100],\amp,0.11,\dur,Psubdivide(
-			Pseq([1!9,3!3,1!9,3!2,4!1].flatten,inf),
+			Pseq([1!9,3!3,1!9].flatten,inf),
 			Pseq(#[3,1,2],inf)
 	)/8,));
 

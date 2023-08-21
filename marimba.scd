@@ -109,8 +109,8 @@ t = Task({
     Ndef(\sound).fadeTime = 0;
     Ndef(\sound,e);
 
-	60.wait;
-	Ndef(\sound).fadeTime = 4;
+	48.wait;
+	Ndef(\sound).fadeTime = 2;
     Ndef(\sound,d);
 
 
