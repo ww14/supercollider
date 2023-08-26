@@ -111,13 +111,10 @@ Pdef(\hat,Pbind(
 	\rq, 0.025,//1
 	\freq,24.midicps,
 	\dur,Psubdivide(Pseq([1!6,2!6,4!6].flatten,inf), Pseq([12,12,3],inf)),// Pseq([0.2, 0.2, 0.2],inf), 2.4,2.4,0.6
-<<<<<<< Updated upstream
 	\pan,Pwhite(-0.2,0.1),
-	\amp,-8.dbamp, //-4.dbamp
-=======
+	//\amp,-8.dbamp, //-4.dbamp
 	\pan,Pwhite(-0.3,0.0),
-	\amp,-20.dbamp,
->>>>>>> Stashed changes
+	\amp,-22.dbamp,
 	\out,~bus[\reverb],
 ));
 
@@ -129,7 +126,7 @@ Pdef(\drum,Pbind(
 	\freq,24.midicps,
 	\dur,Pwrand([3,6],[2,1].normalizeSum,inf),// Pseq([0.2, 0.2, 0.2],inf), 2.4,2.4,0.6
 	\pan,Pwhite(0.2,0.4),
-	\amp,-13.dbamp, //-4.dbamp
+	\amp,-18.dbamp, //-4.dbamp
 	\out,~bus[\reverb],
 ));
 
@@ -170,8 +167,6 @@ Pdef(\bell_close,
 ));
 )
 
-<<<<<<< Updated upstream
-
 
 /////////////////////////////////////////////
 //testing
@@ -188,7 +183,7 @@ Pdef(\bell_close,
 	\out,~bus[\reverb],
 );)
 
-Pdef(\drum).play;
+Pdef(\bell).play;
 
 Pdef(\drum).play
 
@@ -196,12 +191,9 @@ Pdef(\drum).play
 TempoClock.default.tempo_(60/60);
 Pdef(\intro).play;
 )
-
-=======
 ~reverbSynth.set(\mix,0.2,\predelay,0.1,\revtime,3,\lpf,1000);
-
 Pbindef(\drum).play
->>>>>>> Stashed changes
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -209,22 +201,13 @@ Pbindef(\drum).play
 //the piece is in 3/8, kinda
 
 StageLimiter.activate;
-t = TempoClock.default.tempo_(300/60);
-
+//t = TempoClock.default.tempo_(300/60);
 
 Pspawner({|sp|
-/*
 	t = TempoClock.default.tempo_(60/60);
-<<<<<<< Updated upstream
 	sp.par( Pfindur(32, Pdef(\intro)));
 	sp.wait(32);
-
-=======
-	sp.par( Pfindur(32, Pdef(\test)));
-	sp.wait(32);*/
->>>>>>> Stashed changes
 	t = TempoClock.default.tempo_(300/60);
-
 	sp.par( Pfindur(48*4, Pdef(\bell)));
 	sp.par( Pfindur(48*5, Pdef(\drum)));
 	sp.par( Pfindur(48*5, Pdef(\hat)));
@@ -239,7 +222,7 @@ Pspawner({|sp|
 
 	sp.par( Pfindur(60, Pdef(\bell_close)));
 
-}).play(t, quant:1);
+}).play(t,quant:1);
 )
 
 
@@ -253,6 +236,7 @@ Pspawner({|sp|
 
 
 //////////////////////////////////////////////////////////////
+// misc testing
 
 TempoClock.default.tempo_(120/60);
 Pdef.removeAll;
