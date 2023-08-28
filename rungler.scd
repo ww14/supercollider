@@ -32,8 +32,8 @@ rungler = { |dataSignal, clockSignal|
 		bit = Delay1.ar(bit);
 	};
 	(
-		out: doDAC.(bits[numBits - 2090..numBits - 1]),
-		outReverse: doDAC.(bits[numBits - 2..numBits - 2090]),
+		out: doDAC.(bits[numBits - 2045..numBits - 1]),
+		outReverse: doDAC.(bits[numBits - 2..numBits - 2045]),
 	);
 };
 
@@ -45,13 +45,13 @@ SynthDef(\rungler, {
 	snd = LFTri.ar(({ lfo.() } ! 2).linexp(-1, 1, [10, 1], 6000) * (snd * 24).midiratio);
 	LocalOut.ar(LeakDC.ar(Sanitize.ar(snd)));
 	snd = (snd[0] > snd[1]) - 0.5;
-	snd = MoogFF.ar(snd, ({ lfo.() } ! 2).linexp(-1, 1, 100, 6000) * (runglerOut[\out] * 36).midiratio, 0.07);
+	snd = MoogFF.ar(snd, ({ lfo.() } ! 2).linexp(-1, 1, 100, 6000) * (runglerOut[\out] * 36).midiratio, 0.5);
 	snd = Splay.ar(snd, 0.3);
 
 	sndVerb = NHHall.ar([snd,snd],2,0.25);
 	snd = XFade2.ar(snd, sndVerb);
 
-	snd = snd * -30.dbamp;
+	snd = snd * -7.dbamp;
 	Out.ar(\out.kr(0), snd);
 }).add;
 )

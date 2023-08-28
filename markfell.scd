@@ -47,7 +47,7 @@ Pdef(\tibetan, \amp,0);
 					SinOscFB.ar([151,309,407,561,774,821,864,1173,1984,51],SinOscFB.ar([0,0,0.5,0,0.5,0.5],1.3),SinOsc.kr([0.005,0,0.05,0])+[0.06,0.05,0.04,0.03,0.02,0.01]))
 				,1,XLine.kr(0.01,0.1,200),0.2)
 			,100,)
-		,0,-6.dbamp)
+		,0,-18.dbamp)
 }).play;)
 
 Ndef(\markfell).fadeTime = 1;
@@ -129,7 +129,7 @@ Ndef(\markfelt,{
 	a = SinOsc.kr(0.01,1.6*pi).linlin(-1,1,0.11,2).round(0.1);  // 0.11,2
 	b = SinOsc.kr(0.01,1.6*pi).linlin(-1,1,1,10).round(1);
 	rel = LFPar.kr(0.004,0,1.09,1.1).round(0.01);
-	env = EnvGen.ar(Env.linen(0.01, 0, rel, 0.7, -2).circle,doneAction:Done.freeSelf); //Env.new([0, 1, 0.9, 0.1, 0.0001], [0.01, 0.1, 0.02, 0.5])  Env.perc(0.01, 1, 1, -5) //Env.pairs({ { 1.0.rand } ! 2 } ! 16, \exp) //Env.asr(0.02, 0.5, 1, -4)
+	env = EnvGen.ar(Env.linen(0.01, 0, rel, 0.7, -2).circle,doneAction:Done.freeSelf); //Env.new([0, 1, 0.9, 0.1, 0.0001], [0.01, 0.1, 0.02, 0.5])  Env.perc(0.01, 1, 1, -5) //Env.pairs({ .{ 1.0.rand } ! 2 } ! 16, \exp) //Env.asr(0.02, 0.5, 1, -4)
 	//atk =  TWChoose.kr(Dust.kr(10), [0.01,0.001,0.1], [0.8, 0.1, 0.1].normalizeSum);
 	Pan2.ar( env *
 			Greyhole.ar(

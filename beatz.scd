@@ -29,7 +29,7 @@ Server.killAll;
 )
 
 (
-t = TempoClock.default.tempo = 104 / 60;
+t = TempoClock.default.tempo = 98 / 60;
 ~kikEnvir = (
 	parent: ~commonFuncs,
 	// rhythm pattern that is constant in each bar
@@ -115,8 +115,8 @@ t = TempoClock.default.tempo = 104 / 60;
 		Pbind(
 			\instrument, \kik,
 			\preamp, 0.15,
-			\basefreq,33,
-			\ratio,16,
+			\basefreq,36,
+			\ratio,12,
 			\dur, 0.25,
 			*(~pbindPairs.value(#[amp, decay2]))
 		),
@@ -135,7 +135,7 @@ t = TempoClock.default.tempo = 104 / 60;
 			\dur, 0.25,
 			*(~pbindPairs.value(#[amp, decay,rq]))
 		),
-		\freq, Pif(Pkey(\amp) > 0, [500,2500], \rest)
+		 \freq, Pif(Pkey(\amp) > 0, [50,250,500,2500], \rest)
 	)
 }), inf));
 ~hh = Penvir(~hhEnvir, Pn(Plazy({
@@ -155,6 +155,8 @@ t = TempoClock.default.tempo = 104 / 60;
 )
 
 ~kik.play(t,quant: 4);
+~snr.play(t,quant: 4);
+~hh.play(t,quant: 4);
 
 (
 ~kikEnvir.put(\baseAmp, 0);
@@ -164,6 +166,7 @@ t = TempoClock.default.tempo = 104 / 60;
 
 // stop just before barline
 (
+s.prepareForRecord;
 t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 	[~kik, ~snr, ~hh].do(_.stop);
 });)
@@ -171,9 +174,10 @@ t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 
 // start it
 (
+s.record;
 ~kik.play(t,quant: 4);
-~snr.play(t,quant: 16);
-~hh.play(t,quant: 16);
+~snr.play(t,quant: 32);
+~hh.play(t,quant: 32);
 )
 
 
@@ -188,7 +192,7 @@ t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 //
 
 // transition 1
-~snrEnvir.put(\baseRq, #[1, 1, 1, 1, 1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1, 1]/15);
+~snrEnvir.put(\baseRq, #[1, 1, 1, 1, 1, 1, 1, 1, 8, 1, 1, 1, 1, 1, 1, 1]/15);
 
 // transition 2
 (
@@ -197,9 +201,11 @@ t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 ~hhEnvir.put(\baseDelta,#[1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2]);
 )
 
+
 ////1a&2a&3a
 (
 ~snrEnvir.put(\baseDecay, #[0, 0, 0.1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0.3,0]);
+~kikEnvir.put(\baseAmp, #[1, 0, 1, 0, 0, 0, 0.7, 1, 0, 1, 0.25, 0, 0, 0, 0, 0.25] * 1.5)
 )
 
 
@@ -208,6 +214,7 @@ t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 
 //step again
 ~snrEnvir.put(\baseRq, #[1, 1, 1, 1, 1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1, 1]*2);
+
 
 
 
@@ -224,10 +231,13 @@ t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 (
 ~hhEnvir.put(\baseAmp,15!16);
 ~hhEnvir.put(\baseDelta,0.5 ! 16);
+~kikEnvir.put(\baseAmp, #[1, 0, 1, 0, 0, 0, 0.7, 1, 0, 1, 0.25, 0, 0, 0, 0, 0.25] * 1.5)
+
 )
 
 ~kikEnvir.put(\baseDecay, #[0.15, 0, 0, 0, 0, 0, 0.15, 0, 0, 0.15, 0.15, 0, 0, 0, 0, 0] * 0.5);
 
+// dont run this
 ~hhEnvir.put(\baseAmp,0!16,\baseDelta,0!16,\addNotes,0);
 ~kikEnvir.put(\baseAmp,0!16);
 ~snrEnvir.put(\baseAmp,0!16);
@@ -238,6 +248,7 @@ t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 ~kikEnvir.put(\baseAmp,0);
 ~snrEnvir.put(\baseAmp,0);
 
+s.stopRecording;
 
 // this code no longer works. unsure why
 (

@@ -111,10 +111,17 @@ Pdef(\hat,Pbind(
 	\rq, 0.025,//1
 	\freq,24.midicps,
 	\dur,Psubdivide(Pseq([1!6,2!6,4!6].flatten,inf), Pseq([12,12,3],inf)),// Pseq([0.2, 0.2, 0.2],inf), 2.4,2.4,0.6
+<<<<<<< Updated upstream
 	\pan,Pwhite(-0.2,0.1),
 	//\amp,-8.dbamp, //-4.dbamp
 	\pan,Pwhite(-0.3,0.0),
 	\amp,-22.dbamp,
+=======
+	//\pan,Pwhite(-0.2,0.1),
+	//\amp,-8.dbamp, //-4.dbamp
+	\pan,Pwhite(-0.3,0.0),
+	\amp,-20.dbamp,
+>>>>>>> Stashed changes
 	\out,~bus[\reverb],
 ));
 
@@ -126,7 +133,11 @@ Pdef(\drum,Pbind(
 	\freq,24.midicps,
 	\dur,Pwrand([3,6],[2,1].normalizeSum,inf),// Pseq([0.2, 0.2, 0.2],inf), 2.4,2.4,0.6
 	\pan,Pwhite(0.2,0.4),
+<<<<<<< Updated upstream
 	\amp,-18.dbamp, //-4.dbamp
+=======
+	\amp,-22.dbamp, //-4.dbamp
+>>>>>>> Stashed changes
 	\out,~bus[\reverb],
 ));
 
@@ -167,6 +178,10 @@ Pdef(\bell_close,
 ));
 )
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 
 /////////////////////////////////////////////
 //testing
@@ -191,6 +206,11 @@ Pdef(\drum).play
 TempoClock.default.tempo_(60/60);
 Pdef(\intro).play;
 )
+<<<<<<< Updated upstream
+=======
+
+
+>>>>>>> Stashed changes
 ~reverbSynth.set(\mix,0.2,\predelay,0.1,\revtime,3,\lpf,1000);
 Pbindef(\drum).play
 
@@ -204,9 +224,17 @@ StageLimiter.activate;
 //t = TempoClock.default.tempo_(300/60);
 
 Pspawner({|sp|
+<<<<<<< Updated upstream
 	t = TempoClock.default.tempo_(60/60);
 	sp.par( Pfindur(32, Pdef(\intro)));
 	sp.wait(32);
+=======
+
+	t = TempoClock.default.tempo_(60/60);
+	sp.par( Pfindur(32, Pdef(\intro)));
+	sp.wait(32);
+
+>>>>>>> Stashed changes
 	t = TempoClock.default.tempo_(300/60);
 	sp.par( Pfindur(48*4, Pdef(\bell)));
 	sp.par( Pfindur(48*5, Pdef(\drum)));
