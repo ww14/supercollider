@@ -16,6 +16,7 @@
 );
 )
 
+t = TempoClock.default.tempo = 65 / 60;
 Pbindef(\perc).play;
 
 (

@@ -65,7 +65,7 @@ Pbind(\instrument, \alarm,
 		Pseq([3, 6, 11],1),
 	],inf)).midicps,
 	\dur, Pseq([1,2,1],inf),
-	\amp, -10.dbamp,
+	\amp, -12.dbamp,
 	\pan,Pwhite(-0.1,0.1),
 ))
 );

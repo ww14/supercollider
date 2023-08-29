@@ -43,10 +43,10 @@ SynthDef(\gabor, {
 TempoClock.default.tempo_(105/60);
 
 (
+Pdef.removeAll;
 //~bus = Bus.audio(s,2);
 //Synth(\reverb_ef,[\in, ~bus, \out, 0,\rt60,0.1]);
-Pdef(\gabor,
-	Pbind(
+Pbindef(\gabor,
 		\instrument, \gabor,
 
 		\atk, 0.01,
@@ -69,6 +69,40 @@ Pdef(\gabor,
 );
 )
 
-Pdef(\gabor).play;
+Pbindef(\gabor).play;
+Pbindef(\gabor,\dur,1/Pseq([6!12,1,4].flatten,inf));
+Pbindef(\gabor,\freq,[55,110,440],\rel,0.3,\atk,0.01,\slope,-0.1);
+Pbindef(\gabor,\dur,l);
+
+
+(
+(
+l = Prewrite(0.25,
+    (
+        0.25: #[0.25,0.25,0.25,0.25,0.5],
+        0.5: #[0.125,0.5,0.125,0.125,0.125],
+        0.125: #[0.375,0.125],
+        //0.375: #[0.375,0.375,1],
+        1: #[0.75,0.25],
+        0.75: #[8]
+),64);
+);
+
+(
+k = Prewrite(1, // start with 1
+        (    1: [0.25,2,0.25,2],
+            0.25: [3,3,2]/4,
+		3/4: [0.25,1,0.125,0.125],
+		0.5: [1,1,1,1,1,1]/8
+        ), 4);
+);
+
+j = [1, 0.7, 1, 0.25]
+)
+
+
+
+
+
 
 Pdef(\gabor).stop;

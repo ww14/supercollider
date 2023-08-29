@@ -86,6 +86,8 @@ a.set(\gravity,2,\damp,0.00001,\amp,0.4);
 a.set(\speed,10,\amp,0.6,\damp,0.01);
 a.set(\speed,0.5,\damp,0.00001,\amp,0.4);
 a.set(\speed,500,\damp,0.95,\gravity,100,\amp,0.2);
+a.set(\sc,[451, 495.5, 595, 676, 734.5]);
+a.
 
 (
 TempoClock.default.tempo_(60/60);
