@@ -16,6 +16,7 @@ Server.killAll;
 	sig = filter.(sig, freq, \bwr_2.kr(0.5));
 	    sig = Pan2.ar(sig,\pan.kr(0));
 	sig = BLowPass4.ar(sig,1200,\rq.kr(1));
+	sig = LeakDC.ar(sig);
 	OffsetOut.ar(out, sig*\amp.kr(1))
 	}
 ).add;)
@@ -54,7 +55,7 @@ Pdef.removeAll;
 (
 Pdef(\intro,
 Pbind(\instrument, \alarm,
-		\bwr_1,0.002,
+		\bwr_1,0.003,
 		\bwr_2,0.1,//0.25,
 		\freq, (50 + Pseq([
 		Pseq([2, 5, 10],2),
@@ -65,8 +66,13 @@ Pbind(\instrument, \alarm,
 		Pseq([3, 6, 11],1),
 	],inf)).midicps,
 	\dur, Pseq([1,2,1],inf),
+<<<<<<< Updated upstream
 	\amp, -12.dbamp,
+=======
+	\amp, -6.dbamp,
+>>>>>>> Stashed changes
 	\pan,Pwhite(-0.1,0.1),
+
 ))
 );
 
@@ -218,6 +224,13 @@ Pbindef(\drum).play
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 (
+
+s.prepareForRecord;
+s.scope;
+s.plotTree;
+s.meter;
+
+
 //the piece is in 3/8, kinda
 
 StageLimiter.activate;
@@ -225,6 +238,11 @@ StageLimiter.activate;
 
 Pspawner({|sp|
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+	//s.record;
+	sp.wait(1);
+>>>>>>> Stashed changes
 	t = TempoClock.default.tempo_(60/60);
 	sp.par( Pfindur(32, Pdef(\intro)));
 	sp.wait(32);
@@ -249,6 +267,10 @@ Pspawner({|sp|
 	sp.wait(48*2);
 
 	sp.par( Pfindur(60, Pdef(\bell_close)));
+
+
+	sp.wait(80);
+	//s.stopRecording;
 
 }).play(t,quant:1);
 )

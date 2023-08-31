@@ -62,10 +62,18 @@
 /////////////////the piece ////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+(
+s.prepareForRecord;
+s.scope;
+s.plotTree;
+s.meter;
+)
+
 
 (
 c = TempoClock.default.tempo_(95/60);
 t = Task({
+s.record;
 Synth(\reverb_ef, [\in, ~bus, \out, 0]);
 Pbindef(\twenty,
 	\instrument, \twotube,
@@ -142,6 +150,8 @@ Pbindef(\twenty,
 	Pbindef(\twenty,\dur,Pn(Pshuf(1/[3,3,3,6],3),inf));
 	15.wait;
 	Pbindef(\twenty).stop;
+	10.wait;
+	s.stopRecording;
    });
 )
 
