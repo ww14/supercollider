@@ -116,12 +116,18 @@ Pbindef(\harmony,
 //the routine
 
 
+(
 s.prepareForRecord;
+s.scope;
+s.plotTree;
+s.meter;
+)
+
 
 (
 TempoClock.default.tempo_(60/60);
 t = Task({
-	//s.record;
+	s.record;
 	"start".postln;
 	1.wait;
 	Pbindef(\harmony).play;
@@ -137,8 +143,8 @@ t = Task({
 	Pbindef(\harmony).stop;
 	Pdef.removeAll;
 
-
-	//s.stopRecording;
+	4.wait;
+	s.stopRecording;
 });
 )
 

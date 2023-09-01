@@ -62,8 +62,17 @@ a.set(\lower,1,\upper,4,\drum_amp,0.25,\drum_tone,0.1,\drum_amp2,0.05,\mix,0.9,\
 // a routine
 /// do I add lag to snd_tone?
 (
+s.prepareForRecord;
+s.scope;
+s.plotTree;
+s.meter;
+)
+
+
+(
 TempoClock.default.tempo_(60/60);
 t = Task({
+	//s.record;
 	"start".postln;
 	a = Synth(\chill,[\drum_tone,0.01,\drum_amp,0,\drum_amp2,0]);
 
@@ -130,7 +139,7 @@ t = Task({
 	4.wait;
 	a.set(\snd_mod,3,\lower,3,\upper,4);
 
-	28.wait;o
+	28.wait;
 	"back to start".postln;
 	a.set(\lower,1,\upper,8,\drum_amp,0.15,\drum_tone,0.01,\lagu,0.9,\snd2_amp,1);
 
@@ -139,6 +148,10 @@ t = Task({
 	a.set(\drum_amp2,0);
 	a.release(18);
 
+
+
+	20.wait;
+	//s.stopRecording;
 
 	// fade out
 
