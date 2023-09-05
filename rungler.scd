@@ -58,6 +58,6 @@ SynthDef(\rungler, {
 
 Synth(\rungler);
 
-numBits4
 
-{ LFCub.ar(Line.kr(100, 800, 0.1)) }.plot(0.1);
+
+
