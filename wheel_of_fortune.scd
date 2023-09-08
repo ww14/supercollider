@@ -32,7 +32,7 @@ SynthDef(\impulsetrain,{arg
 	chord = env * chord;
 	sig = sig + chord;
 	sig = LPF.ar(sig, 4000);
-	//sig = HPF.ar(sig, 15);
+	sig = HPF.ar(sig, 40);
 	//sig = sig * train;
 	sig = Pan2.ar(sig,pan,amp);//.linlin(0,sig,outMin:-1,outMax:1)); //.wrap(-1,1));
 	Out.ar(out, sig);
@@ -63,7 +63,7 @@ Pbindef(\impulse,
 	\num, Pseq([Pn([50],5),Pn([25],5),Pn([12],3),Pn([5],2)],inf), // -0.001
 	\cur,Pwhite(5,-5,inf),
 	\pan,Pwhite(-0.3,0.3,inf),
-	\out,~bus[\reverb],
+	\out,~bus[\reverb2],
 	\amp,0.dbamp,
 ).play;
 )
@@ -90,8 +90,8 @@ Pbindef(\impulse,\amp,Pseg([0,-100],12,\lin).dbamp);
 	\num, Pseq([Pn([50],5),Pn([25],5),Pn([12],3),Pn([5],2)],inf), // -0.001
 	\cur,Pwhite(5,-5,inf),
 	\pan,Pwhite(-0.3,0.3,inf),
-	\out,~bus[\reverb],
-	\amp,0.dbamp,
+	\out,~bus[\reverb2],
+	\amp,-6.dbamp,
 );
 
 
@@ -104,7 +104,7 @@ Pbindef(\harmony,
 	\rqmin,0.25,
 	\rqmax,1.2,
 	\pan,Pwhite(0.01,0.3,inf),
-	\out,~bus[\reverb],
+	\out,~bus[\reverb2],
 	\amp,Pseg(Pseq([-60,-15,-90].dbamp,inf),Pseq([70,30],inf),Pseq([1,-3],inf),inf),
 );
 
@@ -127,7 +127,7 @@ s.meter;
 (
 TempoClock.default.tempo_(60/60);
 t = Task({
-	s.record;
+	//s.record;
 	"start".postln;
 	1.wait;
 	Pbindef(\harmony).play;
@@ -144,7 +144,7 @@ t = Task({
 	Pdef.removeAll;
 
 	4.wait;
-	s.stopRecording;
+	//s.stopRecording;
 });
 )
 

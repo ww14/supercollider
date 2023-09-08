@@ -67,7 +67,7 @@ Pbindef(\303).play;
 (
 (
 Pbindef(\303,\midinote,Pstep([45,40,41,36,38,44],3,inf)+[0,12,24],
-	\dur,Pwrand([0.1,0.2],[0.8,0.2],inf), //0.1
+	\dur,2,//Pwrand([0.1,0.2],[0.8,0.2],inf), //0.1
 	\rel,0.1,
 	\rq,0.75,
 	\fAtk,0.08,
@@ -103,5 +103,7 @@ Pbindef(\fm2,
 )
 
 Pbindef(\fm2).play
+Pbindef(\303).play;
+
 
 Ppar([Pbindef(\303),Pbindef(\fm1)],inf).play;
