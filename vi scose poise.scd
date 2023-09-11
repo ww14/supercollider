@@ -106,7 +106,7 @@ t = Task({
 
 	8.wait;
 	y.set(\modfreq,293);
-	x.set(\out,~bus[\reverb2]);
+	x.set(\out,~bus[\reverb]);
 
 	8.wait;
 	y.set(\modfreq,330);
@@ -123,18 +123,18 @@ t = Task({
 
 
 	24.wait;
-	y.set(\modfreq,330);
+	y.set(\modfreq,293);
 	x.set(\lower,1,\upper,1);
 
 
 	16.wait;
 	y.set(\modfreq,220,\dur,8);
 	x.set(\lower,1,\upper,32);
-	x.set(\out,~bus[\reverb]);
+	x.set(\out,~bus[\reverb2]);
 
 	24.wait;
 	x.set(\lower,1,\upper,1);
-	3.wait;
+	4.wait;
 	x.set(\gate, 0);
 
 	8.wait;
