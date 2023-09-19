@@ -12,7 +12,7 @@ lfo = {
 		TRand.ar(-1, 1, trigger),
 	]);
 };
-SynthDef(\rungler, {
+SynthDef(\fell, {
 	var trig, snd, freqs, perc, a;
 	trig = {lfo.()!2}; //LFDNoise makes the higher freq steps less discrete/quantized
 	freqs = (LFDNoise3.kr(32.reciprocal).linexp(-1, 1, 48, 72).round(12).poll(1) +  [-12, 0, 2, 4, 5, 7, 9, 10, 14]).midicps; //
@@ -39,6 +39,6 @@ SynthDef(\rungler, {
 }).add;
 )
 
-Synth(\rungler);
+Synth(\fell);
 
 

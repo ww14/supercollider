@@ -56,15 +56,15 @@ x.set(\gate, 0);
 (
 Pbindef(\303,
 	\instrument, \sinfb,
-	\midinote,[57,45,33] + Pseq([0,7,-5,-1,0,7,4,2,0,7,-5,-1,0,7,4,Rest(1)], inf),
-	\dur,2,//Pwrand([0.1,0.2],[0.8,0.2],inf), //0.1
+	\midinote,[57,45,33] + Pseq([0,4,2,0], inf),
+	\dur,4,//Pwrand([0.1,0.2],[0.8,0.2],inf), //0.1
 	\rel,4,
 	\fb,0.01,
 	\iScale,1,
-	\index,1,
-	\atk,0.2,
+	\index,10,
+	\atk,2,
 	\cutoff,10,
 	\amp,-30.dbamp
 );
 );
-Pbindef(\303).play
+Pbindef(\303,\midinote,0,\rel,8).play
