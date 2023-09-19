@@ -61,6 +61,7 @@ ServerQuit.removeAll;
 	~bus.add(\reverb2 -> Bus.audio(s,2));
 	~bus.add(\comb -> Bus.audio(s,2));
 	~bus.add(\chorus -> Bus.audio(s,2));
+	~bus.add(\nhhall -> Bus.audio(s,2));
 	// ~bus.add(\somenewbus -> Bus.audio(s,2));
 };
 
@@ -78,6 +79,7 @@ ServerQuit.removeAll;
 		~reverb2Grp = Group.after(~mainGrp);
 		~combGrp = Group.after(~reverbGrp);
 		~chorusGrp = Group.after(~combGrp);
+		~nhhall = Group.after(~chorusGrp);
 		~reverbSynth = Synth.new(
 			\reverb,
 			[
@@ -106,6 +108,14 @@ ServerQuit.removeAll;
 				\out, ~out,
 			],
 			~combGrp //
+		);
+		~nhhallSynth = Synth.new(
+			\nhhall,
+			[
+				\in, ~bus[\nhhall], //call in audio from the reverb bus
+				\out, ~out,
+			],
+			~nhhall //make the synths target the newly created reverb group
 		);
 		//for some reason this bus wont work and messes up othernodes.
 /*		~chorusSynth = Synth.new(

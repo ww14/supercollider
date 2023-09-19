@@ -1997,6 +1997,15 @@ SynthDef(\comb,{arg in=0,out=0;
 
 
 
+SynthDef(\nhhall, {arg in, out;
+		var		snd, sndVerb, totalSig, outSig;
+		snd = In.ar(in, 2);
+	snd = Splay.ar(snd, \spread.kr(0.3));
+	sndVerb = NHHall.ar([snd,snd],\rt60.kr(1),\stereo.kr(0.5));
+	    snd = XFade2.ar(snd, sndVerb);
+		Out.ar(out, snd);
+	}).add;
+
 
 
 

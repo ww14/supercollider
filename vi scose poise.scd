@@ -11,7 +11,7 @@ winenv = Env([0, 0.5,1, 0], [0.25, 0.5,0.5], [8,2,-8]);
 z = Buffer.sendCollection(s, winenv.discretize, 1);
 
 SynthDef(\fm_grain, {
-    var pan, env, snd, freqdev, trig;
+    var pan, env, snd, sndVerb, freqdev, trig;
     // use mouse x to control panning
     //pan = MouseX.kr(-1, 1);
     //freqdev = WhiteNoise.kr(MouseY.kr(0, 400));
@@ -32,9 +32,41 @@ SynthDef(\fm_grain, {
 	snd = snd * env;
 		Out.ar(\out.kr(0),snd);
 }).add;
-
 )
 
+/*
+
+
+
+~bus.add(\nhhall -> Bus.audio(s,2));
+~nhhall = Group.after(~combGrp);
+
+
+~nhhallSynth = Synth.new(
+			\nhhall,
+			[
+				\in, ~bus[\nhhall], //call in audio from the reverb bus
+				\out, ~out,
+			],
+			~nhhall //make the synths target the newly created reverb group
+		);
+
+
+)
+*/
+
+(/*
+~sndBus.free;
+~verbBus.free;
+~sndBus = Bus.audio(s,2); // Bus Microfono
+~verbBus = Bus.audio(s,2); // Bus Delay
+~micGrp = Group.new;            // Gruppo sources
+~fxGrp  = Group.after(~micGrp); // Gruppo elaborazioni
+
+s = Synth(\splay_verb, [\inBus,~sndBus, \outBus,~verbBus, \fadeT, 0.5], ~micGrp, \addToTail);
+*/
+
+)
 
 
 /////////////////////////////////////////////
@@ -43,8 +75,11 @@ SynthDef(\fm_grain, {
 z
 y = Synth(\fm_grain, [\envbuf, -1,\modfreq,200]);
 y.set(\modfreq,330,\dur,4,\amp,-40.dbamp,\carfreq,220); // A=220, B= 247, C=262 ,C#=275 , D=293, E=330, F#=370, G=196,385, G#=208,415,
+y.set(\out,~bus[\nhhall]);
 y.set(\fredev,-1);
 y.set(\amp,-40.dbamp);
+
+
 
 //a = Synth.after(y,\wah,[\out,0]);
 y.set(\envbuf,z);
@@ -56,6 +91,7 @@ y.set(\gate,0)
 // use built-in env
 x = Synth(\fm_grain, [\envbuf, b[\deskBells][8],\carfreq,220,\dur,1.9,\modfreq,440]);
 x.set(\lower,8,\upper,16);
+x.set(\out,~bus[\nhhall]);
 x.set(\lower,1,\upper,3);
 x.set(\out,~bus[\reverb2]);
 x.set(\lower,1,\upper,32);
@@ -83,7 +119,8 @@ Pbindef(\harmony,
 	\rel,4,
 	\fb,0.3,
 	\pan,0.25,
-	\amp,-41.dbamp
+	\amp,-41.dbamp,
+	\out,~bus[\nhhall]
 );
 
 
@@ -111,11 +148,12 @@ Pbindef(\background,
 	\rq,0.2,
 	\pan, 0.4,
 	//\sus,0.00,
-	\amp, -50.dbamp,//-58.dbamp,
-	\out,0
+	\amp, -52.dbamp,//-58.dbamp,
+	\out,~bus[\reverb]
 );
 )
 
+Pbindef(\harmony).play;
 Pbindef(\background).play;
 Pbindef(\background,\rel,8,\amp,Pseg(Pseq([-55.dbamp, Pn(0)]), 12));
 
@@ -134,10 +172,11 @@ s.meter;
 
 
 (
-TempoClock.default.tempo_(60/60);
+TempoClock.default.tempo_(65/60);
 t = Task({
 	//s.record;
 	"start".postln;
+	~nhhallSynth.set(\splay,0.9,\rt60,2,\stereo,0.5);
 	1.wait;
 	x = Synth(\fm_grain, [\envbuf, b[\deskBells][8],\carfreq,220,\dur,1.9,\modfreq,440]);
 
@@ -207,7 +246,7 @@ t = Task({
 	24.wait;
 	"start releasing".postln;
 	x.set(\lower,1,\upper,1);
-	Pbindef(\background,\rel,1,\amp,Pseg(Pseq([-50.dbamp, Pn(0)]), 12));
+	Pbindef(\background,\rel,1,\amp,Pseg(Pseq([-52.dbamp, Pn(0)]), 12));
 	4.wait;
 	x.set(\gate, 0,\rel,8);
 	Pbindef(\background,\rel,4);
