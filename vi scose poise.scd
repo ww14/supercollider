@@ -146,15 +146,15 @@ Pbindef(\background,
 	\cAtk,4,
 	\cRel,-16,
 	\rq,0.2,
-	\pan, 0.4,
+	\pan, Phprand(0,0.4),
 	//\sus,0.00,
-	\amp, -52.dbamp,//-58.dbamp,
+	\amp, -45.dbamp,//-58.dbamp,
 	\out,~bus[\reverb]
 );
 )
 
 Pbindef(\harmony).play;
-Pbindef(\background).play;
+Pbindef(\background).play
 Pbindef(\background,\rel,8,\amp,Pseg(Pseq([-55.dbamp, Pn(0)]), 12));
 
 
@@ -192,7 +192,7 @@ t = Task({
 	y.set(\modfreq,330,\amp,-43.dbamp,\pan,-0.15);
 	x.set(\lower,8,\upper,16);
 	Pbindef(\harmony,\pan,0.2);
-	Pbindef(\background).play;
+	Pbindef(\background,Pseg(Pseq([0, Pn(-45.dbamp)]), 24)).play;
 
 
 	16.wait;
@@ -246,7 +246,7 @@ t = Task({
 	24.wait;
 	"start releasing".postln;
 	x.set(\lower,1,\upper,1);
-	Pbindef(\background,\rel,1,\amp,Pseg(Pseq([-52.dbamp, Pn(0)]), 12));
+	Pbindef(\background,\rel,1,\amp,Pseg(Pseq([-45.dbamp, Pn(0)]), 12));
 	4.wait;
 	x.set(\gate, 0,\rel,8);
 	Pbindef(\background,\rel,4);

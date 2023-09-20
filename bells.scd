@@ -7,7 +7,7 @@ Server.killAll;
 (	SynthDef(\alarm, { |out=0, freq = 440| // changed
 		var sig, filter, env;
 		env = Env.perc(0.01, 0.25).kr;
-		sig = BrownNoise.ar * env;
+	sig = BrownNoise.ar(10) * env;
 		filter = { |source, freq = 440, bwr = 0.001, amp = 1|
 			Resonz.ar(source, freq, bwr, amp)
 		};
@@ -15,8 +15,9 @@ Server.killAll;
 	FreeSelf.kr(TDelay.kr(env, \delay.kr(3)));
 	sig = filter.(sig, freq, \bwr_2.kr(0.5));
 	    sig = Pan2.ar(sig,\pan.kr(0));
-	sig = BLowPass4.ar(sig,1200,\rq.kr(1));
 	sig = LeakDC.ar(sig);
+	sig = BLowPass4.ar(sig,1100,\rq.kr(1));
+	sig = BBandPass.ar(sig,700,\bw.kr(1));
 	OffsetOut.ar(out, sig*\amp.kr(1))
 	}
 ).add;)
@@ -66,7 +67,7 @@ Pbind(\instrument, \alarm,
 		Pseq([3, 6, 11],1),
 	],inf)).midicps,
 	\dur, Pseq([1,2,1],inf),
-	\amp, -6.dbamp,
+	\amp, 0.dbamp,
 	\pan,Pwhite(-0.1,0.1),
 
 ))
@@ -89,6 +90,7 @@ Pdef(\long,
 		\instrument, \alarm,
 	\bwr_1,0.01,//0.001,
 	\bwr_2,3,
+	\bw,2,
 	\delay,0.9,
 	\freq, (50 + Pseq([
 		Pseq([2, 5, 10],4),
@@ -100,8 +102,8 @@ Pdef(\long,
 	],inf)).midicps,
 		\dur, Pseq([1,1,1],inf), //0.2!3
 	\pan,Pwhite(0.2,0.35),
-	\amp, -6.dbamp,
-		\out,~bus[\reverb],
+	\amp, -12.dbamp,
+		\out,0,
 ));
 
 
@@ -126,7 +128,7 @@ Pdef(\drum,Pbind(
 	\freq,24.midicps,
 	\dur,Pwrand([3,6],[2,1].normalizeSum,inf),// Pseq([0.2, 0.2, 0.2],inf), 2.4,2.4,0.6
 	\pan,Pwhite(0.2,0.4),
-	\amp,-22.dbamp, //-4.dbamp // -18.dbamp
+	\amp,-18.dbamp, //-4.dbamp // -18.dbamp
 
 	\out,~bus[\reverb],
 ));
@@ -184,9 +186,9 @@ Pdef(\bell_close,
 	\out,~bus[\reverb],
 );)
 
-Pdef(\bell).play;
+Pdef(\drum).play;
 
-Pdef(\drum).play
+Pdef(\bell).play
 
 (
 TempoClock.default.tempo_(60/60);
