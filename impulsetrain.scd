@@ -49,7 +49,7 @@ t = 0;
 t = TempoClock.default.tempo_(120/60);
 r = Task({
 	"start".postln;
-	s.record;
+	//s.record;
 	//non-enveloped synth
 	a = Synth(\metaldrum,[
 		\dur,inf,
@@ -89,7 +89,7 @@ r = Task({
 
 	(2*30).wait;
 	"end".postln;
-	s.stopRecording;
+	//s.stopRecording;
 })
 )
 
