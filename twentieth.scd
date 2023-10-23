@@ -73,7 +73,7 @@ s.meter;
 (
 c = TempoClock.default.tempo_(95/60);
 t = Task({
-s.record;
+//s.record;
 Synth(\reverb_ef, [\in, ~bus, \out, 0]);
 Pbindef(\twenty,
 	\instrument, \twotube,
@@ -151,7 +151,7 @@ Pbindef(\twenty,
 	15.wait;
 	Pbindef(\twenty).stop;
 	10.wait;
-	s.stopRecording;
+	//s.stopRecording;
    });
 )
 

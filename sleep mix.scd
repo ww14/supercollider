@@ -264,11 +264,11 @@ Pbindef(\sleep,\op3, 0.5,\m3_3, 0.25pi); //orig 0 and 0pi
 // really marks a change
 Pbindef(\sleep,\op1ratio, [0.25,2]); // \op1ratio, 1,
 Pbindef(\sleep,\legato, 0.25); //\legato, 0.9,
-//key change, not super obvious
+//key change, not super obvious; lydian is too extreme of a shift
 Pbindef(\sleep,\scale, Scale.minor); //\scle, dorian
-Pbindef(\sleep,\legato, 10); //\legato, 0.9,
-Pbindef(\sleep,\legato, 1); //\legato, 0.9,
 Pbindef(\sleep,\scale, Scale.dorian); //\scle, dorian
+Pbindef(\sleep,\legato, 1); //\legato, 0.9,
+Pbindef(\sleep,\legato, 10); //\legato, 0.9,
 Pbindef(\sleep,\op4ratio, 10); // \op4ratio, 5,
 Pbindef(\sleep,\op1ratio, 0.75); // \op1ratio, 1,
 // new section

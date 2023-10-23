@@ -69,6 +69,7 @@ Pbind(\instrument, \alarm,
 	\dur, Pseq([1,2,1],inf),
 	\amp, 0.dbamp,
 	\pan,Pwhite(-0.1,0.1),
+		\out,~bus[\nhhall]
 
 ))
 );
@@ -81,8 +82,9 @@ Pdef(\long,
 		\bwr_2,0.001,
 		\freq, (74 + [0,3,8] + Pseq([2,-2,2,4, 2,1,2,4,3, 2,-2,2,4, 2,0,2,4,3, 2,0,2,4,3,2],inf)).midicps,
 	\dur, Pseq([12!4, 12!3,6,6, 12!4, 12!3,6,6, 12,12,12,6,6,12].flatten,inf),
-	\amp,-10.dbamp,
+	\amp,-14.dbamp,
 	\pan,Pwhite(-0.1,0.1),
+		\out,~bus[\nhhall]
 ));
 
 	Pdef(\bell,
@@ -103,7 +105,7 @@ Pdef(\long,
 		\dur, Pseq([1,1,1],inf), //0.2!3
 	\pan,Pwhite(0.2,0.35),
 	\amp, -12.dbamp,
-		\out,0,
+		\out,~bus[\reverb2]
 ));
 
 
@@ -117,7 +119,7 @@ Pdef(\hat,Pbind(
 	\dur,Psubdivide(Pseq([1!6,2!6,4!6].flatten,inf), Pseq([12,12,3],inf)),// Pseq([0.2, 0.2, 0.2],inf), 2.4,2.4,0.6
 	\pan,Pwhite(-0.3,0.0),
 	\amp,-20.dbamp,
-	\out,~bus[\reverb],
+	\out,~bus[\nhhall]
 ));
 
 Pdef(\drum,Pbind(
@@ -130,7 +132,7 @@ Pdef(\drum,Pbind(
 	\pan,Pwhite(0.2,0.4),
 	\amp,-18.dbamp, //-4.dbamp // -18.dbamp
 
-	\out,~bus[\reverb],
+	\out,~bus[\nhhall]
 ));
 
 // old drum
@@ -166,7 +168,7 @@ Pdef(\bell_close,
 	\dur, Pseq([1!48,5].flatten,1),
 	\amp,-4.dbamp,
 	\pan,Pwhite(-0.3,0.3),
-		\out,~bus[\reverb],
+		\out,~bus[\reverb2]
 ));
 )
 
@@ -174,7 +176,7 @@ Pdef(\bell_close,
 /////////////////////////////////////////////
 //testing
 
-(Pbindef(\drum
+(Pbindef(\drum,
 		\instrument, \alarm,
 	\bwr_1,0.5,//0.001,
 	\bwr_2,4,
@@ -211,15 +213,17 @@ s.meter;
 //the piece is in 3/8, kinda
 (
 StageLimiter.activate;
-//t = TempoClock.default.tempo_(300/60);
+t = TempoClock.default.tempo_(300/60);
 
 Pspawner({|sp|
 	//s.record;
 	sp.wait(1);
+	/*
 	t = TempoClock.default.tempo_(60/60);
 	sp.par( Pfindur(32, Pdef(\intro)));
 
 	sp.wait(32);
+	*/
 	t = TempoClock.default.tempo_(300/60);
 	sp.par( Pfindur(48*4, Pdef(\bell)));
 	sp.par( Pfindur(48*5, Pdef(\drum)));

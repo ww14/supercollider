@@ -3,6 +3,8 @@
 Server.killAll;
 ("Setup/Setup.scd").loadRelative;
 
+Synth(\kick,[\pan,0]);
+
 ///grain synthef
 (
 var winenv;
@@ -79,6 +81,7 @@ y.set(\out,~bus[\nhhall]);
 y.set(\fredev,-1);
 y.set(\amp,-40.dbamp);
 
+y = Synth(\fm_grain, [\envbuf, z,\modfreq,330,\dur,4,\amp,-45.dbamp,\pan,-0.25]);
 
 
 //a = Synth.after(y,\wah,[\out,0]);
@@ -123,6 +126,25 @@ Pbindef(\harmony,
 	\out,~bus[\nhhall]
 );
 
+Pbindef(\kick,
+	\instrument,\kick,
+	\midinote,[57,45,33],
+	\dur,Psubdivide(Pseq([1!8,4,1!8,4,1!14,12].flatten,inf),Pseq([2,Rest(1.5),0.5],inf)),//Pwrand([0.1,0.2],[0.8,0.2],inf), //0.1
+	\pan,0.28,
+	\amp,-28.dbamp,
+	\out,~bus[\nhhall]
+);
+
+Pbindef(\snr,
+	\instrument,\kraftySnr,
+	\midinote,[69,57,45],
+	\dur,Pseq([Rest(1),Pseq([2],inf)],inf),//Pwrand([0.1,0.2],[0.8,0.2],inf), //0.1
+//Psubdivide(Pseq([1!19,3,1!11,6,1!11,3,1!11,6,1!11,3,1!11,6,1!11,3,1!11,6].flatten,inf),
+	\pan,0.25,
+	\amp,-39.dbamp,
+	\out,~bus[\nhhall]
+);
+
 
 
 Pbindef(\background,
@@ -144,7 +166,7 @@ Pbindef(\background,
 	\atk,0.25,
 	\rel,0.1,
 	\cAtk,4,
-	\cRel,-16,
+	\cRel,16,
 	\rq,0.2,
 	\pan, Phprand(0,0.4),
 	//\sus,0.00,
@@ -153,9 +175,10 @@ Pbindef(\background,
 );
 )
 
-Pbindef(\harmony).play;
-Pbindef(\background).play
-Pbindef(\background,\rel,8,\amp,Pseg(Pseq([-55.dbamp, Pn(0)]), 12));
+Pbindef(\kick).play;
+Pbindef(\snr).play;
+Pbindef(\background).play;
+Pbindef(\background,\amp,Pseg(Pseq([0, -45.dbamp,0]), 1));
 
 
 
@@ -181,63 +204,72 @@ t = Task({
 	x = Synth(\fm_grain, [\envbuf, b[\deskBells][8],\carfreq,220,\dur,1.9,\modfreq,440]);
 
 	24.wait;
-	y = Synth(\fm_grain, [\envbuf, z,\modfreq,330,\dur,4,\amp,-45.dbamp,\pan,-0.25]);
+	y = Synth(\fm_grain, [\envbuf, z,\modfreq,330,\dur,4,\amp,-50.dbamp,\pan,-0.25, \out,~bus[\nhhall]]);
 
 	16.wait;
-	y.set(\modfreq,293,\amp,-44.dbamp,\pan,-0.2);
+	y.set(\modfreq,262,\amp,-47.dbamp,\pan,-0.2);
 	Pbindef(\harmony).play;
+	Pbindef(\kick).play;
+	Pbindef(\snr).play;
 
 
 	12.wait;
-	y.set(\modfreq,330,\amp,-43.dbamp,\pan,-0.15);
+	y.set(\modfreq,330,\amp,-46.dbamp,\pan,-0.15);
 	x.set(\lower,8,\upper,16);
 	Pbindef(\harmony,\pan,0.2);
-	Pbindef(\background,Pseg(Pseq([0, Pn(-45.dbamp)]), 24)).play;
 
 
 	16.wait;
-	y.set(\modfreq,262,\amp,-42.dbamp,\pan,-0.1);
+	y.set(\modfreq,293,\amp,-45.dbamp,\pan,-0.1);
 	x.set(\lower,1,\upper,32);
 	Pbindef(\harmony,\pan,0.1);
 
 	16.wait;
-	y.set(\modfreq,330,\amp,-41.dbamp,\pan,-0.05);
-	x.set(\lower,1,\upper,3);
+	y.set(\modfreq,330,\amp,-44.dbamp,\pan,-0.05);
 	Pbindef(\harmony,\pan,0.05);
+	//Pbindef(\background).play;
+	//Pbindef(\background,\amp,Pseg(Pseq([0, -50.dbamp,0]), 1));
 
-	8.wait;
+	12.wait;
 	"pan about to cross over".postln;
-	y.set(\modfreq,293,\amp,-42.dbamp,\pan,0.05);
+	y.set(\modfreq,262,\amp,-45.dbamp,\pan,0.05);
+	x.set(\lower,1,\upper,3);
 	Pbindef(\harmony,\pan,-0.05);
 
-	8.wait;
-	y.set(\modfreq,330,\amp,-41.dbamp,\pan,0.1);
+
+	12.wait;
+	y.set(\modfreq,330,\amp,-44.dbamp,\pan,0.1);
 	x.set(\lower,1,\upper,32);
 	Pbindef(\sinfb,\midinote,[69,57,45]);
 	Pbindef(\harmony,\pan,-0.1);
+	//Pbindef(\background,\amp,Pseg(Pseq([0, -50.dbamp,0]), 1));
 
-	8.wait;
-	y.set(\modfreq,262,\pan,0.15);
+	12.wait;
+	y.set(\modfreq,293,\pan,0.15);
 	x.set(\lower,20,\upper,24);
 	Pbindef(\harmony,\pan,-0.15);
 
-	8.wait;
+	12.wait;
 	"low point".postln;
-	y.set(\modfreq,275,\amp,-37.dbamp,\pan,0.25);
+	y.set(\modfreq,275,\amp,-40.dbamp,\pan,0.25);
 	x.set(\lower,128,\upper,1);
 	Pbindef(\harmony,\midinote,[57,45,33,21]);
 	Pbindef(\harmony,\pan,-0.25);
+	Pbindef(\background).play;
+	Pbindef(\background,\amp,Pseg(Pseq([0, Pn(-45.dbamp)]), 36));
+	Pbindef(\kick,\amp,0);
+	Pbindef(\snr,\amp,0);
 
 	24.wait;
 	"start reverb on perc".postln;
-	y.set(\modfreq,330,\amp,-40.dbamp,\pan,-0.25);
+	y.set(\modfreq,330,\amp,-43.dbamp,\pan,-0.25);
 	x.set(\out,~bus[\reverb2]);
 	x.set(\lower,1,\upper,1);
 	Pbindef(\harmony,\pan,0.25);
 
 	16.wait;
 	"sustain end".postln;
-	y.set(\modfreq,220,\dur,8,\amp,-43.dbamp);
+	y.set(\modfreq,220,\dur,8,\amp,-48.dbamp);
 	x.set(\lower,1,\upper,32);
 	x.set(\out,~bus[\reverb]);
 	Pbindef(\harmony,\midinote,[81,69,57,45,33,21]);
@@ -246,7 +278,7 @@ t = Task({
 	24.wait;
 	"start releasing".postln;
 	x.set(\lower,1,\upper,1);
-	Pbindef(\background,\rel,1,\amp,Pseg(Pseq([-45.dbamp, Pn(0)]), 12));
+	Pbindef(\background,\reol,1,\amp,Pseg(Pseq([-45.dbamp, Pn(0)]), 12));
 	4.wait;
 	x.set(\gate, 0,\rel,8);
 	Pbindef(\background,\rel,4);
@@ -260,4 +292,4 @@ t = Task({
 )
 
 
-t.play;
+t.reset.play;
