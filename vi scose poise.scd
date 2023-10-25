@@ -102,6 +102,7 @@ x.set(\lower,20,\upper,24);
 x.set(\lower,128,\upper,1);
 x.set(\lower,1,\upper,1);
 x.set(\out,~bus[\reverb]);
+x.set(\amp,-0.dbamp);
 
 x.set(\envbuf, -1);
 x.set(\gate, 0);
@@ -112,7 +113,7 @@ x.set(\gate, 0);
 /////////////////////////////////////////////////////////////
 // define some patterns
 
-(
+(a = (
 //Pdef.removeAll;
 Pbindef(\harmony,
 	\instrument, \sinfb,
@@ -174,6 +175,7 @@ Pbindef(\background,
 	\out,~bus[\reverb]
 );
 )
+)
 
 Pbindef(\kick).play;
 Pbindef(\snr).play;
@@ -184,7 +186,7 @@ Pbindef(\background,\amp,Pseg(Pseq([0, -45.dbamp,0]), 1));
 
 /////////////////////////////////////////////////////////////////////////////////////
 //the routine
-
+Synth(\fm_grain, [\envbuf, b[\deskBells][8],\carfreq,220,\dur,1.9,\modfreq,440]);
 
 (
 s.prepareForRecord;
@@ -198,15 +200,17 @@ s.meter;
 TempoClock.default.tempo_(65/60);
 t = Task({
 	//s.record;
+	a;
 	"start".postln;
 	~nhhallSynth.set(\splay,0.9,\rt60,2,\stereo,0.5);
 	1.wait;
-	x = Synth(\fm_grain, [\envbuf, b[\deskBells][8],\carfreq,220,\dur,1.9,\modfreq,440]);
+	x = Synth(\fm_grain, [\envbuf, b[\deskBells][8],\carfreq,220,\dur,1.9,\modfreq,440,\amp,0.dbamp]);
 
 	24.wait;
 	y = Synth(\fm_grain, [\envbuf, z,\modfreq,330,\dur,4,\amp,-50.dbamp,\pan,-0.25, \out,~bus[\nhhall]]);
 
 	16.wait;
+	"start voices".postln;
 	y.set(\modfreq,262,\amp,-47.dbamp,\pan,-0.2);
 	Pbindef(\harmony).play;
 	Pbindef(\kick).play;
@@ -246,13 +250,13 @@ t = Task({
 
 	12.wait;
 	y.set(\modfreq,293,\pan,0.15);
-	x.set(\lower,20,\upper,24);
+	x.set(\lower,8,\upper,16);
 	Pbindef(\harmony,\pan,-0.15);
 
 	12.wait;
 	"low point".postln;
 	y.set(\modfreq,275,\amp,-40.dbamp,\pan,0.25);
-	x.set(\lower,128,\upper,1);
+	x.set(\lower,1,\upper,128,\amp,6.dbamp);
 	Pbindef(\harmony,\midinote,[57,45,33,21]);
 	Pbindef(\harmony,\pan,-0.25);
 	Pbindef(\background).play;
@@ -263,7 +267,7 @@ t = Task({
 	24.wait;
 	"start reverb on perc".postln;
 	y.set(\modfreq,330,\amp,-43.dbamp,\pan,-0.25);
-	x.set(\out,~bus[\reverb2]);
+	x.set(\out,~bus[\reverb2],\amp,0.dbamp);
 	x.set(\lower,1,\upper,1);
 	Pbindef(\harmony,\pan,0.25);
 

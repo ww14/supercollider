@@ -239,3 +239,32 @@ Pbindef(\hitomPT).play;
 	], inf).trace
 ));
 
+
+
+(
+Pbindef(\claves,
+	\instrument, \bd,
+	\dur,1/32* Psubdivide(Pseq([1!8,3,1!8,4,1!14,8].flatten,inf),Pseq([2,Rest(1.5),0.5],inf)),
+	\decay, 25,
+	\tone, 65,
+	\amp, 1,//Pseq([1, 0, 1.5, 1.5, 0,
+		//1.5, 0, 1.5,
+		//0, 1], inf).trace
+);
+
+
+
+Pbindef(\bd,
+	\instrument, \claves,
+	\dur,1/8,
+	\decay, 15,
+	\tone, 45,
+	\amp, Pseq([1, 0, 1.5, 1.5, 0,
+		1.5, 0, 1.5,
+		0, 1], inf),
+);
+)
+
+
+Pbindef(\claves).play;
+Pbindef(\bd).play;
