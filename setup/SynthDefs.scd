@@ -100,6 +100,26 @@ Synth(\clap_electro)
 
 // 808 drum kit
 
+(
+Synth(\bd);
+Synth(\sn);
+Synth(\cpRaw);
+Synth(\cpReverb);
+Synth(\LT);
+Synth(\MT);
+Synth(\HT);
+Synth(\LC);
+Synth(\MC);
+Synth(\HC);
+Synth(\rimshot);
+Synth(\claves);
+Synth(\maracas);
+Synth(\cowbell);
+Synth(\hat);
+Synth\openhihat);
+Synth(\cymbal)
+
+
 
 //Others
 Synth(\ring1)
@@ -2273,7 +2293,7 @@ SynthDef(\comb,{arg in=0,out=0;
 SynthDef(\nhhall, {arg in, out;
 		var		snd, sndVerb, totalSig, outSig;
 		snd = In.ar(in, 2);
-	snd = Splay.ar(snd, \spread.kr(0.3));
+	snd = Splay.ar(snd, \splay.kr(0.3));
 	sndVerb = NHHall.ar([snd,snd],\rt60.kr(1),\stereo.kr(0.5));
 	    snd = XFade2.ar(snd, sndVerb);
 		Out.ar(out, snd);

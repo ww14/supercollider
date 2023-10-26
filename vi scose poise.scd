@@ -75,11 +75,16 @@ s = Synth(\splay_verb, [\inBus,~sndBus, \outBus,~verbBus, \fadeT, 0.5], ~micGrp,
 //testing
 
 z
-y = Synth(\fm_grain, [\envbuf, -1,\modfreq,200]);
+y = Synth(\fm_grain, [\envbuf, -1,\modfreq,220]);
 y.set(\modfreq,330,\dur,4,\amp,-40.dbamp,\carfreq,220); // A=220, B= 247, C=262 ,C#=275 , D=293, E=330, F#=370, G=196,385, G#=208,415,
 y.set(\out,~bus[\nhhall]);
 y.set(\fredev,-1);
 y.set(\amp,-40.dbamp);
+y.set(\carfreq,1760);
+y.set(\modfreq,275,\carfreq,440,\amp,-35.dbamp,\pan,0.25);
+y.set(\modfreq,293,\carfreq,440,\amp,-35.dbamp,\pan,0.25);
+y.set(\modfreq,330,\carfreq,1760,\amp,-35.dbamp,\pan,0.25);
+y.set(\modfreq,262,\carfreq,88,\amp,-35.dbamp,\pan,0.25);
 
 y = Synth(\fm_grain, [\envbuf, z,\modfreq,330,\dur,4,\amp,-45.dbamp,\pan,-0.25]);
 
@@ -207,55 +212,55 @@ t = Task({
 	x = Synth(\fm_grain, [\envbuf, b[\deskBells][8],\carfreq,220,\dur,1.9,\modfreq,440,\amp,0.dbamp]);
 
 	24.wait;
-	y = Synth(\fm_grain, [\envbuf, z,\modfreq,330,\dur,4,\amp,-50.dbamp,\pan,-0.25, \out,~bus[\nhhall]]);
+	y = Synth(\fm_grain, [\envbuf, z,\modfreq,330,\carfreq, 1760, \dur,4,\amp,-50.dbamp,\pan,-0.25, \out,~bus[\nhhall]]);
 
 	16.wait;
 	"start voices".postln;
-	y.set(\modfreq,262,\amp,-47.dbamp,\pan,-0.2);
+	y.set(\modfreq,293,\carfreq, 440, \amp,-47.dbamp,\pan,-0.2);
 	Pbindef(\harmony).play;
 	Pbindef(\kick).play;
 	Pbindef(\snr).play;
 
 
 	12.wait;
-	y.set(\modfreq,330,\amp,-46.dbamp,\pan,-0.15);
+	y.set(\modfreq,330,\carfreq, 1760, \amp,-46.dbamp,\pan,-0.15);
 	x.set(\lower,8,\upper,16);
 	Pbindef(\harmony,\pan,0.2);
 
 
 	16.wait;
-	y.set(\modfreq,293,\amp,-45.dbamp,\pan,-0.1);
+	y.set(\modfreq,262,\carfreq, 88, \amp,-45.dbamp,\pan,-0.1);
 	x.set(\lower,1,\upper,32);
 	Pbindef(\harmony,\pan,0.1);
 
 	16.wait;
-	y.set(\modfreq,330,\amp,-44.dbamp,\pan,-0.05);
+	y.set(\modfreq,330,\carfreq, 440, \amp,-44.dbamp,\pan,-0.05);
 	Pbindef(\harmony,\pan,0.05);
 	//Pbindef(\background).play;
 	//Pbindef(\background,\amp,Pseg(Pseq([0, -50.dbamp,0]), 1));
 
 	12.wait;
 	"pan about to cross over".postln;
-	y.set(\modfreq,262,\amp,-45.dbamp,\pan,0.05);
+	y.set(\modfreq,293,\carfreq, 440, \amp,-45.dbamp,\pan,0.05);
 	x.set(\lower,1,\upper,3);
 	Pbindef(\harmony,\pan,-0.05);
 
 
 	12.wait;
-	y.set(\modfreq,330,\amp,-44.dbamp,\pan,0.1);
+	y.set(\modfreq,330,\carfreq, 1760, \amp,-44.dbamp,\pan,0.1);
 	x.set(\lower,1,\upper,32);
 	Pbindef(\sinfb,\midinote,[69,57,45]);
 	Pbindef(\harmony,\pan,-0.1);
 	//Pbindef(\background,\amp,Pseg(Pseq([0, -50.dbamp,0]), 1));
 
 	12.wait;
-	y.set(\modfreq,293,\pan,0.15);
+	y.set(\modfreq,262,\carfreq, 88, \pan,0.15);
 	x.set(\lower,8,\upper,16);
 	Pbindef(\harmony,\pan,-0.15);
 
 	12.wait;
 	"low point".postln;
-	y.set(\modfreq,275,\amp,-40.dbamp,\pan,0.25);
+	y.set(\modfreq,275,\carfreq,440,\pan,0.25);
 	x.set(\lower,1,\upper,128,\amp,6.dbamp);
 	Pbindef(\harmony,\midinote,[57,45,33,21]);
 	Pbindef(\harmony,\pan,-0.25);
@@ -264,18 +269,20 @@ t = Task({
 	Pbindef(\kick,\amp,0);
 	Pbindef(\snr,\amp,0);
 
-	24.wait;
-	"start reverb on perc".postln;
-	y.set(\modfreq,330,\amp,-43.dbamp,\pan,-0.25);
-	x.set(\out,~bus[\reverb2],\amp,0.dbamp);
+	1.wait;
+	y.set(\amp,-38.dbamp);
+
+	23.wait;
+	"slow it down".postln;
+	y.set(\modfreq,330,\carfreq,1760,\amp,-43.dbamp,\pan,-0.25);
+	x.set(\out,\amp,0.dbamp);
 	x.set(\lower,1,\upper,1);
 	Pbindef(\harmony,\pan,0.25);
 
 	16.wait;
 	"sustain end".postln;
-	y.set(\modfreq,220,\dur,8,\amp,-48.dbamp);
+	y.set(\modfreq,220, \carfreq,1760,\dur,8,\amp,-48.dbamp);
 	x.set(\lower,1,\upper,32);
-	x.set(\out,~bus[\reverb]);
 	Pbindef(\harmony,\midinote,[81,69,57,45,33,21]);
 
 
