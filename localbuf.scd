@@ -60,7 +60,7 @@ s.belaMaxScopeChannels > 0
 (
 {
 var in, chain, n;
-	n = 4;
+	n = 40;
 	//in = SinGrain.ar(Impulse.kr(10), 0.05, BrownNoise.kr(1).range(400, 500).round(10));
 	in = PinkNoise.ar([LFPulse.ar(10,0,0.25, 0.7), LFPulse.ar(0.01,0,0.8, 0.5)]);
 	in = Mix.ar( -40.dbamp *  //a.linexp(0,10,-50,-10).dbamp

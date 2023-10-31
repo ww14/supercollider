@@ -72,7 +72,7 @@ t = Task({
 	"start".postln;
 
 	1.wait;
-	x = Synth(\fm_grain, [\envbuf, b[\deskBells][8],\carfreq,220,\dur,1.9,\modfreq,440,\amp,0.dbamp]);
+	x = Synth(\fm_grain, [\envbuf, b[\deskBells][8],\carfreq,220,\dur,1.9,\modfreq,440,\amp,0.dbamp,\out,~bus[\reverb]]);
 
 	24.wait;
 
