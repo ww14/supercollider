@@ -178,7 +178,7 @@ Pbindef(\background,
 	\rq,0.2,
 	\pan, Phprand(0,0.4),
 	//\sus,0.00,
-	\amp, -45.dbamp,//-58.dbamp,
+	\amp, -40.dbamp,//-58.dbamp,
 	\out,~bus[\reverb]
 );
 )
@@ -267,7 +267,7 @@ t = Task({
 	Pbindef(\harmony,\midinote,[57,45,33,21]);
 	Pbindef(\harmony,\pan,-0.25);
 	Pbindef(\background).play;
-	Pbindef(\background,\amp,Pseg(Pseq([0, Pn(-40.dbamp)]), 36));
+	Pbindef(\background,\amp,Pseg(Pseq([0, Pn(-36.dbamp)]), 36));
 	Pbindef(\kick,\amp,0);
 	Pbindef(\snr,\amp,0);
 
@@ -303,7 +303,7 @@ t = Task({
 	Pbindef(\snr,\amp,-35.dbamp);
 
 	32.wait;
-	Pbindef(\background,\amp,Pseg(Pseq([-40.dbamp, Pn(0)]), 28));
+	Pbindef(\background,\amp,Pseg(Pseq([-36.dbamp, Pn(0)]), 28));
 
 	20.wait;
 	Pbindef(\background,\rel,4);

@@ -29,7 +29,7 @@ Server.killAll;
 )
 
 (
-t = TempoClock.default.tempo = 98 / 60;
+t = TempoClock.default.tempo = 107 / 60;
 ~kikEnvir = (
 	parent: ~commonFuncs,
 	// rhythm pattern that is constant in each bar
@@ -166,7 +166,7 @@ t = TempoClock.default.tempo = 98 / 60;
 
 // stop just before barline
 (
-s.prepareForRecord;
+//s.prepareForRecord;
 t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 	[~kik, ~snr, ~hh].do(_.stop);
 });)
@@ -174,7 +174,7 @@ t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 
 // start it
 (
-s.record;
+//s.record;
 ~kik.play(t,quant: 4);
 ~snr.play(t,quant: 32);
 ~hh.play(t,quant: 32);
