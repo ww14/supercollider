@@ -149,10 +149,10 @@ r = Routine.new({
 		3.0.rand.wait;
 });
 	9.wait;
-	w.set(\gate, 0,\rel,4);
-	x.set(\gate, 0,\rel,4);
-	y.set(\gate, 0,\rel,4);
-	z.set(\gate, 0,\rel,4);
+	w.set(\gate, 0,\rel,4,\amp,-90.dbamp);
+	x.set(\gate, 0,\rel,4,\amp,-90.dbamp);
+	y.set(\gate, 0,\rel,4,\amp,-90.dbamp);
+	z.set(\gate, 0,\rel,4,\amp,-90.dbamp);
 
 	"biggest batch".postln;
 

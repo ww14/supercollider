@@ -258,9 +258,9 @@ Pbindef(\sleep,\m3_2, pi); //orig 0
 Pbindef(\sleep,\op3coef, 0.5);
 Pbindef(\sleep,\m2_2, 0.5*pi); //orig 0pi
 Pbindef(\sleep,\op3coef, 0.5, \op3,0);
-Pbindef(\sleep,\m1_2, pi); //orig 0.2pi
+Pbindef(\sleep,\m1_2, 0.5*pi); //orig 0.2pi
 Pbindef(\sleep,\m1_1, 0.2*pi); //orig 0.01pi
-Pbindef(\sleep,\op3, 0.5,\m3_3, 0.25pi); //orig 0 and 0pi
+Pbindef(\sleep,\op3, 0.5,\m3_3, 0.25*pi); //orig 0 and 0pi
 // really marks a change
 Pbindef(\sleep,\op1ratio, [0.25,2]); // \op1ratio, 1,
 Pbindef(\sleep,\legato, 0.25); //\legato, 0.9,

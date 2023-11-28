@@ -49,22 +49,22 @@ SynthDef.new(\fm1, {
 //testing
 
 (Pbindef(\test,\instrument, \fm1,
-				\dur,0.25,
-	\degree,8+Pseq([[1,4,7],[1,3,8],[0,1,5]],inf),
-				\root,-2 ,
+	\dur,Pseq([0.25,0.25,0.125,0.25,0.125],inf),
+	\degree,8+Pseq([[1,4,7],[1,3,8],[0,1,5],[0,-31]],inf),
+				\root,-2,
 				//\detune,a.reciprocal,
 				\index,1,
-				\iScale,2,//Pseg([1,0.5,1],60,\lin,inf),
+				\iScale,4,//Pseg([1,0.5,1],60,\lin,inf),
 				\cRatio,32,
-				\mRatio,1,
+				\mRatio,10,
 				\atk,0.01,
 				\rel,0.5,//Pseg([0.1,10],150,4,inf),
 				\cAtk,4,
-				\cRel,-10,
+				\cRel,-6,
 				\cutoff,3000,
 				\bits,24,
 				\amp, 0.5 * 0.4,
-				\pan,0, //a.fold(0,4).linlin(0,4,-0.9,0.9),
+	\pan,Pkey(\degree).fold(0,8).linlin(0,8,-0.7,0.7).trace,
 				\out,~bus[\nhhall],
 ))
 Pbindef(\test).play;
@@ -78,7 +78,7 @@ Pbindef(\test).play;
 ~a = Pfindur(165,
 	Pspawn(
 		Pbind(\method,\par,
-			\delta,Pseg([0,1/4,1/2,1],[120,30,15],\step), //slow down at the end
+			\delta,Pseg([0,1,1/2,1/4,2,1/2,1],[4,12,80,16,32,12],\step), //slow down at the end
 			\pattern,{Pbind(\instrument, \fm1,
 				\dur,a=Pseq((1..9).sputter),
 				\degree,a,
@@ -88,14 +88,14 @@ Pbindef(\test).play;
 				\iScale,1,//Pseg([1,0.5,1],60,\lin,inf),
 				\cRatio,Pseg([1,1,0.5,1.5,2],30,\step,inf),
 				\mRatio,1000,
-				\atk,0.06,
-				\rel,Plprand(0.1,1),//Pseg([0.1,10],150,4,inf),
+				\atk,0.065,
+				\rel,Plprand(0.1,Plprand(1.5,10)),//Pseg([0.1,10],150,4,inf),
 				\cAtk,4,
-				\cRel,-12,
-				\cutoff,Pseg([3000,5,500],180),
+				\cRel,Phprand(-3,-12),
+				\cutoff,Pseg([3000,5,500],180,\wel),
 				\bits,Pwhite(1,24),
-				\amp, 0.5* Plprand(0.1,0.4),
-				\pan,Pwhite(-0.7,0.7), //a.fold(0,4).linlin(0,4,-0.9,0.9),
+				\amp, Pseg([0.5,0.75,0.5],180,\wel)* Plprand(0.1,0.4),
+				\pan,Pwhite(-0.7,0.7),//a.fold(0,4).linlin(0,4,-0.9,0.9),
 				\out,~bus[\nhhall],
 			)}
 ))).play)

@@ -15,7 +15,7 @@ lfo = {
 SynthDef(\fell, {
 	var trig, snd, freqs, perc, a;
 	trig = {lfo.()!2}; //LFDNoise makes the higher freq steps less discrete/quantized
-	freqs = (LFDNoise3.kr(32.reciprocal).linexp(-1, 1, 48, 72).round(12).poll(1) +  [-12, 0, 2, 4, 5, 7, 9, 10, 14]).midicps; //
+	freqs = (LFDNoise3.kr(32.reciprocal).linexp(-1, 1, 60, 72).round(12).poll(1) +  [-12, 0, 2, 4, 5, 7, 9, 10, 14]).midicps; //
 	snd = Pluck.ar(
 		Hasher.ar(Sweep.ar(trig)) * -10.dbamp,
 		trig,

@@ -115,7 +115,7 @@ t = TempoClock.default.tempo = 107 / 60;
 		Pbind(
 			\instrument, \kik,
 			\preamp, 0.15,
-			\basefreq,36,
+			\basefreq,32,
 			\ratio,12,
 			\dur, 0.25,
 			*(~pbindPairs.value(#[amp, decay2]))
@@ -159,8 +159,10 @@ t = TempoClock.default.tempo = 107 / 60;
 ~hh.play(t,quant: 4);
 
 (
-~kikEnvir.put(\baseAmp, 0);
+~kikEnvir.put(\basefreq, 40);
 )
+
+~snrEnvir.put(\baseRq, #[1, 0.1, 1, 0.71, 1, 1, 1, 1, 8, 1, 1, 0.1, 1, 0.1, 1, 1]/1000);
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -196,14 +198,15 @@ t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 
 // transition 2
 (
-~snrEnvir.put(\baseRq, #[1, 1, 1, 1, 1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1, 1]/1500);
 ~hhEnvir.put(\baseAmp,10!16);
 ~hhEnvir.put(\baseDelta,#[1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2]);
 )
 
+~snrEnvir.put(\baseRq, #[1, 1, 1, 1, 1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1, 1]/1500);
 
 ////1a&2a&3a
 (
+~snrEnvir.put(\baseRq, #[1, 1, 1, 1, 1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1, 1]/500);
 ~snrEnvir.put(\baseDecay, #[0, 0, 0.1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0.3,0]);
 ~kikEnvir.put(\baseAmp, #[1, 0, 1, 0, 0, 0, 0.7, 1, 0, 1, 0.25, 0, 0, 0, 0, 0.25] * 1.5)
 )

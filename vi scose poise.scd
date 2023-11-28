@@ -211,7 +211,7 @@ t = Task({
 	"start".postln;
 	~nhhallSynth.set(\splay,0.9,\rt60,2,\stereo,0.5);
 	1.wait;
-	x = Synth(\fm_grain, [\envbuf, b[\deskBells][8],\carfreq,220,\dur,1.9,\modfreq,440,\amp,-3.dbamp]);
+	x = Synth(\fm_grain, [\envbuf, b[\deskBells][8],\carfreq,220,\dur,1.9,\modfreq,440,\amp,-4.dbamp]);
 
 	24.wait;
 	y = Synth(\fm_grain, [\envbuf, z,\modfreq,330,\carfreq, 1760, \dur,4,\amp,-50.dbamp,\pan,-0.25, \out,~bus[\nhhall],\rel,0.5]);
@@ -263,11 +263,11 @@ t = Task({
 	12.wait;
 	"low point".postln;
 	y.set(\modfreq,275,\carfreq,440,\amp,-41.dbamp,\pan,0.25);
-	x.set(\lower,1,\upper,128,\amp,2.dbamp);
+	x.set(\lower,1,\upper,128,\amp,1.dbamp);
 	Pbindef(\harmony,\midinote,[57,45,33,21]);
 	Pbindef(\harmony,\pan,-0.25);
 	Pbindef(\background).play;
-	Pbindef(\background,\amp,Pseg(Pseq([0, Pn(-36.dbamp)]), 36));
+	Pbindef(\background,\amp,Pseg(Pseq([0, Pn(-32.dbamp)]), 36));
 	Pbindef(\kick,\amp,0);
 	Pbindef(\snr,\amp,0);
 
@@ -303,7 +303,7 @@ t = Task({
 	Pbindef(\snr,\amp,-35.dbamp);
 
 	32.wait;
-	Pbindef(\background,\amp,Pseg(Pseq([-36.dbamp, Pn(0)]), 28));
+	Pbindef(\background,\amp,Pseg(Pseq([-32.dbamp, Pn(0)]), 28));
 
 	20.wait;
 	Pbindef(\background,\rel,4);
