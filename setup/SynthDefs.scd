@@ -443,6 +443,7 @@ SynthDef(\twotube1,{
 	sig = Compander.ar(sig, SinOsc.ar(dur), 0.7,0.2,1,0.001,0.05,3);
 	sig = LPF.ar(sig, 4000).fold2;
 	sig = LPF.ar(sig, 4000);
+	sig = HPF.ar(sig,100);
 	sig = Balance2.ar(sig[0], sig[1], pan);
 	sig = sig * env * amp;
 	Out.ar(out, sig);
@@ -2211,8 +2212,24 @@ SynthDef(\playsus, {
 //  //  //  //  //  //  //  //
 
 
+SynthDef(\chorus, {
+	var dry, wet, snd, count;
+	dry = In.ar(in,2);
+	count = \count.kr(4);
+	wet = LeakDC.ar(LocalIn.ar(1)).tanh * 0.95; // turn up the feedback past 1 for some WILD sounds
+	wet = wet + dry;
+	wet = 2.collect { |i|
+		DelayC.ar(wet, 0.03, SinOsc.ar(0.1, ((0..count - 1) + (i * 0.5)) / count * 2pi).linlin(-1, 1, 5e-3, 20e-3)).sum / sqrt(count);
+	};
+	LocalOut.ar(wet.sum);
+	snd = (dry + wet) / sqrt(2);
+	snd = snd * 0.5;
+	Out.ar(\out.kr(0), snd);
+}).add;
+
+
 //Steal This Sound
-SynthDef(\chorus, {|in=0, out =0 gate= 1|
+SynthDef(\chorus2, {|in=0, out =0 gate= 1|
 	var source = In.ar(in,2);
 	var chorus;
 	var env = Linen.kr(gate, 0.1, 1, 0.1, 2);

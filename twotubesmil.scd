@@ -200,7 +200,7 @@ r = Routine.new({
 
 	~d_l_f_play.mute;
 
-	Synth("twotubes",[\dur,20,\k, 0.9999999,\loss, 0.9999999,\freq,220,\out,~bus[\reverb]]);
+	Synth("twotube1",[\dur,20,\k, 0.9999999,\loss, 0.9999999,\freq,220,\out,~bus[\reverb]]);
 
 	5.wait;
 
@@ -208,12 +208,12 @@ r = Routine.new({
 
 	5.wait;
 
-	Synth("twotubes",[\dur,20,\k, -0.9999999,\loss, 0,\freq,440,\out,~bus[\reverb]]);
+	Synth("twotube1",[\dur,20,\k, -0.9999999,\loss, 0,\freq,440,\out,~bus[\reverb]]);
 
 	10.wait;
 
 	~d_a_play.mute;
-	Synth("twotubes",[\dur,20,\k, -0.9999999,\loss, 1,\freq,110,\out,~bus[\reverb]]);
+	Synth("twotube1",[\dur,20,\k, -0.9999999,\loss, 1,\freq,110,\out,~bus[\reverb]]);
 }).play;
 )
 

@@ -9,7 +9,7 @@ Synth(\kick,[\pan,0]);
 (
 var winenv;
 // a custom envelope
-winenv = Env([0, 0.5,1, 0], [0.25, 0.5,0.5], [8,2,-8]);
+winenv = Env([0, 0.5,1.5, 0], [0.25, 0.5,0.75], [8,2,-8]);
 z = Buffer.sendCollection(s, winenv.discretize, 1);
 
 SynthDef(\fm_grain, {
@@ -32,7 +32,7 @@ SynthDef(\fm_grain, {
 		\envbuf.kr(-1));
 	snd = HPF.ar(snd, 40);
 	snd = LeakDC.ar(snd);
-	snd = Pan2.ar(snd,\pan.kr(0).lag3(1),\amp.kr(1).lag3(0.75));
+	snd = Pan2.ar(snd,\pan.kr(0).lag3(1),\amp.kr(1).lag3(0.25));
 	snd = snd * env;
 		Out.ar(\out.kr(0),snd);
 }).add;
@@ -124,13 +124,13 @@ x.set(\gate, 0);
 //Pdef.removeAll;
 Pbindef(\harmony,
 	\instrument, \sinfb,
-	\midinote,[57,45,33],
+	\midinote,[69,57,45,33],
 	\dur,4,//Pwrand([0.1,0.2],[0.8,0.2],inf), //0.1
 	\atk,2,
 	\rel,4,
-	\fb,0.3,
+		\fb,[0.3,0.9],
 	\pan,0.25,
-	\amp,-41.dbamp,
+	\amp,-45.dbamp,
 	\out,~bus[\nhhall]
 );
 
@@ -139,7 +139,7 @@ Pbindef(\kick,
 	\midinote,[57,45,33],
 	\dur,Psubdivide(Pseq([1!8,4,1!8,4,1!14,3].flatten,inf),Pseq([2,Rest(1.5),0.5],inf)),//Pwrand([0.1,0.2],[0.8,0.2],inf), //0.1
 	\pan,0.28,
-	\amp,-26.dbamp,
+	\amp,-22.dbamp,
 	\out,~bus[\nhhall]
 );
 
@@ -149,7 +149,7 @@ Pbindef(\snr,
 	\dur,Pseq([Rest(1),Pseq([2],inf)],inf),//Pwrand([0.1,0.2],[0.8,0.2],inf), //0.1
 //Psubdivide(Pseq([1!19,3,1!11,6,1!11,3,1!11,6,1!11,3,1!11,6,1!11,3,1!11,6].flatten,inf),
 	\pan,0.25,
-	\amp,-40.dbamp,
+	\amp,-39.dbamp,
 	\out,~bus[\nhhall]
 );
 
@@ -189,7 +189,10 @@ Pbindef(\snr).play;
 Pbindef(\background).play;
 Pbindef(\background,\amp,Pseg(Pseq([0, -45.dbamp,0]), 1));
 
+~nhhallSynth.set(\splay,0.999,\rt60,5,\stereo,0.5);
+y = Synth(\fm_grain, [\envbuf, z,\modfreq,330,\carfreq, 1760, \dur,4,\amp,-50.dbamp,\pan,-0.25, \out,~bus[\nhhall],\rel,0.5]);
 
+Pbindef(\harmony).play;
 
 /////////////////////////////////////////////////////////////////////////////////////
 //the routine
@@ -202,14 +205,14 @@ s.plotTree;
 s.meter;
 )
 
-
+StageLimiter.deactivate;
 (
-TempoClock.default.tempo_(65/60);
+TempoClock.default.tempo_(68/60);
 t = Task({
 	//s.record;
 	a;
 	"start".postln;
-	~nhhallSynth.set(\splay,0.9,\rt60,2,\stereo,0.5);
+	//~nhhallSynth.set(\splay,0.9,\rt60,2,\stereo,0.5);
 	1.wait;
 	x = Synth(\fm_grain, [\envbuf, b[\deskBells][8],\carfreq,220,\dur,1.9,\modfreq,440,\amp,-4.dbamp]);
 
@@ -236,6 +239,7 @@ t = Task({
 	Pbindef(\harmony,\pan,0.1);
 
 	16.wait;
+	//~nhhallSynth.set(\splay,0.5,\stereo,0.05);
 	y.set(\modfreq,330,\carfreq, 440, \amp,-44.dbamp,\pan,-0.05);
 	Pbindef(\harmony,\pan,0.05);
 	//Pbindef(\background).play;
@@ -243,12 +247,14 @@ t = Task({
 
 	12.wait;
 	"pan about to cross over".postln;
+	//~nhhallSynth.set(\splay,0.9,\stereo,0.5);
 	y.set(\modfreq,293,\carfreq, 440, \amp,-45.dbamp,\pan,0.05);
 	x.set(\lower,1,\upper,3);
 	Pbindef(\harmony,\pan,-0.05);
 
 
 	12.wait;
+	//~nhhallSynth.set(\splay,0.5,\stereo,0.95);
 	y.set(\modfreq,330,\carfreq, 1760, \amp,-44.dbamp,\pan,0.1);
 	x.set(\lower,1,\upper,32);
 	Pbindef(\sinfb,\midinote,[69,57,45]);
@@ -272,7 +278,8 @@ t = Task({
 	Pbindef(\snr,\amp,0);
 
 	1.wait;
-	y.set(\amp,-38.dbamp);
+	~nhhallSynth.set(\splay,0.9,\rt60,4,\stereo,0.5);
+	y.set(\amp,-39.dbamp);
 
 	23.wait;
 	"slow it down".postln;
@@ -306,7 +313,7 @@ t = Task({
 	Pbindef(\background,\amp,Pseg(Pseq([-32.dbamp, Pn(0)]), 28));
 
 	20.wait;
-	Pbindef(\background,\rel,4);
+	Pbindef(\background,\rel,Pseg(Pseq([0.1, Pn(4)]), 8),\cRel,Pseg(Pseq([16, Pn(4)]), 8));
 
 
 	8.wait;

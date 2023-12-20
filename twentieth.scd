@@ -83,8 +83,8 @@ Pbindef(\twenty,
 	\amp,-6.dbamp,
 	\minRq,0.01,
 	\maxRq,0.4,
-	\minBpfHz,30,
-	\maxBpfHz,60,//Pstep([150,70,350],14,inf), //31
+	\minBpfHz,3,
+	\maxBpfHz,6,//Pstep([150,70,350],14,inf), //31
 	\minCf,100,//Pseg([125,100,125],96,\lin,inf),
 	\maxCf,400,//Pseg([400,500,400],96,\lin,inf),
 	\pan,0,

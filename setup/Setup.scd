@@ -26,6 +26,7 @@ o.outDevice_("ASIO : ASIO4ALL v2");*/
 //o.outDevice_("Windows WASAPI : Headphones ");
 
 s.options.sampleRate_(44100);
+s.options.numWireBufs = 256;
 s.options.memSize_(2.pow(20)); //extremely generous
 s.newBusAllocators;
 ServerBoot.removeAll;
@@ -78,8 +79,8 @@ ServerQuit.removeAll;
 		~reverbGrp = Group.after(~mainGrp);
 		~reverb2Grp = Group.after(~mainGrp);
 		~combGrp = Group.after(~reverbGrp);
-		~chorusGrp = Group.after(~combGrp);
-		~nhhall = Group.after(~chorusGrp);
+		~nhhallGrp = Group.after(~combGrp);
+		~chorusGrp = Group.after(~nhhallGrp);
 		~reverbSynth = Synth.new(
 			\reverb,
 			[
@@ -115,17 +116,17 @@ ServerQuit.removeAll;
 				\in, ~bus[\nhhall], //call in audio from the reverb bus
 				\out, ~out,
 			],
-			~nhhall //make the synths target the newly created reverb group
+			~nhhallGrp //make the synths target the newly created reverb group
 		);
 		//for some reason this bus wont work and messes up othernodes.
-/*		~chorusSynth = Synth.new(
+		~chorusSynth = Synth.new(
 			\chorus,
 			[
 				\in, ~bus[\chorus], //call in audio from the chorus bus
 				\out, ~out,
 		],
 			~chorusGrp
-		);*/
+		);
 	});
 };
 

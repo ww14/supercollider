@@ -2,6 +2,8 @@
 Server.killAll;
 ("Setup/Setup.scd").loadRelative // load this file
 
+s.options.memSize
+
 (
 ~commonFuncs = (
 	// save starting time, to recognize the last bar of a 4-bar cycle
@@ -27,6 +29,31 @@ Server.killAll;
 	}
 );
 )
+
+/*
+(
+SynthDef.new(\bd, {
+	arg decay=30, amp=2, gate=0, tone=56;
+	var fenv, env, trienv, sig, sub, punch, pfenv,sigVerb;
+	env = EnvGen.kr(Env.new([0.11, 1, 0], [0, decay], -225),doneAction:2);
+	trienv = EnvGen.kr(Env.new([0.11, 0.6, 0], [0, decay], -230),doneAction:0);
+	fenv = Env([tone*7, tone*1.35, tone], [0.05, 0.6], -14).kr;
+	pfenv = Env([tone*7, tone*1.35, tone], [0.03, 0.6], -10).kr;
+	sig = SinOsc.ar(fenv, pi/2) * env;
+	sub = LFTri.ar(fenv, pi/2) * trienv * 0.05;
+	punch = SinOsc.ar(pfenv, pi/2) * env * 2;
+	punch = HPF.ar(punch, 350);
+	sig = (sig + sub + punch) * 2.5;
+	sig = Limiter.ar(sig, 0.5) * amp;
+	sig = Pan2.ar(sig, 0);
+
+	sig = Splay.ar(sig, \splay.kr(0.7));
+	sigVerb = NHHall.ar([sig,sig],\rt60.kr(2),\stereo.kr(0.9));
+	sig = XFade2.ar(sig, sigVerb);
+	Out.ar(0, sig);
+}).add;
+)*/
+
 
 (
 t = TempoClock.default.tempo = 107 / 60;
@@ -113,10 +140,12 @@ t = TempoClock.default.tempo = 107 / 60;
 	~addNotes.value;
 	Pbindf(
 		Pbind(
-			\instrument, \kik,
-			\preamp, 0.15,
-			\basefreq,32,
-			\ratio,12,
+			\instrument, \bd,
+			\decay,20,
+			\tone,48,
+			//\preamp, 0.15,
+			//\basefreq,32,
+			//\ratio,12,
 			\dur, 0.25,
 			*(~pbindPairs.value(#[amp, decay2]))
 		),
@@ -146,7 +175,7 @@ t = TempoClock.default.tempo = 107 / 60;
 			\instrument, \kraftySnr,
 			\rq, Plprand(3,15),//0.01,
 			\amp, 15,
-			\decay, 0.009,
+			\decay, 0.015,
 			*(~pbindPairs.value(#[amp, dur]))
 		),
 		\freq, Pif(Pkey(\amp) > 0, [1100,1000], \rest)
@@ -159,10 +188,23 @@ t = TempoClock.default.tempo = 107 / 60;
 ~hh.play(t,quant: 4);
 
 (
-~kikEnvir.put(\basefreq, 40);
+~kikEnvir.put(\basefreq, 48);
 )
 
-~snrEnvir.put(\baseRq, #[1, 0.1, 1, 0.71, 1, 1, 1, 1, 8, 1, 1, 0.1, 1, 0.1, 1, 1]/1000);
+~snrEnvir.put(\baseRq, #[1, 0.1, 1, 0.01, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.01, 1]);
+~snrEnvir.put(\baseDecay, #[0, 0, 0, 0, 0.7, 0, 0, 0, 0, 0, 0, 0, 0.4, 0, 0.1, 0.4]);
+
+
+~snrEnvir.put(\baseRq, #[1, 0.1, 1, 0.01, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.01, 1]/10);
+
+~snrEnvir.put(\baseRq, #[1, 0.01, 1, 0.1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.1, 1]/100);
+~snrEnvir.put(\baseDecay, #[0, 0, 0, 0, 0.6, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0.21, 0.4]);
+
+
+~snrEnvir.put(\baseRq, #[1, 1, 1, 1, 1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1, 1]/1500);
+~snrEnvir.put(\baseDecay, #[0, 0, 0, 0, 0.7, 0, 0, 0, 0, 0, 0, 0, 0.4, 0, 0, 0.4]);
+
+
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -194,7 +236,19 @@ t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 //
 
 // transition 1
-~snrEnvir.put(\baseRq, #[1, 1, 1, 1, 1, 1, 1, 1, 8, 1, 1, 1, 1, 1, 1, 1]/15);
+(
+~snrEnvir.put(\baseRq, #[1, 0.1, 1, 0.01, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.01, 1]);
+~snrEnvir.put(\baseDecay, #[0, 0, 0, 0, 0.7, 0, 0, 0, 0, 0, 0, 0, 0.4, 0, 0.1, 0.4]);
+)
+
+~snrEnvir.put(\baseRq, #[1, 0.1, 1, 0.01, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.01, 1]/10);
+
+(
+~snrEnvir.put(\baseRq, #[1, 0.01, 1, 0.1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.1, 1]/100);
+~snrEnvir.put(\baseDecay, #[0, 0, 0, 0, 0.6, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0.21, 0.4]);
+)
+
+~snrEnvir.put(\baseRq, #[1, 1, 1, 1, 1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1, 1]/1500);
 
 // transition 2
 (
@@ -202,7 +256,10 @@ t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 ~hhEnvir.put(\baseDelta,#[1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2]);
 )
 
+(
 ~snrEnvir.put(\baseRq, #[1, 1, 1, 1, 1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1, 1]/1500);
+~snrEnvir.put(\baseDecay, #[0, 0, 0, 0, 0.7, 0, 0, 0, 0, 0, 0, 0, 0.4, 0, 0, 0.4]);
+)
 
 ////1a&2a&3a
 (
@@ -213,18 +270,21 @@ t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 
 
 ////2b, step down
+(
 ~snrEnvir.put(\baseRq, #[1, 1, 1, 1, 1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1, 1]/15);
+~snrEnvir.put(\baseDecay, #[0, 0, 0, 0, 0.6, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0.21, 0.4]);
+)
 
 //step again
+(
 ~snrEnvir.put(\baseRq, #[1, 1, 1, 1, 1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1, 1]*2);
-
-
+~snrEnvir.put(\baseDecay, #[0, 0, 0, 0, 0.7, 0, 0, 0, 0, 0, 0, 0, 0.4, 0, 0, 0.4]);
+)
 
 
 ///original 1&2
 (
 ~kikEnvir.put(\baseAmp, #[1, 0, 0, 0, 0, 0, 0.7, 0, 0, 1, 0.25, 0, 0, 0, 0, 0] * 1.5);
-
 ~snrEnvir.put(\baseAmp, #[1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0] * 30);
 ~snrEnvir.put(\baseDecay, #[0, 0, 0, 0, 0.7, 0, 0, 0, 0, 0, 0, 0, 0.4, 0, 0, 0.4]);
 ~snrEnvir.put(\baseRq, #[1, 1, 1, 1, 1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1, 1]);
@@ -235,7 +295,6 @@ t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 ~hhEnvir.put(\baseAmp,15!16);
 ~hhEnvir.put(\baseDelta,0.5 ! 16);
 ~kikEnvir.put(\baseAmp, #[1, 0, 1, 0, 0, 0, 0.7, 1, 0, 1, 0.25, 0, 0, 0, 0, 0.25] * 1.5)
-
 )
 
 ~kikEnvir.put(\baseDecay, #[0.15, 0, 0, 0, 0, 0, 0.15, 0, 0, 0.15, 0.15, 0, 0, 0, 0, 0] * 0.5);
@@ -248,8 +307,9 @@ t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 
 // hack but it ends the envs
 ~hhEnvir.put(\baseAmp,0);
+(
 ~kikEnvir.put(\baseAmp,0);
-~snrEnvir.put(\baseAmp,0);
+~snrEnvir.put(\baseAmp,0);0)
 
 s.stopRecording;
 

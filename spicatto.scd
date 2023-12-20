@@ -87,7 +87,7 @@ r = Routine.new({
 	);
 
 
-	4.wait;
+	6.wait;
 	15.round(1).do({b[\cellospica][75.0.rand.round(0)].play;});
 
 	2.wait;
@@ -138,14 +138,14 @@ r = Routine.new({
 	z.set(\carfreq,440,\modfreq,293);
 
 	7.do({
-		100.0.rand.do({b[\cellospica][56.0.linrand.round(0)].play;});
+		100.10.rand.do({b[\cellospica][56.0.linrand.round(0)].play;});
 		3.0.rand.wait;
 });
 
 	x.set(\modfreq,220,\carfreq,880);
 		"third batch".postln;
 	14.do({
-		200.0.rand.do({b[\cellospica][56.0.linrand.round(0)].play;});
+		200.20.rand.do({b[\cellospica][56.0.linrand.round(0)].play;});
 		3.0.rand.wait;
 });
 	9.wait;
@@ -153,6 +153,7 @@ r = Routine.new({
 	x.set(\gate, 0,\rel,4,\amp,-90.dbamp);
 	y.set(\gate, 0,\rel,4,\amp,-90.dbamp);
 	z.set(\gate, 0,\rel,4,\amp,-90.dbamp);
+
 
 	"biggest batch".postln;
 

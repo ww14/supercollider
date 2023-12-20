@@ -25,7 +25,7 @@ Pbind(\instrument,\flute_waveguide,
 	\ifeedbk1, 0.4,
 	\ifeedbk2, Pseg([0.4,0.7,0.6],60,\exp,1),
 			\amp,0.1,
-			\out, Pwrand([0,~bus[\reverb]],[0.5,0.5],inf),
+	\out, 0,//Pwrand([0,~bus[\reverb]],[0.5,0.5],inf),
 		).play;
 )
 
@@ -36,4 +36,4 @@ Pbindef(\z,
 				).play
 
 Pbindef(\z).stop;
-Synth(\sinfb);
+Synth(\bpfsaw,[\out,0]);

@@ -508,7 +508,7 @@ Pspawner({|sp|
 	sp.par( Pfindur(9, Pdef(\close)));
 
 	sp.wait(9);
-
+.
 	l.pause;
 
 	//this doesn't work as intended, porting over the ~fade function from huawei is

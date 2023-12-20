@@ -21,7 +21,7 @@ a = nil;
 TempoClock.default.tempo = 102/60;
 //~n = (Pget(\tonic)+ Pget(\mod) + [-12,24]);
 a = Plambda(
-	Pseq([ //play ABA' twice then close
+	Pseq([ //play ABA' once then close
 		Pseq([
 		///Phrase A
 		Pfindur(54,Ppar([
@@ -44,7 +44,7 @@ a = Plambda(
 				\dur, 3/8, //total loop is 228 * (3/8) =108 beats
 				\amp, Plprand(0.2,0.35),
 					\pan,Pseg([0,0.3,-0.3,0],30,\lin,inf),
-				\out,~bus[\reverb],
+				\out,~bus[\nhhall],
 		),
 				//harmony
 			Pbindef(\q,
@@ -55,8 +55,8 @@ a = Plambda(
 					\amp,Plprand(0.15,0.3),
 			\decaytime, Pwhite(5,10,inf),
 					\coef,Pseg([0.1,0.6,0.1,0.6],108,\exp,inf),
-					\pan,0.3,`
-			\out, Pwrand([0,~bus[\reverb]],[0.7,0.3],inf),
+					\pan,0.3,
+			\out, Pwrand([0,~bus[\nhhall]],[0.7,0.3],inf),
 		)<> Pbindef(\p)
 				,
 					//tonic
@@ -66,7 +66,7 @@ a = Plambda(
 					\midinote, -12 + Pseq([(Pget(\tonic)+ Pget(\mod))],inf),
 					\pan,-0.5,
 					\amp,Plprand(0.10,0.25),//Pseg([0.005,0.01,0.005],27,\exp,inf)
-					\out,~bus[\reverb],
+					\out,~bus[\nhhall],
 				),
 			],2)
 		),
@@ -87,9 +87,12 @@ a = Plambda(
 				)<>Pbindef(\p),
 
 			Pbindef(\q),
+			Pbindef(\r),
 
 			Pbindef(\s,
 					\instrument, \harpsichord_pluck,
+					\coef,0.02,
+					\decaytime,10,
 					\dur, Pseq([Rest(1), 1, Pwrand([
 						Pseq([Rest(1), 1/2,1/2],1),
 						Pseq([Rest(1), 1/4,1/4,1/4,1/4],1)],[3,1].normalizeSum,1)
@@ -98,9 +101,9 @@ a = Plambda(
 					//\degree, Pseq([1,5,4,[7,8],0,5,4,5,6,3,2,1,],inf),
 					\midinote, 48 + Pseq([Pget(\tonic) + Pget(\mod)],inf), //Pseq([
 						//Pshuf(#[48,52,57,60], 3) ].sputter,inf).midicps,
-					\amp,0.2,
-					\pan,-0.7,
-					\out,~bus[\reverb]
+					\amp,0.15,
+					\pan,-0.1,
+					\out,~bus[\nhhall]
 				),
 			],1)
 		),
@@ -113,16 +116,16 @@ a = Plambda(
 			//Pbindef(\r,\instrument,\SOStom,\amp,0.1)
 		],1)
 		),
-	],2),
+	],1),
 		Pbind(\instrument,\harpsichord_pluck,
 			\dur, 3/8,
 			\midinote, Pseq([
-				Pseq([48,52,57,60,72],1)+.x Pseq(#[0, 4, 7, 11],1) + -12,
+				Pseq([48,52,57,60]+.x [0, 4, 7, 11],1) + -12,
 				48 + [0, 4, 7, 11,12,-24]],1),
 			\amp,0.25,
 			\atk,0.005,
 			\rel,0.7,
-			\out,~bus[\reverb],
+			\out,~bus[\nhhall],
 			)],1).trace(\eventScope) // internally, the values are shared via \eventScope
 );
 

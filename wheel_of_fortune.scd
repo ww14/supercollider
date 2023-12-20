@@ -115,7 +115,33 @@ Pbindef(\harmony,
 /////////////////////////////////////////////////////////////////////////////////////
 //the routine
 
+(
+{
+	var in, snd, ff, rmf, delayTime = 1.23;
 
+	ff = MouseY.kr(50, 15000, \exponential);
+	rmf = MouseX.kr(60, 6000, \exponential);
+
+	in = LocalIn.ar(2) *15.dbamp;
+
+	snd = DelayC.ar(DFM1.ar(in, ff, res: 0.91, noiselevel: 0.001), 1.0, delayTime);
+	snd = snd * SinOsc.ar(rmf);
+
+	snd = FreeVerb.ar(snd, 1, 0.9, 1);
+
+	snd = Compander.ar(snd,snd,
+		thresh: 0.1,
+        slopeBelow: 1,
+        slopeAbove: 0.1,
+        clampTime:  0.01,
+        relaxTime:  0.02);
+
+	LocalOut.ar(snd);
+
+	snd;
+
+}.play;
+)
 (
 s.prepareForRecord;
 s.scope;
