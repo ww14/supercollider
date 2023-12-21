@@ -105,7 +105,7 @@ d.set(\fundamental,200,\mul,10);
 //~176 seconds
 (
 TempoClock.default.tempo_(60/60);
-s.prepareForRecord;
+//s.prepareForRecord;
 t = Task({
     var d;
 	//s.record;

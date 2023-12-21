@@ -142,7 +142,7 @@ t = TempoClock.default.tempo = 107 / 60;
 		Pbind(
 			\instrument, \bd,
 			\decay,20,
-			\tone,48,
+			\tone,54,
 			//\preamp, 0.15,
 			//\basefreq,32,
 			//\ratio,12,
@@ -191,8 +191,8 @@ t = TempoClock.default.tempo = 107 / 60;
 ~kikEnvir.put(\basefreq, 48);
 )
 
-~snrEnvir.put(\baseRq, #[1, 0.1, 1, 0.01, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.01, 1]);
-~snrEnvir.put(\baseDecay, #[0, 0, 0, 0, 0.7, 0, 0, 0, 0, 0, 0, 0, 0.4, 0, 0.1, 0.4]);
+
+
 
 
 ~snrEnvir.put(\baseRq, #[1, 0.1, 1, 0.01, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.01, 1]/10);
@@ -237,18 +237,22 @@ t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 
 // transition 1
 (
-~snrEnvir.put(\baseRq, #[1, 0.1, 1, 0.01, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.01, 1]);
-~snrEnvir.put(\baseDecay, #[0, 0, 0, 0, 0.7, 0, 0, 0, 0, 0, 0, 0, 0.4, 0, 0.1, 0.4]);
+~snrEnvir.put(\baseRq, #   [1, 0.1,   1, 0.01, 1,    1, 1, 1, 1, 1, 1, 1, 0.81,   1, 0.08, 1]);
+~snrEnvir.put(\baseDecay, #[0, 0,     0, 0,    0.7,  0, 0, 0, 0, 0, 0, 0, 0.4, 0, 0.1,  0.4]);
+~snrEnvir.put(\baseAmp,  # [1, 0.1,   1, 0,    1,    0, 1, 0, 1, 0, 1, 0, 1,   0, 0.5,  0.1] * 50);
 )
 
-~snrEnvir.put(\baseRq, #[1, 0.1, 1, 0.01, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.01, 1]/10);
+~snrEnvir.put(\baseRq, #[1, 0.1, 1, 0.01, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.01, 1]/5);
 
 (
 ~snrEnvir.put(\baseRq, #[1, 0.01, 1, 0.1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.1, 1]/100);
 ~snrEnvir.put(\baseDecay, #[0, 0, 0, 0, 0.6, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0.21, 0.4]);
 )
 
-~snrEnvir.put(\baseRq, #[1, 1, 1, 1, 1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1, 1]/1500);
+(
+~snrEnvir.put(\baseRq, #[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 100, 1, 1, 1, 1, 1]/1500);
+~snrEnvir.put(\baseDecay, #[0, 0, 0, 0, 0.1,  0, 0, 0, 0, 0, 0.24, 0, 0.4, 0, 0.1,  0.1]);
+)
 
 // transition 2
 (
@@ -265,6 +269,7 @@ t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 (
 ~snrEnvir.put(\baseRq, #[1, 1, 1, 1, 1, 1, 1, 1, 10, 1, 1, 1, 1, 1, 1, 1]/500);
 ~snrEnvir.put(\baseDecay, #[0, 0, 0.1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0.1, 0, 0.3,0]);
+~snrEnvir.put(\baseAmp, #[1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0] * 50);
 ~kikEnvir.put(\baseAmp, #[1, 0, 1, 0, 0, 0, 0.7, 1, 0, 1, 0.25, 0, 0, 0, 0, 0.25] * 1.5)
 )
 
@@ -309,7 +314,8 @@ t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 ~hhEnvir.put(\baseAmp,0);
 (
 ~kikEnvir.put(\baseAmp,0);
-~snrEnvir.put(\baseAmp,0);0)
+~snrEnvir.put(\baseAmp,0);
+)
 
 s.stopRecording;
 
