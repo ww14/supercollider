@@ -309,7 +309,7 @@ t.schedAbs(t.nextTimeOnGrid(4, -0.001), {
 ~hhEnvir.put(\baseAmp,0);
 (
 ~kikEnvir.put(\baseAmp,0);
-~snrEnvir.put(\baseAmp,0);0)
+~snrEnvir.put(\baseAmp,0);
 
 s.stopRecording;
 

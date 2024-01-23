@@ -118,6 +118,7 @@ ServerQuit.removeAll;
 			],
 			~nhhallGrp //make the synths target the newly created reverb group
 		);
+		/*
 		//for some reason this bus wont work and messes up othernodes.
 		~chorusSynth = Synth.new(
 			\chorus,
@@ -126,7 +127,7 @@ ServerQuit.removeAll;
 				\out, ~out,
 		],
 			~chorusGrp
-		);
+		); */
 	});
 };
 

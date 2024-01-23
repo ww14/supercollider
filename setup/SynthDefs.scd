@@ -2211,8 +2211,8 @@ SynthDef(\playsus, {
 ////       Effects         ////
 //  //  //  //  //  //  //  //
 
-
-SynthDef(\chorus, {
+/*
+SynthDef(\chorus, {arg in;
 	var dry, wet, snd, count;
 	dry = In.ar(in,2);
 	count = \count.kr(4);
@@ -2221,11 +2221,12 @@ SynthDef(\chorus, {
 	wet = 2.collect { |i|
 		DelayC.ar(wet, 0.03, SinOsc.ar(0.1, ((0..count - 1) + (i * 0.5)) / count * 2pi).linlin(-1, 1, 5e-3, 20e-3)).sum / sqrt(count);
 	};
-	LocalOut.ar(wet.sum);
+	wet = LocalOut.ar(wet.sum);
 	snd = (dry + wet) / sqrt(2);
 	snd = snd * 0.5;
 	Out.ar(\out.kr(0), snd);
 }).add;
+*/
 
 
 //Steal This Sound

@@ -29,11 +29,20 @@ Pbind(\instrument,\flute_waveguide,
 		).play;
 )
 
+
+(
 Pbindef(\z,
-					\instrument, \sinfb,
-					\dur,1,
+					\instrument, \flute_waveguide,
+					\dur,1/8 * Pbjorklund2(Pwrand([2,3,5],[0.6,0.2,0.2],inf), 8),
+	\midinote, [0,2,4] //this ending triggers a new loop
+			    +.x Pseq([48,52,57,60].stutter(3), 2),
+	\ifeedbk1,0.81,
+	\ifeedbk2,Pwrand([0.25,0.125,0.05],[5,3,1].normalizeSum,inf),
+	\ibreath,0.07,
+
 
 				).play
+)
 
 Pbindef(\z).stop;
 Synth(\bpfsaw,[\out,0]);
