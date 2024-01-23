@@ -134,18 +134,32 @@ Pbindef(\harmony,
 	\out,~bus[\nhhall]
 );
 
+
+Pbindef(\kick1,
+	\instrument,\kick,
+	\midinote,[33],
+		\glissf,0.3,
+		\dur,Pseq([4],inf),//Pwrand([0.1,0.2],[0.8,0.2],inf), //0.1
+	\pan,0,
+	\amp,-34.dbamp,
+	\out,0
+);
+
 Pbindef(\kick,
 	\instrument,\kick,
-	\midinote,[57,45,33],
+	\glissf,Plprand(0.9,1.2),
+	\midinote,33,
 	\dur,Psubdivide(Pseq([1!8,4,1!8,4,1!14,3].flatten,inf),Pseq([2,Rest(1.5),0.5],inf)),//Pwrand([0.1,0.2],[0.8,0.2],inf), //0.1
-	\pan,0.28,
+	\pan,0,
 	\amp,-22.dbamp,
-	\out,~bus[\nhhall]
+	\out,0
 );
 
 Pbindef(\snr,
 	\instrument,\kraftySnr,
 	\midinote,[69,57,45],
+		\rq,Plprand(3,10),
+		\decay,Plprand(0.3,1),
 	\dur,Pseq([Rest(1),Pseq([2],inf)],inf),//Pwrand([0.1,0.2],[0.8,0.2],inf), //0.1
 //Psubdivide(Pseq([1!19,3,1!11,6,1!11,3,1!11,6,1!11,3,1!11,6,1!11,3,1!11,6].flatten,inf),
 	\pan,0.25,
@@ -184,6 +198,8 @@ Pbindef(\background,
 )
 )
 
+
+Pbindef(\kick1).play;
 Pbindef(\kick).play;
 Pbindef(\snr).play;
 Pbindef(\background).play;
@@ -223,8 +239,7 @@ t = Task({
 	"start voices".postln;
 	y.set(\modfreq,293,\carfreq, 440, \amp,-47.dbamp,\pan,-0.2);
 	Pbindef(\harmony).play;
-	Pbindef(\kick).play;
-	Pbindef(\snr).play;
+	Pbindef(\kick1).play;
 
 
 	12.wait;
@@ -242,8 +257,6 @@ t = Task({
 	//~nhhallSynth.set(\splay,0.5,\stereo,0.05);
 	y.set(\modfreq,330,\carfreq, 440, \amp,-44.dbamp,\pan,-0.05);
 	Pbindef(\harmony,\pan,0.05);
-	//Pbindef(\background).play;
-	//Pbindef(\background,\amp,Pseg(Pseq([0, -50.dbamp,0]), 1));
 
 	12.wait;
 	"pan about to cross over".postln;
@@ -269,11 +282,14 @@ t = Task({
 	12.wait;
 	"low point".postln;
 	y.set(\modfreq,275,\carfreq,440,\amp,-41.dbamp,\pan,0.25);
-	x.set(\lower,1,\upper,128,\amp,1.dbamp);
+	x.set(\lower,1,\upper,128);
 	Pbindef(\harmony,\midinote,[57,45,33,21]);
 	Pbindef(\harmony,\pan,-0.25);
 	Pbindef(\background).play;
 	Pbindef(\background,\amp,Pseg(Pseq([0, Pn(-32.dbamp)]), 36));
+	Pbindef(\kick1).stop;
+	Pbindef(\kick).play;
+	Pbindef(\snr).play;
 	Pbindef(\kick,\amp,0);
 	Pbindef(\snr,\amp,0);
 
@@ -306,8 +322,8 @@ t = Task({
 
 	4.wait;
 	"short jam".postln;
-	Pbindef(\kick,\amp,-20.dbamp);
-	Pbindef(\snr,\amp,-35.dbamp);
+	Pbindef(\kick,\amp,-15.dbamp);
+	Pbindef(\snr,\amp,-37.dbamp);
 
 	32.wait;
 	Pbindef(\background,\amp,Pseg(Pseq([-32.dbamp, Pn(0)]), 28));

@@ -120,8 +120,8 @@ ServerQuit.removeAll;
 		);
 		/*
 		//for some reason this bus wont work and messes up othernodes.
-		~chorusSynth = Synth.new(
-			\chorus,
+		/*~chorusSynth = Synth.new(
+			\chorus2,
 			[
 				\in, ~bus[\chorus], //call in audio from the chorus bus
 				\out, ~out,
