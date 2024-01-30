@@ -192,7 +192,7 @@ Pbindef(\perc_high,
 	\mod_freq, Pwrand([5,10,100,200],[10,2,1,0.5].normalizeSum,inf),
 	\mod_index,[1000],
 	\pan,-0.1,
-	\amp,(0.251 - (1 / Pkey(\mod_freq))),
+	\amp,0.5*(0.251 - (1 / Pkey(\mod_freq))),
 	\out,~bus,
 );
 
@@ -203,7 +203,7 @@ Pbindef(\perc_low,
 	\mod_freq, Pwrand([5,10,100,200],[10,2,1,0.5].normalizeSum,inf),
 	\mod_index,[1],
 	\pan,-0.2,
-	\amp,(0.2 - (1 / Pkey(\mod_freq))),
+	\amp,0.5*(0.2 - (1 / Pkey(\mod_freq))),
 	\out,~bus,
 );
 );
@@ -283,7 +283,7 @@ r = Task({ //12 sec segments, mostly; a full phrase is 16.5 (for 3 beat phrase),
 	~a = [1,3,5].rotate(2).pyramidg;
 	Pbindef(\piano, \amp,-19.dbamp);
 	(Pbindef(\perc_high,\mod_index,10,\mod_freq, [10,100],\amp,0.11,\dur,Psubdivide(
-			Pseq([1!9,3!3,1!9].flatten,inf),
+			Pseq([1!24,9!3,1!12].flatten,inf),
 			Pseq(#[3,1,2],inf)
 	)/8,));
 
