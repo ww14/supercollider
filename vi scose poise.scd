@@ -19,7 +19,7 @@ SynthDef(\fm_grain, {
     //freqdev = WhiteNoise.kr(MouseY.kr(0, 400));
 	trig = Impulse.ar(LFDNoise3.kr(0.5).linexp(-1, 1, \lower.kr(1), \upper.kr(32)));
     env = EnvGen.kr(
-		Env([0, 1, 0], [1, \rel.kr(1)], \welch, 1),
+		Env([0, 1, 0], [1, \rel.kr(2.5)], \welch, 1),
 		\gate.kr(1),
         doneAction: Done.freeSelf);
 	snd = GrainFM.ar(2,

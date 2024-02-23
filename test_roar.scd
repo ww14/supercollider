@@ -191,10 +191,10 @@ Pdef(\roadTest, Pmono(
 (
 
 SynthDef(\roar, {
-	var snd, fb, duration;
+	var snd, fb, duration, upper, lower;
 	duration = \duration.kr(4.0);
-	snd = Saw.ar(Env([151,309,407,561,774,821,864,1173,1984,51].cpsmidi, [1, 4, 1, 1, 2, 1,1,4,3,2].normalizeSum * duration, curve: -2).ar.midiratio);
-	snd = RLPF.ar(snd, XLine.ar([800, 300], [1200, 400], duration) * (LFNoise2.kr(3 ! 2) * 3).midiratio * 0.5, \rq.kr(0.1)).sum;
+	snd = Saw.ar(Env([151,309,407,561,774,821,864,1173,1984,51].cpsmidi, [1, 4, 1, 1, 2, 1,1,4,3,2].normalizeSum * duration, curve: -4).ar.midiratio);
+	snd = RLPF.ar(snd, XLine.ar([800, 300], [120, 400], duration) * (LFNoise2.kr(3 ! 2) * 3).midiratio * 0.5, \rq.kr(0.1)).sum;
 	snd = snd * Env.linen(0.01, duration, 0.03).ar;
 
 	snd = BHiShelf.ar(snd, 1200 * LFNoise2.kr(8).linexp(-1, 1, 0.5, 2), 0.3, -10);
@@ -218,9 +218,12 @@ SynthDef(\roar, {
 }).add;
 )
 
+Pbindef(\roar, \instrument,\roar,\dur,Pbjorklund2(5,8,inf)/3,\duration,Pkey(\dur),\rq,0.15).play;
+
+
 (
 
-SynthDef(\roar, {
+SynthDef(\roar2, {
 	var snd, fb, duration;
 	duration = \duration.kr(4.0);
 	snd = VarSaw.ar(\freq.kr(400).cpsmidi,3,0.03);
@@ -243,17 +246,24 @@ SynthDef(\roar, {
 	snd = BLowShelf.ar(snd, 200, 0.3, 5);
 
 	snd = snd + GVerb.ar(snd * -20.dbamp, 50, 2);
-	snd = Limiter.ar(snd);
+	snd = Limiter.ar(snd) * \amp.kr(0.5);
 	Out.ar(\out.kr(0), snd);
 }).add;
 )
 
 Pdef.removeAll;
 t = TempoClock.default.tempo_(60/60);
-Pbindef(\roar, \instrument,\roar,\duration,4,\dur,8).play;
+Pbindef(\roar, \instrument,\roar,\dur,8,\duration,4).play;
 Pbindef(\roar, \instrument,\roar,\midinote,Pseq([48,52,57,60].lace(3),inf));
 ~chord = [151,30,4,1,4,821,8,11,19,51];
 Pbindef(\roar, \duration,4,\dur, 4.5);
+Pbindef(\roar, \instrument,\roar2,\dur,Pbjorklund2(5,8,inf),\duration,Pkey(\dur)).play;
+
+
+
+
+Pbindef(\roar, \instrument,\roar,\dur,Pbjorklund2(5,8,inf)/3,\duration,Pkey(\dur),\rq,0.15).play;
+Pbindef(\roar2, \instrument,\roar2,\freq,Prand([407,774,864,1984],inf),\dur,3,\duration,Pkey(\dur)*0.95,\amp,0.1).play;
 
 
 Pbindef(\roar, \rq,25);
