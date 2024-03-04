@@ -34,7 +34,7 @@ SynthDef.new(\fm1, {
 
 	car = car * env * amp;
 	car = Pan2.ar(car, pan);
-	car = Splay.ar(car);
+	car = LeakDC.ar(Splay.ar(car));
 	Out.ar(0,car);
 }).add;
 );

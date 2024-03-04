@@ -77,7 +77,7 @@ SynthDef("pulseSynth", { arg freq = 440, amp = 0.1, att = 0.1, rel = 2, lofreq =
 // Bach's Invention No. 13 in A Minor
 (
 Pbind(
-	\instrument, "hihat",
+	\instrument, Pwrand(["hat","openhihat"],[0.8,0.2],inf),
 	\dur, Pseq([
 
 		Pseq([Rest(1/4), 1/4], 44), //bars 1-6(first half)
@@ -99,7 +99,7 @@ Pbind(
 ).play;
 
 Pbind(
-	\instrument, "snare",
+	\instrument, Pwrand(["sn","cymbal"],[0.8,0.2],inf),
 	\dur, Pseq([
 
 		Pseq([Rest(1/2), 1/2], 52), //bars 1-13
@@ -116,7 +116,7 @@ Pbind(
 ).play;
 
 Pbind(
-	\instrument, "kick",
+	\instrument, "bd",
 	\dur, Pseq([
 
 		Pn(1/2, 199) //bars 1-25
@@ -132,7 +132,7 @@ Pbind(
 
 //Right hand
 Pbind(
-	\instrument, "pulseSynth",
+	\instrument, "harpsichord_pluck",
 	\midinote, Pseq([
 
 		\rest, 64, 69, 72, 71, 64, 71, 74, 72, 76, 68, 76, //bar 1
@@ -205,7 +205,7 @@ Pbind(
 
 //Left hand
 Pbind(
-	\instrument, "sawSynth",
+	\instrument, "organ_reed",
 	\midinote, Pseq([
 
 		45, 57, 56, 57, 52, 57, 60, 59, 52, 59, 62, //bar 1

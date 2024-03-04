@@ -60,7 +60,7 @@ t = TempoClock.default.tempo = 107 / 60;
 ~kikEnvir = (
 	parent: ~commonFuncs,
 	// rhythm pattern that is constant in each bar
-	baseAmp: #[1, 0, 0, 0, 0, 0, 0.7, 0, 0, 1, 0.25, 0, 0, 0, 0, 0] * 2.5,
+	baseAmp: #[1, 0, 0, 0, 0, 0, 0.7, 0, 0, 1, 0.25, 0, 0, 0, 0, 0] * 2.0,
 	baseDecay: #[0.15, 0, 0, 0, 0, 0, 0.15, 0, 0, 0.15, 0.15, 0, 0, 0, 0, 0],
 	addNotes: {
 		var beat16pos = (thisThread.clock.beats - ~startTime) % 16,
@@ -142,7 +142,7 @@ t = TempoClock.default.tempo = 107 / 60;
 		Pbind(
 			\instrument, \bd,
 			\decay,20,
-			\tone,54,
+			\tone,56,
 			//\preamp, 0.15,
 			//\basefreq,32,
 			//\ratio,12,
