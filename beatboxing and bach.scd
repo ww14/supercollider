@@ -1,6 +1,6 @@
 /// beatboxing and bach
 // https://sccode.org/1-5aN
-
+("Setup/Setup.scd").loadRelative
 
 (
 
@@ -205,7 +205,7 @@ Pbind(
 
 //Left hand
 Pbind(
-	\instrument, "organ_reed",
+	\instrument, "harpsichord_pluck",
 	\midinote, Pseq([
 
 		45, 57, 56, 57, 52, 57, 60, 59, 52, 59, 62, //bar 1
@@ -271,8 +271,8 @@ Pbind(
 	], 1),
 
 	\att, 0.1,
-	\rel, Pkey(\dur)+0.4,
-	\amp, 0.5
+	//\rel, Pkey(\dur),
+	\amp, 0.3
 
 ).play;
 
