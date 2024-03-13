@@ -37,11 +37,11 @@ SynthDef.new(\aliasingSynth, {
 	var b, writeSig, writePos, readPos;
 	var aliased,filteredHP,filteredLP,inputLPfm,inputHPfm,finalsig,writef,readf;
 
-	var readratio=\readratio.kr(1)!5; //0-5
-	var readfine=\readfine.kr(0)!5; //-0.5 0.5
-	var writeratio=\writeratio.kr(1)!5; //0-5
-	var writefine=\writefine.kr(0)!5; //-0.5 0.5
-	var transpose=\transpose.kr(0!5); //-2 2
+	var readratio=\readratio.kr(1!5); //0-5
+	var readfine=\readfine.kr(0!5); //-0.5 0.5
+	var writeratio=\writeratio.kr(1!5); //0-5
+	var writefine=\writefine.kr(0!5); //-0.5 0.5
+	var transpose=\transpose.kr([0,0,0,0,0]); //-2 2
 
 	var readlfofreq=\readlfofreq.kr(0.3!5)*12; //normalized input
 	var writelfofreq=\writelfofreq.kr(0.13!5)*12;
@@ -90,4 +90,8 @@ SynthDef.new(\aliasingSynth, {
 )
 
 a = Synth(\aliasingSynth);
-a.set(\readratio,0.13,\writeratio,0.1,\lpres,0.1);
+a.set(\transpose,0!5);
+
+a.set(\readratio,[1,2,0,4.0,5],\writeratio,[1,2,0,4.0,1]);//,\writeratio,0.1,\lpres,0.9);
+a.set(\readratio,0.13,\writeratio,0.1,\lpres,0.9);
+a.set(\readfine,-0.3,\writefine,0.5,\lpres,0.9);

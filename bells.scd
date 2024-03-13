@@ -218,12 +218,12 @@ t = TempoClock.default.tempo_(300/60);
 Pspawner({|sp|
 	//s.record;
 	sp.wait(1);
-	/*
+
 	t = TempoClock.default.tempo_(60/60);
 	sp.par( Pfindur(32, Pdef(\intro)));
 
 	sp.wait(32);
-	*/
+
 	t = TempoClock.default.tempo_(300/60);
 	sp.par( Pfindur(48*4, Pdef(\bell)));
 	sp.par( Pfindur(48*5, Pdef(\drum)));

@@ -24,12 +24,12 @@ SynthDef(\rush,{
 		freqs.reciprocal,
 		freqs.reciprocal,
 		2.5, //LFNoise2.kr(1/4).linexp(-1,1,1.5,4),
-		SinOsc.kr(60.reciprocal,1.5*pi).linexp(-1,1,1e-3,0.5)
+		SinOsc.kr(60.reciprocal).linexp(-1,1,1e-3,0.5)
 	);
 	snd = -25.dbamp * snd;
 	perc = SinGrain.ar(
 		trig,
-		SinOsc.kr(60.reciprocal).linexp(-1,1,0.001,0.01),
+		SinOsc.kr(60.reciprocal,1.5pi).linexp(-1,1,0.001,0.01),
 		freqs.tanh
 	) * -12.dbamp;
     //perc = DelayC.ar(perc, 1, SinOsc.ar(20.reciprocal, [0, pi]).range(0, 1));
@@ -107,7 +107,7 @@ t = Task({
 	a.set(\low, 15, \high,20);
 
 	 //fade out
-	a.release(16); //could also use \gate
+	a.release(20); //could also use \gate
 });
 )
 

@@ -29,7 +29,7 @@ SynthDef.new(\fm1, {
 	//filter sound for clipping/distortion
 	car = SinOsc.ar(freq * cRatio + mod, phase );
 	car = BLowShelf.ar(car, lsf, 0.5, ldb);
-	//car = BHiShelf.ar(car, hsf, 0.5,hdb);
+	car = BHiShelf.ar(car, hsf, 0.5,hdb);
 	snd = MoogFF.ar(car, LFNoise2.kr(0.75).linexp(-1, 1, 500, 1600), 0);
 	snd = snd * env * amp;
 	snd = Pan2.ar(snd, pan);
@@ -37,6 +37,8 @@ SynthDef.new(\fm1, {
 	Out.ar(0,snd);
 }).add;
 );
+
+TempoClock.default.tempo = 60/60;
 
 Pbind(\instrument,\fm1, \dur,Pseq([3,3,2],inf), \rel,Pkey(\dur)*1.4,\phaseLen,Pkey(\dur)*1,\midinote,Pseq([[57,50,62],[62,64],[56,50,61],[59,50,62],[56,50],[61,50,64],[57,62],[54,57,62],[54,50,62]],inf),\iScale,0.1,\index,1,\mRatio,Pwrand([[0.5,1,5],[1,2],[1,10]],[3,2,1].normalizeSum,inf),\cRatio,2).play;
 
@@ -65,16 +67,16 @@ Pbind(\instrument,\fm1, \dur,Pseq([2,1,1,1,2,1],inf)/8, \rel,Pkey(\dur)*1.1,\pha
 	\mRatio,15,
 	\cRatio,Pwrand([0.6,6,24],[5,2,0.5].normalizeSum,inf),
 	\amp,-6.dbamp,
-	\lsf,200,
+	\lsf,150,
 	\ldb,-8,
-	\hsf,1500,
-	\hdb,-1
+	\hsf,2500,
+	\hdb,-8,
 ).play);
 
 
-Pbind(\instrument,\fm1, \dur,Pseq([3,3,2],inf), \rel,Pkey(\dur)*1.4,\phaseLen,Pkey(\dur)*1,\midinote,Pseq([[57,50,62],[62,64],[56,50,61],[59,50,62],[56,50],[61,50,64],[57,62],[54,57,62],[54,50,62]],inf),\iScale,0.1,\index,1,\mRatio,Pwrand([[0.5,1,5],[1,2],[1,10]],[3,2,1].normalizeSum,inf),\cRatio,2).play;
+Pbind(\instrument,\fm1, \dur,Pseq([3,3,2],inf), \rel,Pkey(\dur)*1.4,\phaseLen,Pkey(\dur)*1,\midinote,Pseq([[57,50,62],[62,64],[56,50,61],[59,50,62],[56,50],[61,50,64],[57,62],[54,57,62],[54,50,62]],inf),\iScale,0.1,\index,1,\mRatio,Pwrand([[0.5,1,5],[1,2],[1,10]],[3,2,1].normalizeSum,inf),\cRatio,2,\out,~bus[\reverb2]).play;
 
-Pbind(\instrument,\fm1, \dur,Pseq([2,1,2,2,1],inf)/8, \rel,Pkey(\dur)*1.4,\phaseLen,Pkey(\dur)*0.5,\midinote,Pseq([[57,50,62],[62,64],[56,50,61],[59,50,62],[56,50],[61,50,64],[57,62],[54,50,62]],inf),\iScale,0.75,\index,2,\mRatio,[0.5,1],\cRatio,0.5).play;
+Pbind(\instrument,\fm1, \dur,Pseq([2,1,2,2,1],inf)/8, \rel,Pkey(\dur)*1.4,\phaseLen,Pkey(\dur)*0.5,\midinote,Pseq([[57,50,62],[62,64],[56,50,61],[59,50,62],[56,50],[61,50,64],[57,62],[54,50,62]],inf),\iScale,0.75,\index,2,\mRatio,[0.5,1],\cRatio,0.5,\out,~bus[\reverb2]).play;
 
 
 (Pbind(\instrument,\fm1,
