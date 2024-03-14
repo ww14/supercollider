@@ -29,7 +29,7 @@ SynthDef(\rush,{
 	snd = -25.dbamp * snd;
 	perc = SinGrain.ar(
 		trig,
-		SinOsc.kr(60.reciprocal,1.5pi).linexp(-1,1,0.001,0.01),
+		SinOsc.kr(60.reciprocal).linexp(-1,1,0.001,0.01), // tried phasing at 1.5pi
 		freqs.tanh
 	) * -12.dbamp;
     //perc = DelayC.ar(perc, 1, SinOsc.ar(20.reciprocal, [0, pi]).range(0, 1));

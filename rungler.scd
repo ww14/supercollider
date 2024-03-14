@@ -167,7 +167,7 @@ SynthDef(\rungler_saw, {
 	snd = LFPulse.ar(({ lfo.() } ! 2).linexp(0, 1, [10, 1], 4000) * (snd * \pitch.kr([10])).midiratio);
 	LocalOut.ar(LeakDC.ar(Sanitize.ar(snd)));
 	snd = (snd[0] > snd[1]) - 0.5;
-	snd = MoogFF.ar(snd, ({ lfo.() } ! 2).linlin(0, 1, 100, 4000) * (runglerOut[\out]*2).midiratio, 1.25);
+	snd = MoogFF.ar(snd, (runglerOut[\out]).range(200, 7000), 1.25);
 
 	snd = Splay.ar(snd, 0.9);
 
@@ -190,7 +190,7 @@ SynthDef(\rungler_saw, {
 a = Synth(\rungler_saw);
 a.set(\pitch,[10]);
 a.set(\pitch,[10]);
-a.set(\pitch,[3]);
+a.set(\pitch,[40]);
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
