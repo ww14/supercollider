@@ -47,4 +47,4 @@ s.waitForBoot({
 });
 )
 
-Ndef('bits').set('t1a', 15 , 't1b',5, 't2a', 5, 't2b', 3, 't3a', 2, 't3b', 9, 't4a', 8, 't4b', 11, 'bits', 256, 'less', 3, 'add', 128, 'mul', 3 ,'rt60', 0.1, 'stereo', 0.5);
+Ndef('bits').set('t1a', 15 , 't1b',5, 't2a', 5, 't2b', 3, 't3a', 3, 't3b', 9, 't4a', 8, 't4b', 5, 'bits', 256, 'less', 3, 'add', 128, 'mul', 3 ,'rt60', 0.1, 'stereo', 0.45);

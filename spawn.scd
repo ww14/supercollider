@@ -113,6 +113,7 @@ SynthDef(\additive, {
 	sig = Pan2.ar(sig, \pan.kr(0), \amp.kr(0.25));
 	Out.ar(\out.kr(0), sig);
 }).add;
+)
 
 
 

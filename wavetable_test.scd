@@ -19,7 +19,7 @@ Server.killAll;
     clk = Impulse.kr(trate);
 	pos = \pos.kr(0.5)*BufDur.kr(b) + TRand.kr(0, 0.01, clk);
 	pan = BrownNoise.kr(0.9);
-	snd = TGrains.ar(8, clk, b, \rate.kr(1), pos, dur, pan, 0.1).sum;
+		snd = TGrains.ar(8, clk, b, \rate.kr(1) + \root.kr(0), pos, dur, pan, 0.1).sum;
 	snd = Splay.ar(snd);
 	snd = NHHall.ar(snd,60,0.95);
 
@@ -66,7 +66,7 @@ Pbindef(\test_mel, \instrument,\test,
 
 Pbindef(\kick,
 	\instrument,\kick,
-	\glissf,Phprand(0.9,3),
+	\glissf,Phprand(0.9,2.5),
 	\midinote,32,
 	\dur,Psubdivide(Pseq([1!8,4,1!8,4,1!14,3].flatten,inf),Pseq([1,Rest(6.5),0.5],inf)),//Pwrand([0.1,0.2],[0.8,0.2],inf), //0.1
 	\pan,0,
@@ -105,6 +105,8 @@ Pbindef(\waveTable,
 );
 )
 
+[8,7,9,5,3].sum
+
 Synth(\kick);
 
 t = TempoClock.default.tempo = (60/60);
@@ -112,6 +114,31 @@ t = TempoClock.default.tempo = (60/60);
 Pbindef(\kick).play(t);
 Pbindef(\snr).play(t);
 Pbindef(\waveTable).play(t);
+(Pbind(
+	\instrument, \vink,
+  \degree, Pclump(Pseq([3, 3, 4, 2, 4, 2, 4], inf), Pseq([1, 3, 5, 7, 9], inf), inf),
+	\dur, 1/8,
+	\rel,1/8,
+	\curve,2,
+	\rq,Pwhite(0.1,0.2),
+	\amp, 10.dbamp
+).play;
+)
+
+(Pbind(
+	\instrument, \vink,
+  \degree, 1+Pclump(Pseq([3, 3, 4, 2, 4, 2, 4], inf), Pseq([1, 3, 5, 3, 2], inf), inf),
+	\dur, 1,
+	\rel,1/8,
+	\curve,50,
+	\rq,0.15,
+	\amp, 10.dbamp
+).play;
+)
+
+
+8.midiratio
+
 Pbindef(\test_mel).play(t);
 
 (
@@ -125,8 +152,8 @@ Pspawner({|sp|
 	t = TempoClock.default.tempo_(60/60);
 	sp.par( Pfindur(300, Pbindef(\waveTable)));
 
-	sp.wait(64);
-
+	sp.wait(32);
+	//sp.par( Pfindur(300, Pbindef(\waveTable)));
 	sp.par( Pfindur(48*4, Pbindef(\kick)));
 	sp.par( Pfindur(48*5,Pbindef(\snr)));
 
@@ -155,8 +182,8 @@ Pbind(\instrument,\test,
 	\rate,0.midiratio+Pseq(
 		 [8,4,8,11].midiratio,inf),
 	\dur, Pseq([0.25,0.25,0.5,0.25],inf),
-	\cRel,0,
-	\trate, 600,//Pstep([100,10],[32,32],inf),//Pseg([60,600,60],[30,60],\lin,2),//Pwrand([60,200],[0.8,0.2],inf),
+	// \cRel,0,
+	\trate, 100,//Pstep([100,10],[32,32],inf),//Pseg([60,600,60],[30,60],\lin,2),//Pwrand([60,200],[0.8,0.2],inf),
 	\amp,-6.dbamp
 ).play;
 )
@@ -174,7 +201,7 @@ Pbind(\instrument,\test,
 		[32,37,44,41],
 		[32,37,44]
         ].midiratio,inf),
-\dur, 1/16 * Pseq([2,1,1,2,1,2,2,2,1,2, //1
+\dur, 1/2 * Pseq([2,1,1,2,1,2,2,2,1,2, //1
 	2,1,1,2,1,2,2,2,1,2, //2
 	2,1,1,2,1,2,2,2,1,2, //3
 	2,1,1,2,1,2,2,2,1,2, //4
@@ -187,8 +214,11 @@ Pbind(\instrument,\test,
 	2,1,1,2,1,2,1,1,1,2,2, //11
 	2,1,1,2,1,2,2,2,1,2 //12
 ],inf),
-	\cRel,-2,
+	\cRel,-1,
 );
 )
+
+Pbindef(\test_mel).play
+Pbindef(\test_mel,\root,-13.9-0.2,\amp,5.dbamp);
 
 [0,1]  [32,37,44]

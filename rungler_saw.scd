@@ -60,14 +60,14 @@ SynthDef(\rungler_saw_sub, {
 	sndVerb = NHHall.ar([snd,snd],LFPulse.ar(({ lfo.() }!2).linexp(0.001, 1, 0.19, 2.8),0,0.5),0.75);
 	snd = XFade2.ar(snd, sndVerb);
 
-	//snd = SmoothClipS.ar(snd,-0.9,0.9,1);
-	//snd = BHiShelf.ar(snd,5000,1,-8);
-	//snd= BLowShelf.ar(snd,200,1,-8);
-	/*
-	snd = snd.tanh;
-	snd= BLowShelf.ar(snd,100,1,-3);
-	snd = BHiShelf.ar(snd,4000,1,-3);
-*/
+	snd = LeakDC.ar(snd);
+
+	snd= BLowShelf.ar(snd,200*ExpRand(0.7,1.0),1,-5+lfo.());
+	snd = BHiShelf.ar(snd,3200*ExpRand(0.7,1.0),1,-5+lfo.());
+	snd = (snd).tanh;
+	snd= BLowShelf.ar(snd,200*ExpRand(0.7,1.0),1,-5+lfo.());
+	snd = BHiShelf.ar(snd,3200*ExpRand(0.7,1.0),1,-5+lfo.());
+
 
 	// env is just for fadeout
 	env = Env.adsr(\attack.kr(0.01), \decay.kr(0.3), \sustainLevel.kr(1), \release.kr(1)).kr(Done.freeSelf, \gate.kr(1));
@@ -93,14 +93,13 @@ SynthDef(\rungler_saw, {
 	sndVerb = NHHall.ar([snd,snd],LFPulse.ar(({ lfo.() }!2).linexp(0.001, 1, 0.19, 2.8),0,0.5),0.75);
 	snd = XFade2.ar(snd, sndVerb);
 
-	//snd = SmoothClipS.ar(snd,-0.9,0.9,0.2);
-	/*
-	snd = BHiShelf.ar(snd,4000,1,-3);
-	snd= BLowShelf.ar(snd,100,1,-3);
-	snd = snd.tanh;
-	snd= BLowShelf.ar(snd,100,1,-3);
-	snd = BHiShelf.ar(snd,4000,1,-3);
-*/
+	snd = LeakDC.ar(snd);
+
+	snd= BLowShelf.ar(snd,200*ExpRand(0.7,1.0),1,-5+lfo.());
+	snd = BHiShelf.ar(snd,3200*ExpRand(0.7,1.0),1,-5+lfo.());
+	snd = (snd).tanh;
+	snd= BLowShelf.ar(snd,200*ExpRand(0.7,1.0),1,-5+lfo.());
+	snd = BHiShelf.ar(snd,3200*ExpRand(0.7,1.0),1,-5+lfo.());
 
 	// env is just for fadeout
 	env = Env.adsr(\attack.kr(0.01), \decay.kr(0.3), \sustainLevel.kr(1), \release.kr(0.5)).kr(Done.freeSelf, \gate.kr(1));
@@ -117,6 +116,7 @@ SynthDef(\rungler_saw, {
 
 
 a = Synth(\rungler_saw_sub);
+Synth(\rungler_saw);
 //a.release(2);
 a.set(\pitch,[10]);
 a.set(\sub_gain,1.5);
@@ -167,7 +167,8 @@ t = Task({
 	b.release(0.1);
 	a.set(\amp,1,\pitch,10);
 
-	20.wait;
+	30.wait;
+	"start moog gain".postln;
 	a.set(\sub_gain,1.0);
 	10.wait;
 	a.set(\sub_gain,1.5);
@@ -176,6 +177,7 @@ t = Task({
 	10.wait;
 	a.set(\sub_gain,2.0);
 	10.wait;
+	"peak moog gain".postln;
 	a.set(\sub_gain,2.25);
 	10.wait;
 	a.set(\sub_gain,2.0);
@@ -187,7 +189,9 @@ t = Task({
 	a.set(\sub_gain,1.0);
 	10.wait;
 	a.set(\sub_gain,0.5);
-	10.wait;
+	"lowest moog gain".postln;
+	20.wait;
+	a.set(\pitch, 70);
 
 	a.release(8);
 
