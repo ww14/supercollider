@@ -27,16 +27,26 @@ SynthDef(\rush,{
 		SinOsc.kr(60.reciprocal).linexp(-1,1,1e-3,0.5)
 	);
 	snd = -25.dbamp * snd;
+
+
 	perc = SinGrain.ar(
 		trig,
-		SinOsc.kr(60.reciprocal).linexp(-1,1,0.001,0.01), // tried phasing at 1.5pi
-		freqs.tanh
-	) * -12.dbamp;
+//		SinOsc.kr(60.reciprocal).linexp(-1,1,0.001,0.01), // tried phasing at 1.5pi
+	//	freqs.tanh
+	//) * -12.dbamp;
+		SinOsc.kr(60.reciprocal).linexp(-1,1,0.001,0.01),
+		freqs.tanh,
+		\perc_amp.kr(0.01)
+	) ;
+
+	perc = IIRFilter.ar(perc,1000,20);
+	perc = BHiPass4.ar(perc,200,2);
+
+
     //perc = DelayC.ar(perc, 1, SinOsc.ar(20.reciprocal, [0, pi]).range(0, 1));
 	snd = LeakDC.ar(snd).sum;
 	snd = MoogFF.ar(snd, LFNoise2.kr(0.75).linexp(-1, 1, 500, 16000), 0);
-	snd = snd
-	    + perc
+	snd = snd +perc
 	         //+ DelayC.ar(snd, 0.1, SinOsc.ar(0.00005, [0, pi]).range(0, 0.01));
 	;
 	//snd = CombN.ar(snd,trig);
@@ -58,6 +68,7 @@ SynthDef(\rush,{
 a = Synth(\rush);
 a.free;
 a.set(\fund,1);
+a.set(\perc_amp,0.001);
 a.release(8);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,11 +97,11 @@ t = Task({
 
 	60.wait;
 	"shorter".postln;
-	a.set(\low,3,\high,10);
+	a.set(\low,3,\high,10,\perc_amp,0.25);
 
 	30.wait;
 	"wider".postln;
-	a.set(\low,1,\high,100);
+	a.set(\low,1,\high,100,\perc_amp,1);
 
 	30.wait;
 	"new chords".postln;
@@ -99,12 +110,12 @@ t = Task({
 
 	30.wait;
 	"narrower".postln;
-	a.set(\low, 15, \high,40);
+	a.set(\low, 15, \high,40,\perc_amp,0.4);
 
 	60.wait;
 	"orignal width, close".postln;
 	a.set(\fund,[52,53,57, 60]);
-	a.set(\low, 15, \high,20);
+	a.set(\low, 15, \high,20,\perc_amp,0.01);
 
 	 //fade out
 	a.release(20); //could also use \gate
