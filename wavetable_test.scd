@@ -30,16 +30,16 @@ Server.killAll;
 
 ///////////////////////////////testing
 
-a = Synth(\test,[\rate,31.midiratio,\dur,2,\cRel,0])
-a.set(\trate,300)
+a = Synth(\test,[\rate,31.midiratio,\dur,2,\cRel,0]);
+a.set(\trate,300);
 a.set(\rate,0.02);
 a.set(\pos,0.1)
 
 (
 Pbindef(\test_mel, \instrument,\test,
-	\rate,Pseq([0!24,[0,-12]!24].flatten,inf)+Pseq(
+	\rate,Pseq([1e-3!24,[1e-3,-12]!24].flatten,inf)+Pseq(
 	   (1+ [31,31,31,32,28,31,
-		 31,35,32,32,28,31,
+			31,[35,36],32,32,28,31,
 	     31,31,31,32,28,31,
 		 31,28,32,31,32,28,
 	]).midiratio,inf),
@@ -51,12 +51,34 @@ Pbindef(\test_mel, \instrument,\test,
 	],inf),
 	\cRel,Pwhite(-4,0),
 	\pos,Pwhite(0,1),
-	\trate, 600,//Pseg([60,600,60],[30,60],\lin,2),//Pwrand([60,200],[0.8,0.2],inf),
+	\trate, 150,//Pseg([60,600,60],[30,60],\lin,2),//Pwrand([60,200],[0.8,0.2],inf),
 	\amp,0.dbamp
 );
 )
 
 
+(
+Pbindef(\test_mel_2, \instrument,\test,
+	\rate,[1e-3,-8]+Pseq(
+	   (1+ [31,32,28,31,
+			[35,36],32,28,31,
+	     32,28,31,
+		 28,32,31,32,28,
+	]),inf),
+	\dur, 1/16*Pseq(
+		[3,0.5,0.5,1.5,
+		 1,1.5,0.5,3.5,
+		 0.5,0.5,1.5,
+  		 0.5,0.5,1,1,0.5
+	],inf),
+	\cRel,Pwhite(-3,0),
+	\pos,Pwhite(0,1),
+	\trate, 100,//Pseg([60,600,60],[30,60],\lin,2),//Pwrand([60,200],[0.8,0.2],inf),
+	\amp,0.dbamp
+);
+)
+
+Pbindef(\test_mel).play
 
 
 
@@ -100,7 +122,7 @@ Pbindef(\waveTable,
 	\cRel,0,
 	\trate, Pstep([10,100,50,10,50],[64,32,32,32],inf),
 	//Pseg([60,600,60],[30,60],\lin,2),//Pwrand([60,200],[0.8,0.2],inf),
-	\amp,-6.dbamp,
+	\amp,-8.dbamp,
 	\out,0
 );
 )
@@ -109,7 +131,7 @@ Pbindef(\waveTable,
 
 Synth(\kick);
 
-t = TempoClock.default.tempo = (60/60);
+t = TempoClock.default.tempo = (66/60);
 //t.schedAbs(t.nextTimeOnGrid(32, -0.001));
 Pbindef(\kick).play(t);
 Pbindef(\snr).play(t);
@@ -143,13 +165,13 @@ Pbindef(\test_mel).play(t);
 
 (
 StageLimiter.activate;
-t = TempoClock.default.tempo_(60/60);
+t = TempoClock.default.tempo_(66/60);
 
 Pspawner({|sp|
 	//s.record;
 	sp.wait(1);
 
-	t = TempoClock.default.tempo_(60/60);
+	t = TempoClock.default.tempo_(66/60);
 	sp.par( Pfindur(300, Pbindef(\waveTable)));
 
 	sp.wait(32);

@@ -83,7 +83,7 @@ SynthDef(\gurgle,{
 Synth(\gurgle_perc,[\dur,1,\dust,1e3]);
 
 
-
+(
 Pbind(\instrument,\gurgle,
 	\dur,Pseq([Rest(1),5],inf),
 	\amp,-9.dbamp,
@@ -92,12 +92,13 @@ Pbind(\instrument,\gurgle,
 	\downshift,Pseg([-30,-150,-6].mirror,[20,10,10,20],\sin,inf),
 	\upshift,Pseg([30,150,6].mirror,[20,10,10,20],\sin,inf),
 ).play;
+)
 
 Pbind(\instrument,\gurgle,\dur,Pseq([Rest(1),1],inf),\amp,Pseg([-100,-12,-6].mirror.dbamp,[20,10,10,20],\sin,inf)).play;
 
 Pdef.removeAll;
 
-Pbind(\instrument,\gurgle,\dur,Pseq([Rest(1),Pseq([Rest(0.5),1.5],inf)],1),\amp,-8.dbamp,\dust,8).play;
+Pbind(\instrument,\gurgle,\dur,Pseq([Rest(1),Pseq([Rest(0.5),1.5],inf)],1),\amp,-8.dbamp,\dust,8).play(quant:4);
 Pbindef(\t,\instrument,\gurgle_perc,\dur,Pseq([Rest(1),Pseq([Rest(0.5),1.5],inf)],1),\amp,8.dbamp,\dust,3e4);
 Pbindef(\u,\instrument,\gurgle_perc,\dur,Pseq([Rest(1),1],inf),\amp,-8.dbamp,\dust,1e4);
 Pbindef(\v,\instrument,\gurgle_perc,\dur,Pseq([2],inf),\amp,-10.dbamp,\dust,4.409e4,\noise,Pxrand([(1..10)].flatten,inf));

@@ -105,7 +105,7 @@ SynthDef(\rungler_saw, {
 	env = Env.adsr(\attack.kr(0.01), \decay.kr(0.3), \sustainLevel.kr(1), \release.kr(0.5)).kr(Done.freeSelf, \gate.kr(1));
 	snd = snd *env;
 
-	snd = snd * -3.dbamp * \amp.kr(1).lag3;
+	snd = LeakDC.ar(snd) * -3.dbamp * \amp.kr(1).lag3;
 	Out.ar(\out.kr(0), snd);
 }).add;
 )

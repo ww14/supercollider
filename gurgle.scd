@@ -1,6 +1,23 @@
 // https://sccode.org/1-5hv
 
 (
+SynthDef(\vink,{
+var sig,env;
+
+	env = Env.linen(0.1,\dur.kr(1),\rel.kr(1),\curve.kr(50)).kr(2);
+
+	sig = WhiteNoise.ar;
+	sig = BPF.ar(sig,\freq.kr(440),1e-4,env).tanh;
+	sig = Friction.ar(sig, friction: 5.41322e-5, mass: 8.05501);
+	sig = IIRFilter.ar(sig, freq: 600.0, rq:\rq.kr(0.51), mul: 1.0, add: 0.0);
+	sig = Pan2.ar(sig,\pan.kr(0),\amp.kr(1));
+	Out.ar(\out.kr(0),sig);
+
+
+}).add;
+)
+
+(
 SynthDef(\gurgle_perc,{
 	var snd, duration, trigger,env;
 	duration = \dur.kr(3.0);
@@ -53,27 +70,32 @@ SynthDef(\gurgle_perc,{
 
 
 
-Synth(\gurgle_perc,[\dur,1,\dust,1e3]);
+Synth(\gurgle_perc,[\dur,3,\dust,1e3]);
 
 
 (Pdef.removeAll;
 Pbindef(\t,\instrument,\gurgle_perc,
 	\dur,Pseq([Rest(1),
-		      Pseq([Rest(0.5),1.5],inf),
-		],1),
+		Pseq([Rest(0.5),Pwrand(
+			[1.5,
+			Pseq([0.5,0.5,0.5],1),
+			Pseq([0.5,1],1),
+		],[0.8,0.05,0.15],1)
+		],inf),
+	],1),
 	\amp,8.dbamp,
 	\dust,3e4);
 
 /*\dur,Pseq([
-		Rest(1),
-		Pwrand([
-				Pseq([Rest(0.5),1.5],1),
-			Pseq([Rest(0.5),0.375,1.125],1),
-			Pseq([Rest(0.5),1.125,0.375],1),
-			Pseq([Rest(0.5),0.5,0.5,0.5],1)
-		],
-		[4,2,1,1].normalizeSum,inf)
-	],1),*/
+Rest(1),
+Pwrand([
+Pseq([Rest(0.5),1.5],1),
+Pseq([Rest(0.5),0.375,1.125],1),
+Pseq([Rest(0.5),1.125,0.375],1),
+Pseq([Rest(0.5),0.5,0.5,0.5],1)
+],
+[4,2,1,1].normalizeSum,inf)
+],1),*/
 
 Pbindef(\u,
 	\instrument,\gurgle_perc,
@@ -123,10 +145,10 @@ t = TempoClock.default.tempo_(72/60);
 
 
 
-// Pbindef(\t).play(t,quant:4);
+Pbindef(\t).play(t,quant:4);
 Pbindef(\u).play(t,quant:1);
 Pbindef(\v).play(t,quant:1);
-Pbindef(\test).play(quant:4);
+Pbindef(\test).play(quant:16);
 Pbindef(\fm1).play(quant:1);
 
 Pbindef(\fm1).stop;
@@ -149,7 +171,7 @@ Pbindef(\u,\dust,3.8e2);
 Pbindef(\u,\dust,3.8e4);
 
 
-Pbindef(\t,\dust,2.9e4);
+Pbindef(\t,\dust,Pwrand([2.9e4,3.1e4,2.3e4],[0.6,0.2,0.1],inf));
 Pbindef(\t,\dust,3.1e4);
 Pbindef(\t,\dur,Pseq([Rest(1),1,Rest(1),1],inf));
 Pbindef(\t,\dust,2.2e4);
