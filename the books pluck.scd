@@ -72,3 +72,18 @@ Pbindef(\pluck).play
 	\out,0
 );
 )
+
+(Pbindef(\pluck,\dur,0.175*Pn(Pshuf([
+	Pseq([1,1,2,3,2],1),
+	Pseq([1,1,2,3,2],1),
+	Pseq([1,2,1,2,3],1),
+	Pseq([1,3,1,2,2],1),
+	Pseq([3,1,2,2,1],1)
+	],Pwrand([4,2,8],[0.5,0.25,0.25],inf))
+    ,inf))
+)
+
+Pbindef(\pluck,\rq,0.001,\dur,0.7)
+Pbindef(\pluck,\puffDuration,Pseg([0.0025,0.015,2],30,\exp,1))
+
+Pbindef(\pluck,\rq,0.21,\dur,0.35)
