@@ -322,7 +322,7 @@ t = Task({
 
 	4.wait;
 	"short jam".postln;
-	Pbindef(\kick,\amp,-15.dbamp);
+	Pbindef(\kick,\amp,-10.dbamp);
 	Pbindef(\snr,\amp,-37.dbamp);
 
 	32.wait;

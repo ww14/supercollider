@@ -103,7 +103,7 @@ Pbindef(\t,\instrument,\gurgle_perc,\dur,Pseq([Rest(1),Pseq([Rest(0.5),1.5],inf)
 Pbindef(\u,\instrument,\gurgle_perc,\dur,Pseq([Rest(1),1],inf),\amp,-8.dbamp,\dust,1e4);
 Pbindef(\v,\instrument,\gurgle_perc,\dur,Pseq([2],inf),\amp,-10.dbamp,\dust,4.409e4,\noise,Pxrand([(1..10)].flatten,inf));
 
-Pbindef(\t).play(quant:1);Pbindef(\u).play(quant:1);Pbindef(\v).play(quant:1);
+Pbindef(\t).play(quant:4);Pbindef(\u).play(quant:4);Pbindef(\v).play(quant:4);
 Pbindef(\u,\amp,0);
 Pbindef(\u,\amp,-8.dbamp);
 

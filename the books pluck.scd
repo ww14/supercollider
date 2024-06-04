@@ -84,6 +84,6 @@ Pbindef(\pluck).play
 )
 
 Pbindef(\pluck,\rq,0.001,\dur,0.7)
-Pbindef(\pluck,\puffDuration,Pseg([0.0025,0.015,2],30,\exp,1))
+Pbindef(\pluck,\puffDuration,Pseg([0.0025,0.015,2],20,\exp,1))
 
 Pbindef(\pluck,\rq,0.21,\dur,0.35)

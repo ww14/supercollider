@@ -2,6 +2,55 @@ Server.killAll;
 ("setup/Setup.scd").loadRelative // load this file
 
 (
+SynthDef(\vink,{
+var in, trig, snd, ff, rmf, env, freq;
+
+	ff = \ff.kr(1000).lag3;
+	rmf = \rmf.kr(600).lag3;
+
+
+	trig = Impulse.ar(LFDNoise3.kr(1).linexp(-1, 1, \low.kr(8).lag3, \high.kr(8).lag3)); //LFDNoise makes the higher freq steps less discrete/quantized
+	//trig = Dust.ar(0.9);
+
+	snd =  ClipNoise.ar(0.2);
+
+
+
+	freq = \freq.kr(440)	;
+
+	snd = Pluck.ar(snd, trig, \maxdelaytime.kr(0.2) , freq.reciprocal , \decaytime.kr(1) , \coef.kr(0.81)).distort; //fundamental
+	in = LocalIn.ar(2) + [snd,snd];
+
+	//snd = SinGrain.ar(snd,1000.reciprocal,\freq.kr(440).lag3(4),0.025);
+
+	in  = DFM1.ar(in, SinOsc.kr(SinOsc.kr(\vibrato.kr(0.3)).range(0.2, 3)).range(80, 2000), \res.kr(0.01), \inputgain.kr(0.5) , 0, \noiselevel.kr(0.0003));
+
+	snd = snd  + in;
+
+	snd = GVerb.ar(snd,\roomsize.kr(10),1,0.9,0.5,\spread.kr(15));
+	//snd = NHHall.ar(snd,1,0.5);
+
+	snd = Compander.ar(snd,snd,
+		thresh: 0.1,
+        slopeBelow: 1,
+        slopeAbove: 1,
+        clampTime:  0.1,
+        relaxTime:  0.2);
+
+	//LocalOut.ar(snd);
+	//snd;
+
+	snd = LeakDC.ar(snd).tanh;
+	snd = MoogFF.ar(snd, LFNoise2.kr(0.75).linexp(-1, 1, 500, 1600), 0);
+
+
+	snd = Pan2.ar(snd,\pan.kr(0),\amp.kr(1));
+	//snd = snd * \amp.kr(1);
+	env = Env.asr(\atk.kr(1), \amp.kr(1).lag3(6), \release.kr(16)).kr(2, \gate.kr(1));
+	snd = snd *env;
+	Out.ar(0,snd);
+}).add;
+
 (SynthDef(\test,
 {
     var list, trate, dur, clk, pos, pan, snd, in, chain, env;
@@ -137,13 +186,13 @@ Pbindef(\kick).play(t);
 Pbindef(\snr).play(t);
 Pbindef(\waveTable).play(t);
 (Pbind(
-	\instrument, \vink,
+	\instrument, \test,
   \degree, Pclump(Pseq([3, 3, 4, 2, 4, 2, 4], inf), Pseq([1, 3, 5, 7, 9], inf), inf),
 	\dur, 1/8,
 	\rel,1/8,
 	\curve,2,
 	\rq,Pwhite(0.1,0.2),
-	\amp, 10.dbamp
+	\amp, -6.dbamp
 ).play;
 )
 
@@ -154,7 +203,7 @@ Pbindef(\waveTable).play(t);
 	\rel,1/8,
 	\curve,50,
 	\rq,0.15,
-	\amp, 10.dbamp
+	\amp, -6.dbamp
 ).play;
 )
 
@@ -211,7 +260,7 @@ Pbind(\instrument,\test,
 )
 
 (Pbindef(\test_mel,\instrument,\test,
-	\rate,[2,1]* Pseq([
+	\rate,[1.98,1]* Pseq([
 		[32,37,44,47],
 		[32,37,44],
 		[32,37,44],

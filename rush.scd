@@ -118,7 +118,7 @@ t = Task({
 	a.set(\low, 15, \high,20,\perc_amp,0.01);
 
 	 //fade out
-	a.release(20); //could also use \gate
+	a.release(30); //could also use \gate
 });
 )
 

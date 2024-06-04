@@ -13,7 +13,7 @@ lfo = {
 	]);
 };
 SynthDef(\fell, {
-	var trig, snd, freqs, perc, a, chord;
+	var trig, snd, freqs, perc, a, chord, env;
 	trig = {lfo.()!2}; //LFDNoise makes the higher freq steps less discrete/quantized
 	freqs = (LFDNoise3.kr(32.reciprocal).linexp(-1, 1, 60, 72).round(12).poll(0.5) +  [-12, 0, 2, 4, 5, 7, 9, 10, 14]).midicps; //
 	snd = Pluck.ar(
@@ -26,7 +26,7 @@ SynthDef(\fell, {
 	);
 	snd = -12.dbamp * Splay.ar(snd!2);
 	perc = SinGrain.ar(trig,LFDNoise3.kr(1).linexp(-1, 1, 0.001,0.05),freqs * LFDNoise3.kr(10).linexp(-1, 1, 0.1, [2,10]),0.05);
-	perc = -10.dbamp * Splay.ar(perc,0.3);
+	perc = -2.dbamp * Splay.ar(perc,0.3);
 	chord = SinGrain.ar(trig,5,freqs*[0.5,1,1.002,2],0.005);
    // perc = DelayC.ar(perc, 0.01, SinOsc.ar(20.reciprocal, [0, pi]).range(0, 0.01));
 	snd = LeakDC.ar(snd).sum;
@@ -39,13 +39,16 @@ SynthDef(\fell, {
 	//snd = snd ! 2;
 	snd = Splay.ar(snd,0.9);
 	snd = NHHall.ar(snd,0.61,0.25);
+	env = Env.asr(1, \amp.kr(1), \release.kr(16)).kr(2, \gate.kr(1));
+	snd = snd * env;
 
 
 	Out.ar(\out.kr(0), snd);
 }).add;
 )
 
-Synth(\fell);
+a = Synth(\fell);
+a.release;
 
 
 

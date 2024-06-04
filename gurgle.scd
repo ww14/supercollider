@@ -145,10 +145,10 @@ t = TempoClock.default.tempo_(72/60);
 
 
 
-Pbindef(\t).play(t,quant:4);
+Pbindef(\t).play(t,quant:8);
 Pbindef(\u).play(t,quant:1);
-Pbindef(\v).play(t,quant:1);
-Pbindef(\test).play(quant:16);
+Pbindef(\v).play(t,quant:5);
+Pbindef(\test).play(quant:24);
 Pbindef(\fm1).play(quant:1);
 
 Pbindef(\fm1).stop;
