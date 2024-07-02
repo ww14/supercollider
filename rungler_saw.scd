@@ -16,8 +16,8 @@ lfo = {
 	trigger = Impulse.ar(LFDNoise3.kr(4.reciprocal).linexp(-1, 1, 0.001, 2)); //Dust.ar(1);
 	Select.ar(Stepper.ar(trigger,0,0,2), [
 		LFDNoise3.ar(TIRand.ar(1,1,trigger).reciprocal).linlin(-1,1,0.25,0.65),
-		Saw.ar(TIRand.ar(1,1,trigger)).range(0,1), //TRand.ar(-1, 1, trigger),
-		Pulse.ar(TIRand.ar(2,2,trigger).reciprocal,0.95,0.25).range(0,1), //LFNoise2.ar(TIRand.ar(0.5, 10, trigger))
+		Saw.ar(TIRand.ar(1,1,trigger)).range(0.0,1), //TRand.ar(-1, 1, trigger),
+		Pulse.ar(TIRand.ar(2,2,trigger).reciprocal,0.95,0.25).range(0.0,1), //LFNoise2.ar(TIRand.ar(0.5, 10, trigger))
 	]);
 };
 
@@ -53,7 +53,7 @@ SynthDef(\rungler_saw_sub, {
 	snd = LFPulse.ar(({ lfo.() } ! 2).linexp(0, 1, [10, 1], 4000) * (snd * \pitch.kr([10])).midiratio);
 	LocalOut.ar(LeakDC.ar(Sanitize.ar(snd)));
 	snd = (snd[0] > snd[1]) - 0.5;
-	snd = MoogFF.ar(snd, (0.85*runglerOut[\out]).range(100, 7000), \sub_gain.kr(0.5));
+	snd = MoogFF.ar(snd, ({ lfo.() } ! 2) * (runglerOut[\out] * 0.85).range(100, 7000), \sub_gain.kr(0.5));
 
 	snd = Splay.ar(snd, 0.9);
 
@@ -86,7 +86,7 @@ SynthDef(\rungler_saw, {
 	snd = LFPulse.ar(({ lfo.() } ! 2).linexp(0, 1, [10, 1], 4000) * (snd * \pitch.kr([10])).midiratio);
 	LocalOut.ar(LeakDC.ar(Sanitize.ar(snd)));
 	snd = (snd[0] > snd[1]) - 0.5;
-	snd = MoogFF.ar(snd, ({ lfo.() } ! 2).linexp(-1, 1, 100, 7000) * (runglerOut[\out] * 2).midiratio, 0.5);
+	snd = MoogFF.ar(snd, ({ lfo.() } ! 2).linexp(-1, 1, 100, 7000) * (runglerOut[\out] * 2).midiratio, \sub_gain.kr(0.5));
 
 	snd = Splay.ar(snd, 0.9);
 
@@ -102,7 +102,7 @@ SynthDef(\rungler_saw, {
 	snd = BHiShelf.ar(snd,3200*ExpRand(0.7,1.0),1,-5+lfo.());
 
 	// env is just for fadeout
-	env = Env.adsr(\attack.kr(0.01), \decay.kr(0.3), \sustainLevel.kr(1), \release.kr(0.5)).kr(Done.freeSelf, \gate.kr(1));
+	env = Env.adsr(\attack.kr(0.01), \decay.kr(0.3), \sustainLevel.kr(1), \release.kr(1)).kr(Done.freeSelf, \gate.kr(1));
 	snd = snd *env;
 
 	snd = LeakDC.ar(snd) * -3.dbamp * \amp.kr(1).lag3;
@@ -140,7 +140,7 @@ t = Task({
 	a.release;
 	b = Synth(\rungler_saw);
 
-	96.wait;
+	64.wait;
 	"lower noise by raising pitch".postln;
 	b.set(\pitch, 20);
 
@@ -157,7 +157,7 @@ t = Task({
 	"start return to lower pitch".postln;
 	b.set(\pitch, 30);
 	//pre-start sub
-	a = Synth(\rungler_saw_sub);
+	a = Synth(\rungler_saw);
 	a.set(\amp,0,\pitch, 30);
 
 	8.wait;

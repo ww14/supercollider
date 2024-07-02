@@ -1,6 +1,10 @@
 Server.killAll;
 ("setup/Setup.scd").loadRelative // load this file
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////synthdefs
+
 (
 SynthDef(\vink,{
 var in, trig, snd, ff, rmf, env, freq;
@@ -51,6 +55,30 @@ var in, trig, snd, ff, rmf, env, freq;
 	Out.ar(0,snd);
 }).add;
 
+
+(
+//metal
+SynthDef(\wooden,{
+	var snd, duration, noise, env, sineFreq, auto;
+	duration = \duration.kr(0.3);
+	snd = (SinOsc.ar(20 * [0.7, 3.3, 5.44, 7.33, 12.33] * XLine.ar(1.5, 1, 0.001)));
+	snd = snd * Env.perc(0.001, [0.1, 0.05, 0.03, 0.003, 0.04, 0.01]).ar;
+	snd = snd.sum;
+	snd = snd * (1 + SinOsc.ar(1000));
+	snd = snd * (1 + SinOsc.ar(\pitch.kr(300)));
+	snd = snd + (BPF.ar(Hasher.ar(Sweep.ar),3320,0.3) * Env.perc(0.001,0.02).ar);
+	snd = snd + PitchShift.ar(snd, 0.03,  \shift.kr(1.1));
+	snd = snd * (1 + Env.perc(0,0.02).ar);
+	snd = snd.tanh * -15.dbamp;
+	snd = snd * (1 + Env.perc(0,0.02).ar);
+	snd = snd + GVerb.ar(snd * -20.dbamp, 30, 1);
+	env = Env.linen(0,duration,0.001, curve:-4).ar(Done.freeSelf);
+	snd = snd * env;
+	//snd = snd + CombC.ar(snd,mul:0.5);
+	snd = snd * -8.dbamp * \amp.kr(1);
+	Out.ar(\out.kr(0),snd);
+}).add;);
+
 (SynthDef(\test,
 {
     var list, trate, dur, clk, pos, pan, snd, in, chain, env;
@@ -74,10 +102,32 @@ var in, trig, snd, ff, rmf, env, freq;
 
 	snd= snd*env*\amp.kr(1);
 	Out.ar(\out.kr(0),snd);
-}).add;)
+}).add;);
+
+);
+
+
+
+//Synth(\ping)
+
+
+Synth(\ping, [\freq, 1000]);
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////testing
+
+(Pbindef(\wooden,
+	\instrument,\wooden,
+	\pitch,45.midicps,  // [8,8,8,12,15] [8,7,12]
+	\shift,Pwhite(0.85,1.2),
+	\dur, Pseq([0.5],inf),
+	//Pseg([60,600,60],[30,60],\lin,2),//Pwrand([60,200],[0.8,0.2],inf),
+	\amp,-6.dbamp,
+	\out,0
+);
 )
 
-///////////////////////////////testing
+Pbindef(\wooden).play;
+Pbindef(\waveTable).play
 
 a = Synth(\test,[\rate,31.midiratio,\dur,2,\cRel,0]);
 a.set(\trate,300);
@@ -127,54 +177,7 @@ Pbindef(\test_mel_2, \instrument,\test,
 );
 )
 
-Pbindef(\test_mel).play
-
-
-
-/////////patterns
-
-(Pdef.removeAll;
-
-Pbindef(\kick,
-	\instrument,\kick,
-	\glissf,Phprand(0.9,2.5),
-	\midinote,32,
-	\dur,Psubdivide(Pseq([1!8,4,1!8,4,1!14,3].flatten,inf),Pseq([1,Rest(6.5),0.5],inf)),//Pwrand([0.1,0.2],[0.8,0.2],inf), //0.1
-	\pan,0,
-	\amp,-12.dbamp,
-	\out,0
-);
-
-Pbindef(\snr,
-	\instrument,\kraftySnr,
-	\midinote,[68,56,44],
-	\rq,Plprand(3,6),
-	\decay,Phprand(0.3,1),
-	\dur,Pseq([Rest(1),Pseq([2],inf)],inf),//Pwrand([0.1,0.2],[0.8,0.2],inf), //0.1
-//Psubdivide(Pseq([1!19,3,1!11,6,1!11,3,1!11,6,1!11,3,1!11,6,1!11,3,1!11,6].flatten,inf),
-	\pan,0.25,
-	\amp,-18.dbamp,
-	\out,~bus[\nhhall]
-);
-
-Pbindef(\waveTable,
-	\instrument,\test,
-	\rate,[0.5,1,1.5,1.9]*Pseq(
-		[20,20,20,24,15,
-		8,8,8,12,15,
-		8,[7,8],8,12,15,
-		8,[1,8],8,7,12,
-		8,[8,13],8,15,21
-	].midiratio,inf),  // [8,8,8,12,15] [8,7,12]
-	\dur, Pseq([8,7,9,5,3],inf),
-	\sus, Pwhite(0.01,1.5),
-	\cRel,0,
-	\trate, Pstep([10,100,50,10,50],[64,32,32,32],inf),
-	//Pseg([60,600,60],[30,60],\lin,2),//Pwrand([60,200],[0.8,0.2],inf),
-	\amp,-8.dbamp,
-	\out,0
-);
-)
+Pbindef(\test_mel_2).play
 
 [8,7,9,5,3].sum
 
@@ -192,7 +195,7 @@ Pbindef(\waveTable).play(t);
 	\rel,1/8,
 	\curve,2,
 	\rq,Pwhite(0.1,0.2),
-	\amp, -6.dbamp
+	\amp, -8.dbamp
 ).play;
 )
 
@@ -201,7 +204,7 @@ Pbindef(\waveTable).play(t);
   \degree, 1+Pclump(Pseq([3, 3, 4, 2, 4, 2, 4], inf), Pseq([1, 3, 5, 3, 2], inf), inf),
 	\dur, 1,
 	\rel,1/8,
-	\curve,50,
+	// \curve,50,
 	\rq,0.15,
 	\amp, -6.dbamp
 ).play;
@@ -212,53 +215,20 @@ Pbindef(\waveTable).play(t);
 
 Pbindef(\test_mel).play(t);
 
-(
-StageLimiter.activate;
-t = TempoClock.default.tempo_(66/60);
-
-Pspawner({|sp|
-	//s.record;
-	sp.wait(1);
-
-	t = TempoClock.default.tempo_(66/60);
-	sp.par( Pfindur(300, Pbindef(\waveTable)));
-
-	sp.wait(32);
-	//sp.par( Pfindur(300, Pbindef(\waveTable)));
-	sp.par( Pfindur(48*4, Pbindef(\kick)));
-	sp.par( Pfindur(48*5,Pbindef(\snr)));
-
-
-	//sp.wait(48*2);
-	//sounds bad
-	//sp.par( Pfindur(48*2.5, Pdef(\hihat)));
-
-
-	//sp.wait(48*2);
-
-	//sp.par( Pfindur(60, Pdef(\bell_close)));
-
-
-	//.wait(80);
-	//s.stopRecording;
-
-}).play(t,quant:1);
-)
-
-
-
 
 (
 Pbind(\instrument,\test,
 	\rate,0.midiratio+Pseq(
 		 [8,4,8,11].midiratio,inf),
 	\dur, Pseq([0.25,0.25,0.5,0.25],inf),
-	// \cRel,0,
+	 \cRel,0,
 	\trate, 100,//Pstep([100,10],[32,32],inf),//Pseg([60,600,60],[30,60],\lin,2),//Pwrand([60,200],[0.8,0.2],inf),
 	\amp,-6.dbamp
 ).play;
 )
 
+
+//Modest mouse lounge riff
 (Pbindef(\test_mel,\instrument,\test,
 	\rate,[1.98,1]* Pseq([
 		[32,37,44,47],
@@ -293,3 +263,124 @@ Pbindef(\test_mel).play
 Pbindef(\test_mel,\root,-13.9-0.2,\amp,5.dbamp);
 
 [0,1]  [32,37,44]
+
+Synth(\kraftySnr)
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////patterns
+
+(Pdef.removeAll;
+
+Pbindef(\kick,
+	\instrument,\kick,
+	\glissf,Phprand(0.9,2.5),
+	\midinote,32,
+	\dur,Psubdivide(Pseq([1!8,4,1!8,4,1!14,3].flatten,inf),Pseq([1,Rest(6.5),0.5],inf)),//Pwrand([0.1,0.2],[0.8,0.2],inf), //0.1
+	\pan,0,
+	\amp,-10.dbamp,
+	\out,0
+);
+
+Pbindef(\wooden,
+	\instrument,\wooden,
+	\pitch,45.midicps * Pwrand([1,2,1.5],[4,2,1].normalizeSum,inf),  // [8,8,8,12,15] [8,7,12]
+	\dur, Psubdivide(Pseq([1!48,2,1!36,4,1!48,2].flatten,inf),Pseq([0.25],inf)),
+	//Pseg([60,600,60],[30,60],\lin,2),//Pwrand([60,200],[0.8,0.2],inf),
+	\amp,-20.dbamp,
+	\out,0
+);
+
+
+Pbindef(\honk,
+	\instrument,\wooden,
+	\pitch,45.midicps ,  // [8,8,8,12,15] [8,7,12]
+	\dur, Psubdivide(Pseq([1!48,2,1!36,4,1!48,3].flatten,inf),Pseq([Rest(5.5),0.5,Rest(4)],inf)),
+	//Pseg([60,600,60],[30,60],\lin,2),//Pwrand([60,200],[0.8,0.2],inf),
+	\amp,-10.dbamp,
+	\out,0
+);
+
+
+Pbindef(\snr,
+	\instrument,\kraftySnr,
+	\midinote,[68,56,44],
+	\rq,Plprand(3,6),
+	\decay,Phprand(0.3,1),
+	\dur,Pseq([Rest(1),Pseq([2],inf)],inf),//Pwrand([0.1,0.2],[0.8,0.2],inf), //0.1
+//Psubdivide(Pseq([1!19,3,1!11,6,1!11,3,1!11,6,1!11,3,1!11,6,1!11,3,1!11,6].flatten,inf),
+	\pan,0.25,
+	\amp,-18.dbamp,
+	\out,~bus[\nhhall]
+);
+
+
+Pbindef(\waveTable,
+	\instrument,\test,
+	\rate,[0.5,1,1.5,1.9]*Pseq(
+		[20,20,20,24,15,
+		8,8,8,12,15,
+		8,[7,8],8,12,15,
+		8,[1,8],8,7,12,
+		8,[8,13],8,15,21
+	].midiratio,inf),  // [8,8,8,12,15] [8,7,12]
+	\dur, Pseq([8,7,9,5,3],inf),
+	\sus, Pwhite(0.01,1.5),
+	\cRel,0,
+	\trate, Pstep([10,100,50,10,50],[64,32,32,32],inf),
+	//Pseg([60,600,60],[30,60],\lin,2),//Pwrand([60,200],[0.8,0.2],inf),
+	\amp,-4.dbamp * 1/(Pkey(\trate).log2),
+	\out,0
+);
+)
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////routine
+
+(
+StageLimiter.activate;
+t = TempoClock.default.tempo_(66/60);
+
+Pspawner({|sp|
+	//s.record;
+	sp.wait(1);
+
+	t = TempoClock.default.tempo_(66/60);
+	sp.par( Pfindur(328, Pbindef(\waveTable)));
+
+	sp.wait(32);
+	//sp.par( Pfindur(300, Pbindef(\waveTable)));
+	sp.par( Pfindur(32*3, Pbindef(\kick)));
+	sp.par( Pfindur(32*4,Pbindef(\snr)));
+	sp.par( Pfindur(32*3,Pbindef(\wooden)));
+
+
+	sp.wait(32*2);
+	sp.par( Pfindur(32*5,Pbindef(\honk))); // ping sucks
+
+	sp.wait(32*2);
+	sp.par( Pfindur(32*3,Pbindef(\kick)));
+
+	sp.wait(32*1);
+	sp.par( Pfindur(32*4,Pbindef(\snr)));
+	sp.par( Pfindur(32*3 - 8 ,Pbindef(\wooden)));
+
+	sp.wait(32*1);
+	sp.par(Pfindur(32*3-8,Pbindef(\kick)));
+	//sounds bad
+	//sp.par( Pfindur(48*2.5, Pdef(\hihat)));
+
+
+	//sp.wait(48*2);
+
+	//sp.par( Pfindur(60, Pdef(\bell_close)));
+
+
+	//.wait(80);
+	//s.stopRecording;
+
+}).play(t,quant:1);
+)
+
+
+
+

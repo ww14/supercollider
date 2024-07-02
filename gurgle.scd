@@ -156,7 +156,7 @@ Pbindef(\fm1).stop;
 Pbindef(\t).stop
 
 
-Pbindef(\test,\amp,0);
+Pbindef(\test,\amp,-6.dbamp);
 Pbindef(\u,\amp,-8.dbamp);
 
 Pbindef(\v,\dust,4.408e4);
@@ -174,4 +174,6 @@ Pbindef(\u,\dust,3.8e4);
 Pbindef(\t,\dust,Pwrand([2.9e4,3.1e4,2.3e4],[0.6,0.2,0.1],inf));
 Pbindef(\t,\dust,3.1e4);
 Pbindef(\t,\dur,Pseq([Rest(1),1,Rest(1),1],inf));
-Pbindef(\t,\dust,2.2e4);
+Pbindef(\t,\dust,2.45e4);
+Pbindef(\v,\noise,20);
+Pbindef(\v,\dust,4.408e1);
