@@ -1,13 +1,12 @@
 Server.killAll;
 //("Setup/Setup.scd").loadRelative; // was thinking aof adding reverb but it sounds like ass
-
-
+s.options.memSize = 1048576; s.reboot;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //SynthDef
 
 
 (SynthDef(\pluck,{
-	var snd, freq, puffDuration, puff;
+	var snd, freq, puffDuration, puff, verb;
 	freq = \freq.kr(440) +1;
 	puffDuration = \puffDuration.kr(0.01);
 	puff = BPF.ar(PinkNoise.ar,ExpRand(500,16e3!3),0.6).sum *Env.perc(puffDuration,0.001,curve:-4).ar * -20.dbamp;
@@ -16,15 +15,22 @@ Server.killAll;
 	snd = snd +Splay.ar(SinOsc.ar(ExpRand(3320,8e3 ! 6))*Env.perc(0.0,ExpRand(1e-3,3e-2 ! 6)).ar * -2.dbamp);
 	snd = LeakDC.ar(snd);
 	snd = puff + DelayC.ar(snd,puffDuration, puffDuration);
+
+	verb = JPverb.ar(snd, 0.1, 0.95, 0.5);
+
+	snd = XFade2.ar(snd, verb);
+
 	8.do {
 		snd = BPeakEQ.ar(snd,ExpRand(640,3300),\rq.kr(0.01),10);
 			};
+
 	snd = snd * Env.linen(0,1,0.5,curve:-2).ar(Done.freeSelf);
 	snd = snd * \amp.kr(-1.dbamp);
 	Out.ar(\out.kr(0),snd);
 }).add;
 
 )
+Synth(\pluck)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Testing
@@ -190,7 +196,21 @@ Pdef.removeAll;
 	\freq,(36 + Pwrand([0,[0,-7],[0,5,12]],[0.8,0.1,0.1],inf) +Pseq(
 		[12,7,12,15,12,7,8,15,12]
 		,inf)).midicps,  // [8,8,8,12,15] [8,7,12]
-	\dur, 0.175,//0.35,  //[1,1,2,3,2] //[1,2,1,2,3], //[ 1, 3, 1, 2, 2 ], //[ 3, 1, 2, 2, 1 ]
+	\dur, 0.175 * Pwrand([1,2],[24,1].normalizeSum,inf),//0.35,  //[1,1,2,3,2] //[1,2,1,2,3], //[ 1, 3, 1, 2, 2 ], //[ 3, 1, 2, 2, 1 ]
+	\puffDuration,Pwhite(0.0025,0.015), //10
+	\rq,Pwhite(0.001,0.01),
+	\amp,-1.dbamp,
+	\out,0
+);
+);
+
+
+(Pbindef(\pluck_decel,
+	\instrument,\pluck,
+	\freq,(36 + Pwrand([0,[0,-7],[0,5,12]],[0.8,0.1,0.1],inf) +Pseq(
+		[12,7,12,15,12,7,8,15,12]
+		,inf)).midicps,  // [8,8,8,12,15] [8,7,12]
+	\dur, Pseg([0.175,4*0.175],1.575*4*4,24,inf),
 	\puffDuration,Pwhite(0.0025,0.015), //10
 	\rq,Pwhite(0.001,0.01),
 	\amp,-1.dbamp,
@@ -199,57 +219,47 @@ Pdef.removeAll;
 )
 )
 
-Pbindef(\pluck_in).play
+Pbindef(\pluck_decel).play
 /////////////////////////////////////////////////////////////////////////////////////////////
 // play
 
 (
 //StageLimiter.deactivate;
-t = TempoClock.default.tempo_(67/60);
-
+t = TempoClock.default.tempo_(70/60);
+~breath = 0.021875;
+~phrase = 1.575 * 4;
 Pspawner({|sp|
-
+/*
 	"section 1".postln;
-
 	sp.par( Pfindur(0.945 * 2, Pbindef(\pluck_up)));
-
 	sp.wait(1.89);
 
-	sp.par( Pfindur(1.575 * 4 * 4, Pbindef(\pluck)));
-
-	sp.wait(0.021875 + 1.575 * 4 * 4);
+	sp.par( Pfindur(~phrase * 4, Pbindef(\pluck)));
+	sp.wait(~breath + (~phrase * 4));
 
 	"first break".postln;
-
 	sp.par( Pfindur(0.945 * 2, Pbindef(\pluck_down)));
-
 	sp.wait(1.89);
 
-	sp.par( Pfindur(1.575 * 4 * 4, Pbindef(\pluck)));
-
-	sp.wait(0.021875 + 1.575 * 4 * 4);
+	sp.par( Pfindur(~phrase * 4, Pbindef(\pluck)));
+	sp.wait(~breath + (~phrase * 4));
 
 	"second break".postln;
-
 	sp.par( Pfindur(0.945 * 2, Pbindef(\pluck_over)));
-
 	sp.wait(1.89);
 
-	sp.par( Pfindur(1.575 * 4 * 4, Pbindef(\pluck,\dur, Pseg([0.175,3*0.175],1.575*4*4,48,inf))));
+	sp.par( Pfindur(~phrase * 4, Pbindef(\pluck_decel)));
+	sp.wait(~breath + (~phrase * 4));
 
-
-	sp.wait(0.021875 + 1.575 * 4 * 4);
-
+	sp.wait(1.89/2);*/
 
 	"section 2a".postln;
 
-	sp.par( Pfindur(1.575 * 4 * 8, Pbindef(\plucked)));
-
-	sp.wait(1.575 * 4 * 8);
+	sp.par( Pfindur(~phrase * 8, Pbindef(\plucked)));
+	sp.wait(~phrase * 8);
 
 	"section 2b".postln;
-
-	sp.par( Pfindur(1.575 * 4 * 8, (Pbindef(\plucked,\dur,0.175*Pn(Pshuf([
+	sp.par( Pfindur(~phrase * 8, (Pbindef(\plucked,\dur,0.175*Pn(Pshuf([
 		Pseq([1,1,2,3,2],1),
 		Pseq([1,1,2,3,2],1),
 		Pseq([1,2,1,2,3],1),
@@ -258,12 +268,10 @@ Pspawner({|sp|
 	],Pwrand([4,2,8],[0.5,0.25,0.25],inf))
 	,inf))
 	)));
-
-	sp.wait(1.575 * 4 * 8);
+	sp.wait(~phrase * 8);
 
 	"section 2c".postln;
-
-	sp.par( Pfindur(1.575 * 4 * 2, Pbindef(\plucked, \dur, 0.175*Pseq([1,1,2,3,2],inf))));
+	sp.par( Pfindur(~phrase * 2, Pbindef(\plucked, \dur, 0.175*Pseq([1,1,2,3,2],inf))));
 
 }).play(t, quant:1);
 )

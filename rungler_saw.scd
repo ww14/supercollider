@@ -169,30 +169,29 @@ t = Task({
 
 	30.wait;
 	"start moog gain".postln;
+	a.set(\sub_gain,0.75);
+	10.wait;
 	a.set(\sub_gain,1.0);
 	10.wait;
+	a.set(\sub_gain,1.25);
+	10.wait;
 	a.set(\sub_gain,1.5);
-	10.wait;
-	a.set(\sub_gain,1.75);
-	10.wait;
-	a.set(\sub_gain,2.0);
 	10.wait;
 	"peak moog gain".postln;
-	a.set(\sub_gain,2.25);
-	10.wait;
-	a.set(\sub_gain,2.0);
-	10.wait;
 	a.set(\sub_gain,1.75);
 	10.wait;
 	a.set(\sub_gain,1.5);
 	10.wait;
+	a.set(\sub_gain,1.25);
+	10.wait;
 	a.set(\sub_gain,1.0);
+	10.wait;
+	a.set(\sub_gain,0.75);
 	10.wait;
 	a.set(\sub_gain,0.5);
 	"lowest moog gain".postln;
 	20.wait;
 	a.set(\pitch, 70);
-
 	a.release(8);
 
 

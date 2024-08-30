@@ -207,7 +207,7 @@ SynthDef(\additive, {
 	Out.ar(\out.kr(0),snd);
 }).add;);
 
-//Synth(\additive);
+Synth(\additive);
 
 
 (SynthDef(\additive2, {
@@ -348,14 +348,14 @@ SynthDef(\drippy,{
 		Pbind(\instrument, \snare_electro, \dur, Pseq(~tick8 * ~xox.(~snare), ~bars)),
 	Pbind(\instrument, \wooden, \dur, Pseq(~tick8 * ~xox.(~closed_hh), ~bars), \pitch, Pwrand([330,660,440],[0.4,0.3,0.3],inf)),
 	Pbind(\instrument, \honk, \dur, Pseq(~tick8 * ~xox.(~hi_bell), ~bars-1)),
-		Pbind(\instrument, \additive,   \dur, Pseq(~tick8 * ~xox.(~additive), ~bars),\bpfStart,Prand([Pexprand(30,200,1),Pexprand(2000,3000,1)],inf),\bpfEnd,Prand([Pexprand(2e3,8e3,1),Pexprand(200,50,1)],inf)),
+	Pbind(\instrument, \additive,   \dur, Pseq(~tick8 * ~xox.(~additive), ~bars),\duration, 0.15 + Plprand(0,0.9) ,\bpfStart,Prand([Pexprand(100,800,1),Pexprand(2000,3000,1)],inf),\bpfEnd,Prand([Pexprand(2e3,8e3,1),Pexprand(800,100,1)],inf)),
 		Pbind(\instrument, \kick2,  \dur, Pseq(~tick8 * ~xox.(~open_hh), ~bars-2)),
 	]));
 	//section 2
 	Pdef(\ikeda2, Ppar([
-		Pbind(\instrument, \kick,     \dur, Pseq(~tick8 * ~xox.(~kick), ~bars)),
-		Pbind(\instrument, \snare_electro, \dur, Pseq(~tick8 * ~xox.(~snare), ~bars)),
-		Pbind(\instrument, \wooden, \dur, Pseq(~tick8 * ~xox.(~closed_hh), ~bars)),
+		Pbind(\instrument, \kick,     \dur, Pseq(~tick8 * ~xox.(~open_hh), ~bars)),
+		Pbind(\instrument, \snare_electro, \dur, Pseq(~tick8 * ~xox.(~hi_bell), ~bars)),
+		Pbind(\instrument, \wooden, \dur, Pseq(~tick8 * ~xox.(~dial), ~bars), \pitch, Pwrand([330,660,440],[0.4,0.3,0.3],inf)),
 		Pbind(\instrument, \drippy,
 		\dur, Pseq([~tick8*4],~bars*5),
 			\duration,Pkey(\dur)*Pwhite(1.0,1.5),
@@ -364,9 +364,9 @@ SynthDef(\drippy,{
 			\resStart,Pseg([1.5,1.5,0.5,0.9,1.3],4,-3,inf),
 			\resEnd,Pseg([0.5,0.5,1.5,1.3,0.9],4,-1,inf),
 			\amp, -15.dbamp),
-		Pbind(\instrument, \honk, \dur, Pseq(~tick8 * ~xox.(~hi_bell), ~bars)),
+		Pbind(\instrument, \honk, \dur, Pseq(~tick8 * ~xox.(~closed_hh), ~bars)),
 		Pbind(\instrument, \additive,   \dur, Pseq(~tick8 * ~xox.(~additive), ~bars/2),\bpfStart,Prand([Pexprand(30,200,1),Pexprand(2000,3000,1)],inf),\bpfEnd,Prand([Pexprand(2e3,8e3,1),Pexprand(200,50,1)],inf)),
-		Pbind(\instrument, \kick2,  \dur, Pseq(~tick8 * ~xox.(~open_hh), ~bars)),
+		Pbind(\instrument, \kick2,  \dur, Pseq(~tick8 * ~xox.(~kick), ~bars)),
 		//Pbind(\instrument, \drill,   \dur, Pseq(~tick16 * ~xox.(~open_hh), inf)),
 		// Pbind(\instrument, \burst,     \dur, Pseq(~p7, inf)),
 	]))

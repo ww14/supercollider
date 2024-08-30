@@ -55,8 +55,13 @@ Server.killAll;
 		1, //LFNoise2.kr(1/4).linexp(-1,1,0.3,0.9),
 		0.5); */
 		// some feedback on the chords
-    arp2 = \amp_arp2.kr(1).lag3 * arp * SinGrain.ar(detect_arp,0.5,in.linlin(2.45,4.9,2000,2500),0.5) ;
+	arp2 = \amp_arp2.kr(1).lag3 * arp * SinGrain.ar(detect_arp,0.5,in.linlin(2.45,4.9,2000,2500),0.5);
+	arp2 = arp2 + CombC.ar(arp2);
 
+	arp = Friction.ar(arp,friction: 1.75584e-5, mass: 2.69789);
+
+	snd = snd + JPverb.ar(snd,0.25,0.8,0.75);
+	snd = snd.tanh;
 
 	snd = snd
 	      //+ snd2
@@ -70,7 +75,7 @@ Server.killAll;
 	env = Env.asr(1, \amp.kr(1), \release.kr(8)).kr(2, \gate.kr(1));
 	snd = snd *env;
 	snd = snd!2;
-		Out.ar(~bus[\reverb],snd);
+		Out.ar(\out.kr(0),snd); //~bus[\reverb]
 }).add;
 )
 
@@ -94,7 +99,7 @@ t = Task({
 	1.wait;
 	a= Synth(\foote);
 	a.set(\amp_gloop, 0, \amp_perc, 0, \amp_snd, 0);
-	d = Synth("metaldrum",[\ibase,1,\t,1/20,\irange,300,\ringfreq,[33].midicps,\roomsize,50,\amp, -28.dbamp]);
+	d = Synth("metaldrum",[\ibase,1,\t,1/20,\irange,300,\ringfreq,[33].midicps,\roomsize,50,\amp, -32.dbamp]);
 
 	12.wait;
 	"start voice".postln;

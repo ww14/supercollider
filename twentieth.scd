@@ -19,7 +19,7 @@
 			totalSig = totalSig + verbSig;
 		};
 	*/
-	verbSig = NHHall.ar(sig);
+	verbSig = NHHall.ar(sig,1 + SinOsc.kr([21].reciprocal, 0, 0.2),0.7);
 
 		//dry/wet mix
 		totalSig = XFade2.ar(sig, verbSig, mix.linlin(0,1,-1,1));
@@ -29,7 +29,7 @@
 	}).add;
 
 	SynthDef(\twotube,{arg preamp=0, delay1=100, delay2=50, k=0.0, loss=0.999, dur=0.5, pan=0.0, out=0, amp=1, minCf=30, maxCf=6000, minBpfHz=0.02, maxBpfHz=0.25,minRq=0.005, maxRq=0.04;
-		var sig, env, senv;
+		var sig, env, senv, perc;
 
 		//k from -1 to 1
 
@@ -49,7 +49,13 @@
 
 	sig = HPF.ar(sig,40);
 
-		sig = sig * env *amp;
+	perc = sig * (1 + (5 * Env.perc(0,0.01).ar));
+	perc = perc.clip2 + (perc.fold2 * -10.dbamp);
+	perc = perc + HPF.ar((perc*6.dbamp).tanh, 3000);
+	perc = perc * Env.perc(0.01,0.5).ar;
+	perc = perc + HPF.ar(LPF.ar(DelayC.ar(perc * -25.dbamp, 0.1, [30e-3, 33.4e-3]), 5000), 100);
+
+		sig = perc * env *amp;
 		sig = Pan2.ar(sig,pan);
 
 		Out.ar(out,sig);
@@ -142,10 +148,12 @@ Pbindef(\twenty,
 	Pbindef(\twenty,\dur,Pn(Pshuf(1/[6,6,6,3],3),inf));
 	7.wait;
 	Pbindef(\twenty,\dur,Pn(Pshuf(1/[3,3,3,6],3),inf));
-	7.wait;
+	6.5.wait;
+	Pbindef(\twenty,\amp, 0);
+	0.5.wait;
 
 	"2-4-8 and 1-2-4".postln;
-	Pbindef(\twenty,\dur,Pn(Pshuf(1/[20,20,20,1],3),inf));
+	Pbindef(\twenty,\dur,Pn(Pshuf(1/[20,20,20,1],3),inf),\amp, -6.dbamp);
 	21.wait; //
 	Pbindef(\twenty,\dur,Pn(Pshuf(1/[3,3,3,6],3),inf));
 	15.wait;

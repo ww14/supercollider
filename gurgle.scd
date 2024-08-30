@@ -149,9 +149,9 @@ Pbindef(\t).play(t,quant:8);
 Pbindef(\u).play(t,quant:1);
 Pbindef(\v).play(t,quant:5);
 Pbindef(\test).play(quant:24);
-Pbindef(\fm1).play(quant:1);
+//Pbindef(\fm1).play(quant:1);
 
-Pbindef(\fm1).stop;
+//Pbindef(\fm1).stop;
 
 Pbindef(\t).stop
 
