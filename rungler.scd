@@ -327,5 +327,5 @@ SynthDef(\rungler_saw, {
 
 a = Synth(\rungler_saw);
 a.set(\pitch,[10]);
-a.set(\pitch,[10]);
+a.set(\pitch,[50]);
 

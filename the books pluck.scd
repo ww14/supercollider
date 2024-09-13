@@ -229,7 +229,7 @@ t = TempoClock.default.tempo_(70/60);
 ~breath = 0.021875;
 ~phrase = 1.575 * 4;
 Pspawner({|sp|
-/*
+
 	"section 1".postln;
 	sp.par( Pfindur(0.945 * 2, Pbindef(\pluck_up)));
 	sp.wait(1.89);
@@ -251,15 +251,15 @@ Pspawner({|sp|
 	sp.par( Pfindur(~phrase * 4, Pbindef(\pluck_decel)));
 	sp.wait(~breath + (~phrase * 4));
 
-	sp.wait(1.89/2);*/
+	sp.wait(1.89/2);
 
 	"section 2a".postln;
 
-	sp.par( Pfindur(~phrase * 8, Pbindef(\plucked)));
-	sp.wait(~phrase * 8);
+	sp.par( Pfindur(~phrase * 6, Pbindef(\plucked)));
+	sp.wait(~phrase * 6);
 
 	"section 2b".postln;
-	sp.par( Pfindur(~phrase * 8, (Pbindef(\plucked,\dur,0.175*Pn(Pshuf([
+	sp.par( Pfindur(~phrase * 6, (Pbindef(\plucked,\dur,0.175*Pn(Pshuf([
 		Pseq([1,1,2,3,2],1),
 		Pseq([1,1,2,3,2],1),
 		Pseq([1,2,1,2,3],1),
@@ -268,7 +268,7 @@ Pspawner({|sp|
 	],Pwrand([4,2,8],[0.5,0.25,0.25],inf))
 	,inf))
 	)));
-	sp.wait(~phrase * 8);
+	sp.wait(~phrase * 6);
 
 	"section 2c".postln;
 	sp.par( Pfindur(~phrase * 2, Pbindef(\plucked, \dur, 0.175*Pseq([1,1,2,3,2],inf))));

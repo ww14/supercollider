@@ -218,7 +218,7 @@ SynthDef(\roar, {
 }).add;
 )
 
-Pbindef(\roar, \instrument,\roar,\dur,Pbjorklund2(5,8,inf)/3,\duration,Pkey(\dur),\rq,0.15).play;
+Pbindef(\roar, \instrument,\roar,\dur,Pn(Pshuf([1, 0.75, 0.25, 0.5, 0.5, 1], 3),inf),\duration,Pkey(\dur),\rq,0.15).play;
 
 
 (

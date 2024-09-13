@@ -45,6 +45,44 @@ SynthDef.new(\fm1, {
 }).add;
 );
 
+
+(
+SynthDef.new(\fm2, {
+	arg freq=500,
+	mRatio=1 , //controls spacing of harmonics
+	cRatio= 1, //controls number of harmonics, noninteger value make a bell sound
+	index=1, // note index =modAmp/modHz which is number of audible harmonic/overtone pairs
+	cutoff=1000, res=3,width=0.5,
+	iScale=5,
+	atk=0.1, rel=1, cAtk=4, cRel=(-4),
+	amp=0.2, pan=0,
+	lsf=200, ldb=0, out=0;
+	var car, mod, env, iEnv, mod2;
+	iEnv =EnvGen.kr(
+		Env.new(
+			[index, index *iScale, index],
+			[atk,rel],
+			[cAtk,cRel]
+		)
+	);//envelope on index allows for more control of a single note shape, imitate acoustic
+	env = EnvGen.kr(
+		Env.perc(atk,rel,curve:[cAtk,cRel]),
+		doneAction:2
+	);
+	// mod2 = SinOsc.ar(freq/10,mul:freq/10 * iEnv); //additive modulation
+	mod = SinOsc.ar(freq * mRatio , mul:freq * mRatio * iEnv);
+	mod = RLPF.ar(Pulse.ar(mod * width, 0.5), mod.tanh, res);
+	//filter sound for clipping/distortion
+	car = SinOsc.ar(freq * cRatio + mod);
+	car = BLowShelf.ar(car, lsf, 0.5, ldb);
+	//car = Friction.ar(car, friction: \friction.kr(5.41322e-2), mass: \mass.kr(4.05501),spring:\spring.kr(0.414));
+	car = car * env * amp;
+	car = Pan2.ar(car, pan);
+
+	Out.ar(out,car);
+}).add;
+);
+
 SynthDef(\funkBass, {
     |freq=440, amp=0.5, gate=1, cutoff=1000, res=0.3|
     var sig, env;
@@ -56,7 +94,7 @@ SynthDef(\funkBass, {
 
 
 SynthDef.new(\rimshot, {
-	arg amp=1,out=0;
+	arg amp=1,out=0, pan=0;
 	var fenv, env, sig, punch, tri1, tri2;
 	env = EnvGen.kr(Env.new([1, 1, 0], [0.00272, 0.07], -42), doneAction:2);
 	tri1 = LFTri.ar(1667 * 1.1, 1) * env;
@@ -66,7 +104,7 @@ SynthDef.new(\rimshot, {
 	sig = BPeakEQ.ar(sig, 464, 0.44, 8);
 	sig = HPF.ar(sig, 315);
 	sig = LPF.ar(sig, 7300);
-	sig = Pan2.ar(sig * amp, 0);
+	sig = Pan2.ar(sig * amp, pan);
 	Out.ar(out, sig);
 }).add;
 
@@ -94,7 +132,7 @@ SynthDef.new(\hat, {
 
 
 SynthDef.new(\sn, {
-	arg amp=2, tone=340, tone2=189, snappy=0.3, gate=0, amp2=1, out=0;
+	arg amp=2, tone=340, tone2=189, snappy=0.3, gate=0, amp2=1, out=0, pan=0;
 	var noiseEnv, atkEnv, sig, noise, osc1, osc2, sum;
 	noiseEnv = EnvGen.kr(Env.perc(0.001, 4.2, 1, -115), doneAction:2);
 	atkEnv = EnvGen.kr(Env.perc(0.001, 0.8,curve:-95), doneAction:0);
@@ -105,14 +143,14 @@ SynthDef.new(\sn, {
 	osc1 = SinOsc.ar(tone2, pi/2) * 0.6;
 	osc2 = SinOsc.ar(tone, pi/2) * 0.7;
 	sum = (osc1+osc2) * atkEnv * amp2;
-	sig = Pan2.ar((noise + sum) * amp * 2.5, 0);
+	sig = Pan2.ar((noise + sum) * amp * 2.5,pan);
 	sig = HPF.ar(sig, 340);
 	Out.ar(out, sig);
 }).add;
 
 
 SynthDef.new(\HC, {
-	arg amp=1, freq=370,out=0;
+	arg amp=1, freq=370,out=0, pan=0;
 	var sig, fenv, env, perc_env;
 	env = EnvGen.kr(Env.new([0.15, 1, 0], [0, 6], -250),doneAction:2);
 	fenv = Env([freq*1.22972, freq*1.08108, freq], [0.1, 0.5], -4).kr;
@@ -125,7 +163,7 @@ SynthDef.new(\HC, {
 	perc_env = Env.perc.ar;
 	sig = sig + CombC.ar(sig * -10.dbamp,0.2,1/(60 * (1+perc_env)),0.15);
 
-	sig = Pan2.ar(sig * env * amp * 2, 0);
+	sig = Pan2.ar(sig * env * amp * 2, pan);
 	Out.ar(out, sig);
 }).add;
 
@@ -152,7 +190,7 @@ SynthDef.new(\claves, {
 
 
 SynthDef(\rhodesChord, {
-    |freq=440, amp=0.3, gate=1, out=0|
+    |freq=440, amp=0.3, gate=1, out=0, pan=0|
     var sig, env, perc_env;
     sig = SinOsc.ar(freq) * EnvGen.ar(Env.perc(0.01, 1), gate);
     sig = sig + (SinOsc.ar(freq * 2) * EnvGen.ar(Env.perc(0.01, 0.5), gate) * 0.05);
@@ -174,7 +212,7 @@ SynthDef(\rhodesChord, {
 	env = EnvGen.kr(Env.perc(0.001, 4.2, 1, -4), doneAction:2);
 	sig = sig*env;
 
-    Out.ar(out, Pan2.ar(sig * amp, 0));
+    Out.ar(out, Pan2.ar(sig * amp, pan));
 }).add;
 
 SynthDef.new(\bd, {
@@ -196,8 +234,12 @@ SynthDef.new(\bd, {
 
 )
 
-(
+//////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////patterns///////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
 
+(
 // Patterns
 ~fm1 = Pbind(
 	\instrument,\fm1,
@@ -210,10 +252,28 @@ SynthDef.new(\bd, {
 	\iScale,0.25,
 	\cRatio,8,
 	\mRatio,128,
-	\amp,-30.dbamp,
+	\amp,-35.dbamp,
+	\pan,Pgauss(0,0.2),
 	\out, ~bus[\nhhall]
 );
 
+~fm2 = Pbind(
+	\instrument,\fm2,
+	\degree,Pseg([0,2,0,1,2,4,3],[2,1,1,2,1,1],\step,inf)+Pseq([Rest(1),0,Rest(1),-5,Rest(1),-4,Rest(1),-9,Rest(1),-7,Rest(1),-1],inf)+[-2,0,3,7,12],
+	\octave,3,
+	\scale, ~scale,
+	\dur,0.5* Pseq([Rest(1),2],inf),
+	\rel,1.1,
+	\atk,Phprand(0.005,0.1),
+	\iScale,0.1,
+	\cRatio,16,
+	\mRatio,128,
+	\res,Pgauss(3,0.5),
+	\width,1,//Pgauss(3,0.75),
+	\amp,-24.dbamp,
+	\pan,Pgauss(0,0.3),
+	\out, ~bus[\nhhall]
+);
 
 ~fm_break = Pbind(
 	\instrument,\fm1,
@@ -226,18 +286,10 @@ SynthDef.new(\bd, {
 	\iScale,0.25,
 	\cRatio,32,
 	\mRatio,128,
+	\pan,Pgauss(0,0.2),
 	\amp,-30.dbamp
 );
 
-~clavPattern = Pbind(
-    \instrument, \HC,
-    \dur, Pseq([Rest(1), 1, Rest(0.5), 0.5, Rest(0.5), 0.5], inf),
-    \degree, Pseq([4, 4, 4, 6], inf),
-    \octave, 5,
-    \amp, -25.dbamp,
-    \scale, ~scale,
-	\out, 0
-);
 
 
 ~rhodesPattern = Pbind(
@@ -249,8 +301,10 @@ SynthDef.new(\bd, {
 		//Pseq(#[4],inf)),
 	\degree, [0, 2, 4] + Pseq([8,4,1,5,7],inf), //+ Pseq([[0, 2, 4], [3, 5, 7]], inf),
 	\octave, 4,//Pwrand([5,4],[0.75,0.25],inf),
-    \amp, 0.4,
-    \scale, ~scale
+    \amp, 0.22,
+    \scale, ~scale,
+	\pan,-0.3,
+	\out, ~bus[\nhhall]
 );
 
 
@@ -263,54 +317,96 @@ SynthDef.new(\bd, {
 	\degree, Pseq([[0, 2, 4], [3, 5, 7]], inf),
 	\octave, Pwrand([5,4],[0.75,0.25],inf),
     \amp, 0.075,
-    \scale, ~scale
+    \scale, ~scale,
+	\pan,0.3,
+	\out, ~bus[\nhhall]
 );
+
 
 ~kickPattern = Pbind(
     \instrument, \bd,
     \dur, Pseq([1, 0.75, 0.25, 0.5, 0.5, 1], inf),
 	\tone,56,
-	\amp, Pgauss(0.6,0.05,inf),
+	\amp, Pgauss(-10.dbamp,0.05,inf),
+	//\out, ~bus[\nhhall]
 );
 
 ~snarePattern = Pbind(
     \instrument, \sn,
     \dur, Pseq([Rest(1), 1], inf),
-	\tone,Pgauss(340,10),
+	\tone,Pgauss(340,40),
 	\snappy,Pgauss(0.5,0.1),
-    \amp, Pgauss(0.5,0.05,inf),
+    \amp, Pgauss(-25.dbamp,0.05,inf),
+	\pan,Pgauss(0.2,0.1),
+	\out, 0
+);
+
+~clavPattern = Pbind(
+    \instrument, \HC,
+    \dur, Pseq([Rest(1), 1, Rest(0.5), 0.5, Rest(0.5), 0.5], inf),
+    \degree, Pseq([4, 4, 4, 6], inf),
+    \octave, 5,
+    \amp, -34.dbamp,
+    \scale, ~scale,
+	\pan,Pwhite(-0.3,0.3),
 	\out, 0
 );
 
 ~hiHatPattern = Pbind(
 	\instrument, Pwrand([\hat,\rimshot],[0.9,0.1],inf),
     \dur, Pseq([0.25, 0.5, 0.25, 0.25, 0.25, 0.5], inf),
-	\amp, Pseq([0.2, 0.4, 0.2, 0.3, 0.2, 0.4], inf)* Pwhite(0.9,0.1),
+	\amp, Pseq([0.2, 0.4, 0.2, 0.3, 0.2, 0.4], inf)* Pgauss(-12.dbamp,0.1),
+	\pan,Pgauss(0.0,0.2),
+	\out, Pwrand([0,~bus[\comb]],[0.5,0.5],inf)
    // \dur, Pseq([0.05, 0.1, 0.05, 0.05, 0.05, 0.1], inf)
 );
 
 )
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////testing//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+
 (
 t = TempoClock(100/60);
+
 ~fm1.play(t);
-//~rhodesCounter.play(t);
-//~fm1.play(t);
+~fm2.play(t);
+~clavPattern.play(t);
+~rhodesCounter.play(t);
+~rhodesPattern.play(t);
+~kickPattern.play(t);
+~snarePattern.play(t);
+~hiHatPattern.play(t);
+
+//~fm_break.play(t);
 )
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////structure//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+
 
 (
 // Sections using Pfindur
 ~introSection = Pfindur(16,
     Ppar([
-        Pbindf(~kickPattern,\amp, Pseg(Pseq([0.0, 0.6]), 16,-4)),
-        Pbindf(~hiHatPattern,\amp, Pseg(Pseq([0,Pwhite(0.2,0.4)]), 16,-4)),
-        Pbindf(~fm1,\amp,Pseg(Pseq([0,-30.dbamp]), 16,-4)),
+        Pbindf(~fm1,\amp,Pseg(Pseq([0,-35.dbamp]), 16,-4)),
+        Pbindf(~kickPattern,\amp, Pseg(Pseq([0.0, -10.dbamp]), 16,-4)),
+        Pbindf(~hiHatPattern,\amp, Pseg(Pseq([0,-12.dbamp]), 16,-4)),
     ])
 );
 
 ~mainSection = Pfindur(32,
     Ppar([
         ~fm1,
-        ~clavPattern,
+		~fm2,
+		~clavPattern,
         ~rhodesPattern,
 		~rhodesCounter,
 		Pbindf(~kickPattern,\tone,Pgauss(56,5,inf)),
@@ -319,9 +415,22 @@ t = TempoClock(100/60);
     ])
 );
 
+~mainSection_repeat = Pfindur(32,
+    Ppar([
+        ~fm1,
+		Pbindf(~fm2,\dur,0.5 * Prand([Rest(1),1,1],inf)),//Pn(Pshuf([Rest(1),2,1,Rest(1),2],1),inf)),//Pseq([1, 0.75, 0.75, 1, Rest(0.5),Rest(0.5),1,Rest(2),1,1]/2,inf)),
+        Pbindf(~clavPattern,\degree, -1 + Pseq([4, 4, 4, 6], inf)),
+        ~rhodesPattern,
+		~rhodesCounter,
+		Pbindf(~kickPattern,\tone,Pgauss(56,10,inf)),
+        ~snarePattern,
+		Pbindf(~hiHatPattern,\instrument, Pwrand([\rimshot,\hat],[0.9,0.1],inf))
+    ])
+);
+
 ~breakSection = Pfindur(35,
     Ppar([
-		Pbindf(~fm_break,\amp,-23.dbamp),
+		~fm_break,
 		Pbindf(~clavPattern,\octave,4),
         ~hiHatPattern
 	])
@@ -329,12 +438,12 @@ t = TempoClock(100/60);
 
 ~outroSection = Pfindur(16,
     Ppar([
-		Pbindf(~fm1,\amp,Pseg(Pseq([-30.dbamp, 0]), 16,6)),
+		Pbindf(~fm1,\amp,Pseg(Pseq([-35.dbamp, 0]), 16,6)),
 		~rhodesCounter,
-        Pbindf(~kickPattern,\tone,Pgauss(56,5,inf),\amp, Pseg(Pseq([0.6, 0]), 16)),
-        Pbindf(~snarePattern,\amp, Pseg(Pseq([0.5, 0]), 16)),
-		Pbindf(~hiHatPattern,\amp, Pseg(Pseq([Pwhite(0.2,0.4), 0]), 16)),
-        Pbindf(~clavPattern, \amp, Pseg(Pseq([-25.dbamp, 0]), 16))
+        Pbindf(~kickPattern,\tone,Pgauss(56,5,inf),\amp, Pseg(Pseq([-10.dbamp, 0]), 16)),
+        Pbindf(~snarePattern,\amp, Pseg(Pseq([-25.dbamp, 0]), 16)),
+		Pbindf(~hiHatPattern,\amp, Pseg(Pseq([Pgauss(-12.dbamp,0.1), 0]), 16)),
+        Pbindf(~clavPattern, \amp, Pseg(Pseq([-34.dbamp, 0]), 16))
     ])
 );
 
@@ -343,8 +452,14 @@ t = TempoClock(100/60);
 
 (
 t = TempoClock(100/60);
-~introSection.play(t);
+~mainSection_repeat.play(t);
 )
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////piece//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
 (
@@ -354,10 +469,10 @@ r = Routine({
     var sections = [
         (\name: "Intro", \pattern: ~introSection),
         (\name: "Main Groove", \pattern: ~mainSection),
-        (\name: "Main Groove (Repeat)", \pattern: ~mainSection),
+        (\name: "Main Groove (Repeat)", \pattern: ~mainSection_repeat),
         (\name: "Break", \pattern: ~breakSection),
         (\name: "Final Groove", \pattern: ~mainSection),
-		(\name: "Main Groove (Repeat)", \pattern: ~mainSection),
+		(\name: "Main Groove (Repeat)", \pattern: ~mainSection_repeat),
         (\name: "Outro", \pattern: ~outroSection)
     ];
 
