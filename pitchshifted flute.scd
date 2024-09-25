@@ -13,7 +13,7 @@ SynthDef(\help_blowhole, {
 
 	var perc_env = Env.perc.ar;
 
-	sig = sig * (1+ SinOsc.ar(2.reciprocal*(1+perc_env)));
+	sig = sig * (1+ SinOsc.ar(\cycle.kr(2.reciprocal)*(1+perc_env)));
 	sig = BHiShelf.ar(sig,1200,0.3,5);
 	sig = sig.fold2;
 	sig = BHiShelf.ar(sig,1200,0.3,-5);
@@ -51,7 +51,7 @@ SynthDef(\help_blowhole, {
 )
 
 
-
+/*
 (
 ~blow = Pbind(
     \instrument, \help_blowhole,
@@ -59,7 +59,7 @@ SynthDef(\help_blowhole, {
 	\pan,Pgauss(0,0.1,inf),
 	\breathpressure,90,//Plprand(60,80),//Pseg([5,30,5],30,\wel,inf),
 	\reedstiffness,100,
-	\octave,2,//Pwrand([5,3,8,1],[4,3,2,1].normalizeSum,inf),
+	\octave,Pwrand([2,1,3],[4,2,1].normalizeSum,inf),
     \degree, Pseg([0,2,0,1,2,4,3],[4,2,2,4,2,2],\step,inf)+Pseq([-5,-4,-9,-7,-1],inf)+[-2,0,3,7,12],
 	\mul,10,
 	\downshift,-10,
@@ -67,8 +67,15 @@ SynthDef(\help_blowhole, {
 	\out,~bus[\nhhall],
 );
 )
-
+*/
 ~blow.play;
+
+Pbind(\instrument,\HC, \dur,Pseq([3,3,2],inf), \rel,Pkey(\dur)*1.4,\tone,Pseq([[57,50,62],[62,64],[56,50,61],[59,50,62],[56,50],[61,50,64],[57,62],[54,57,62],[54,50,62]],inf),\downshift,-100,\upshift,100,\out,~bus[\reverb2]).play;
+
+
+Pbind(\instrument,\rhodesChord, \dur,Pseq([2,1,2,2,1],inf)/8, \rel,Pkey(\dur)*0.4,\phaseLen,Pkey(\dur)*0.5,\midinote,Pseq([[57,50,62],[62,64],[56,50,61],[59,50,62],[56,50],[61,50,64],[57,62],[54,50,62]],inf),\iScale,0.75,\index,2,\mRatio,[0.5,1],\cRatio,0.5,\out,~bus[\reverb2]).play;
+
+
 (
 t = TempoClock.default.tempo_(1);
 Pbindef(\harmony)
@@ -103,7 +110,7 @@ Pbindef(\harmony).play(t);
 
 ~secondSection = Pfindur(100,
     Ppar([
-		Pbindf(~blow,\mul,200,\downshift,Pseg([-1,-60,-1],100),\upshift,Pseg([1,60,1],100))
+		Pbindf(~blow,\mul,150,\downshift,Pseg([-1,-60,-1],100),\upshift,Pseg([1,60,1],100),\cycle,Pseg([2,6,2,1,3].reciprocal,100,-1,inf))
 
     ])
 );
@@ -116,6 +123,8 @@ Pbindef(\harmony).play(t);
 );
 
 )
+
+~secondSection.play
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////piece//////////////////////////////////////////////////////////////////

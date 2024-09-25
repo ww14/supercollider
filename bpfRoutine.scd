@@ -1,7 +1,7 @@
 ("Setup/Setup.scd").loadRelative // load this file
 
 (
-// t= TempoClock.default.tempo_(60/60);
+t= TempoClock.default.tempo_(60/60);
 r = Routine.new({
 	var i = 0, n = 0;
 

@@ -270,7 +270,7 @@ SynthDef.new(\bd, {
 	\mRatio,128,
 	\res,Pgauss(3,0.5),
 	\width,1,//Pgauss(3,0.75),
-	\amp,-24.dbamp,
+	\amp,-28.dbamp,
 	\pan,Pgauss(0,0.3),
 	\out, ~bus[\nhhall]
 );
@@ -346,7 +346,7 @@ SynthDef.new(\bd, {
     \dur, Pseq([Rest(1), 1, Rest(0.5), 0.5, Rest(0.5), 0.5], inf),
     \degree, Pseq([4, 4, 4, 6], inf),
     \octave, 5,
-    \amp, -34.dbamp,
+    \amp, -30.dbamp,
     \scale, ~scale,
 	\pan,Pwhite(-0.3,0.3),
 	\out, 0
@@ -442,7 +442,7 @@ t = TempoClock(100/60);
 		~rhodesCounter,
         Pbindf(~kickPattern,\tone,Pgauss(56,5,inf),\amp, Pseg(Pseq([-10.dbamp, 0]), 16)),
         Pbindf(~snarePattern,\amp, Pseg(Pseq([-25.dbamp, 0]), 16)),
-		Pbindf(~hiHatPattern,\amp, Pseg(Pseq([Pgauss(-12.dbamp,0.1), 0]), 16)),
+		Pbindf(~hiHatPattern,\amp, Pseg(Pseq([Pgauss(-20.dbamp,0.1), 0]), 16)),
         Pbindf(~clavPattern, \amp, Pseg(Pseq([-34.dbamp, 0]), 16))
     ])
 );

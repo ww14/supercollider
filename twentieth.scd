@@ -19,7 +19,7 @@
 			totalSig = totalSig + verbSig;
 		};
 	*/
-	verbSig = NHHall.ar(sig,1 + SinOsc.kr([21].reciprocal, 0, 0.2),0.7);
+	verbSig = NHHall.ar(sig,1 + SinOsc.kr([21,30].reciprocal, 0, 0.2),0.5);
 
 		//dry/wet mix
 		totalSig = XFade2.ar(sig, verbSig, mix.linlin(0,1,-1,1));
@@ -29,7 +29,7 @@
 	}).add;
 
 	SynthDef(\twotube,{arg preamp=0, delay1=100, delay2=50, k=0.0, loss=0.999, dur=0.5, pan=0.0, out=0, amp=1, minCf=30, maxCf=6000, minBpfHz=0.02, maxBpfHz=0.25,minRq=0.005, maxRq=0.04;
-		var sig, env, senv, perc;
+		var sig, env, senv, perc, perc_env,sig_verb, mix;
 
 		//k from -1 to 1
 
@@ -46,6 +46,24 @@
 			LFNoise1.kr({LFNoise1.kr(0.13).exprange(minBpfHz,maxBpfHz)}!8).exprange(minCf, maxCf),
 			LFNoise1.kr({LFNoise1.kr(0.08).exprange(0.08,0.35)}!8).range(minRq, maxRq)
 		);
+
+	perc_env = Env.perc.ar;
+
+	//sig_verb = sig * (1+ LFPulse.ar(0.5*(perc_env)));
+	sig_verb = BHiShelf.ar(sig,1200,0.3,5);
+	sig_verb = sig_verb.fold2;
+	sig_verb = BHiShelf.ar(sig_verb,1200,0.3,-5);
+	sig_verb = sig_verb + PitchShift.ar(sig_verb,0.003,perc_env);
+	sig_verb = sig_verb + PitchShift.ar(sig_verb,0.0012,perc_env);
+	sig_verb = FreqShift.ar(sig_verb,perc_env.linlin(0,1,0,\downshift.kr(-3)));
+	sig_verb = sig_verb.tanh;
+	sig_verb = sig_verb + CombC.ar(sig_verb * -15.dbamp,0.1,1/(6 * (1+perc_env)),0.15);
+	sig_verb = FreqShift.ar(sig_verb,perc_env.linlin(0,1,0,\upshift.kr(3)));
+	sig_verb = sig_verb.tanh;
+
+	mix = \mix.kr(0.35).clip(0,1);
+	sig = XFade2.ar(sig,sig_verb,mix.linlin(0,1,-1,1));
+
 
 	sig = HPF.ar(sig,40);
 
@@ -85,12 +103,12 @@ Pbindef(\twenty,
 	\instrument, \twotube,
 	\dur,Pn(Pshuf(1/[3,3,3,6],3),inf),
 	\k, -0.7,
-	\preamp,30*Pwhite(1,1.05,inf),
+	\preamp,12*Pwhite(1,1.01,inf),
 	\amp,-6.dbamp,
-	\minRq,0.01,
+	\minRq,0.04,
 	\maxRq,0.4,
-	\minBpfHz,3,
-	\maxBpfHz,6,//Pstep([150,70,350],14,inf), //31
+	\minBpfHz,10,
+	\maxBpfHz,40,//Pstep([150,70,350],14,inf), //31
 	\minCf,100,//Pseg([125,100,125],96,\lin,inf),
 	\maxCf,400,//Pseg([400,500,400],96,\lin,inf),
 	\pan,0,
@@ -135,7 +153,7 @@ Pbindef(\twenty,
 	7.wait;
 
 	"1-2-10 and 8-2-1 rotation".postln;
-	Pbindef(\twenty,\dur,Pn(Pshuf(1/[60,60,60,3],3),inf),\delay2);
+	Pbindef(\twenty,\dur,Pn(Pshuf(1/[60,60,60,3],3),inf),\mix,0.5);
 	//Pbindef(\twenty,\dur,Pn(Pshuf(1/[60,60,60,3],3),inf));
 	21.wait;
 	Pbindef(\twenty,\dur,Pn(Pshuf(1/[3,3,3,6],3),inf));
@@ -143,22 +161,22 @@ Pbindef(\twenty,
 
 
 	"8-2-1".postln;
-	Pbindef(\twenty,\dur,Pn(Pshuf(1/[60,60,60,3],3),inf));
+	Pbindef(\twenty,\dur,Pn(Pshuf(1/[60,60,60,3],3),inf),\mix,0.2);
 	14.wait;
 	Pbindef(\twenty,\dur,Pn(Pshuf(1/[6,6,6,3],3),inf));
 	7.wait;
 	Pbindef(\twenty,\dur,Pn(Pshuf(1/[3,3,3,6],3),inf));
-	6.5.wait;
-	Pbindef(\twenty,\amp, 0);
-	0.5.wait;
+	7.wait;
+	//Pbindef(\twenty,\amp, 0);
+	//0.5.wait;
 
 	"2-4-8 and 1-2-4".postln;
-	Pbindef(\twenty,\dur,Pn(Pshuf(1/[20,20,20,1],3),inf),\amp, -6.dbamp);
+	Pbindef(\twenty,\dur,Pn(Pshuf(1/[20,20,20,1],3),inf),\amp, -6.dbamp,\mix,0.6);
 	21.wait; //
-	Pbindef(\twenty,\dur,Pn(Pshuf(1/[3,3,3,6],3),inf));
-	15.wait;
+	Pbindef(\twenty,\dur,Pn(Pshuf(1/[3,3,3,6],3),inf),\mix,0.2);
+	14.wait;
 	Pbindef(\twenty).stop;
-	10.wait;
+	12.wait;
 	//s.stopRecording;
    });
 )
