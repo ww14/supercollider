@@ -155,6 +155,7 @@ SynthDef.new(\HC, {
 	env = EnvGen.kr(Env.new([0.15, 1, 0], [0, 6], -250),doneAction:2);
 	fenv = Env([freq*1.22972, freq*1.08108, freq], [0.1, 0.5], -4).kr;
 	sig = SinOsc.ar(fenv, pi/2);
+	sig = sig + (0.75*Blip.ar(sig,4));
 
 	sig = BPeakEQ.ar(sig, 464, 0.44, 8);
 	sig = HPF.ar(sig, 315);
@@ -166,6 +167,8 @@ SynthDef.new(\HC, {
 	sig = Pan2.ar(sig * env * amp * 2, pan);
 	Out.ar(out, sig);
 }).add;
+
+
 
 SynthDef.new(\claves, {
 	arg amp=1, out=0;
@@ -185,8 +188,6 @@ SynthDef.new(\claves, {
 	sig = sig * amp;
 	Out.ar(out, sig);
 }).add;
-
-
 
 
 SynthDef(\rhodesChord, {
@@ -233,6 +234,9 @@ SynthDef.new(\bd, {
 }).add;
 
 )
+
+
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////patterns///////////////////////////////////////////////////////////////////
@@ -327,7 +331,7 @@ SynthDef.new(\bd, {
     \instrument, \bd,
     \dur, Pseq([1, 0.75, 0.25, 0.5, 0.5, 1], inf),
 	\tone,56,
-	\amp, Pgauss(-10.dbamp,0.05,inf),
+	\amp, Pgauss(-8.dbamp,0.05,inf),
 	//\out, ~bus[\nhhall]
 );
 
@@ -341,21 +345,22 @@ SynthDef.new(\bd, {
 	\out, 0
 );
 
-~clavPattern = Pbind(
+~glockPattern = Pbind(
     \instrument, \HC,
     \dur, Pseq([Rest(1), 1, Rest(0.5), 0.5, Rest(0.5), 0.5], inf),
-    \degree, Pseq([4, 4, 4, 6], inf),
+    \degree, Pseq([4, 4, 4, 6, 4, 4, 4, 7], inf),
     \octave, 5,
-    \amp, -30.dbamp,
+	\t60,Pgauss(0.8,0.05),
+    \amp, -35.dbamp,
     \scale, ~scale,
 	\pan,Pwhite(-0.3,0.3),
-	\out, 0
+	\out, Pwrand([0,~bus[\comb]],[0.5,0.5],inf)
 );
 
 ~hiHatPattern = Pbind(
 	\instrument, Pwrand([\hat,\rimshot],[0.9,0.1],inf),
     \dur, Pseq([0.25, 0.5, 0.25, 0.25, 0.25, 0.5], inf),
-	\amp, Pseq([0.2, 0.4, 0.2, 0.3, 0.2, 0.4], inf)* Pgauss(-12.dbamp,0.1),
+	\amp, Pgauss(-16.dbamp,0.05,inf),
 	\pan,Pgauss(0.0,0.2),
 	\out, Pwrand([0,~bus[\comb]],[0.5,0.5],inf)
    // \dur, Pseq([0.05, 0.1, 0.05, 0.05, 0.05, 0.1], inf)
@@ -363,7 +368,7 @@ SynthDef.new(\bd, {
 
 )
 
-
+~glockPattern.play;
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////testing//////////////////////////////////////////////////////////////
@@ -375,11 +380,11 @@ t = TempoClock(100/60);
 
 ~fm1.play(t);
 ~fm2.play(t);
-~clavPattern.play(t);
+~glockPattern.play(t);
 ~rhodesCounter.play(t);
 ~rhodesPattern.play(t);
 ~kickPattern.play(t);
-~snarePattern.play(t);
+// ~snarePattern.play(t);
 ~hiHatPattern.play(t);
 
 //~fm_break.play(t);
@@ -397,8 +402,8 @@ t = TempoClock(100/60);
 ~introSection = Pfindur(16,
     Ppar([
         Pbindf(~fm1,\amp,Pseg(Pseq([0,-35.dbamp]), 16,-4)),
-        Pbindf(~kickPattern,\amp, Pseg(Pseq([0.0, -10.dbamp]), 16,-4)),
-        Pbindf(~hiHatPattern,\amp, Pseg(Pseq([0,-12.dbamp]), 16,-4)),
+        Pbindf(~kickPattern,\amp, Pseg(Pseq([0.0, -8.dbamp]), 16,-4)),
+        Pbindf(~hiHatPattern,\amp, Pseg(Pseq([0,-16.dbamp]), 16,-4)),
     ])
 );
 
@@ -406,7 +411,7 @@ t = TempoClock(100/60);
     Ppar([
         ~fm1,
 		~fm2,
-		~clavPattern,
+		~glockPattern,
         ~rhodesPattern,
 		~rhodesCounter,
 		Pbindf(~kickPattern,\tone,Pgauss(56,5,inf)),
@@ -419,7 +424,7 @@ t = TempoClock(100/60);
     Ppar([
         ~fm1,
 		Pbindf(~fm2,\dur,0.5 * Prand([Rest(1),1,1],inf)),//Pn(Pshuf([Rest(1),2,1,Rest(1),2],1),inf)),//Pseq([1, 0.75, 0.75, 1, Rest(0.5),Rest(0.5),1,Rest(2),1,1]/2,inf)),
-        Pbindf(~clavPattern,\degree, -1 + Pseq([4, 4, 4, 6], inf)),
+        Pbindf(~glockPattern,\degree, -1 + Pseq([4, 4, 4, 6, 4, 4, 4, 7], inf)),
         ~rhodesPattern,
 		~rhodesCounter,
 		Pbindf(~kickPattern,\tone,Pgauss(56,10,inf)),
@@ -431,7 +436,7 @@ t = TempoClock(100/60);
 ~breakSection = Pfindur(35,
     Ppar([
 		~fm_break,
-		Pbindf(~clavPattern,\octave,4),
+		Pbindf(~glockPattern,\instrument, \HC, \octave,4, \degree, Pseq([4, 4, 4, 6], inf),\amp, -30.dbamp),
         ~hiHatPattern
 	])
 );
@@ -440,10 +445,10 @@ t = TempoClock(100/60);
     Ppar([
 		Pbindf(~fm1,\amp,Pseg(Pseq([-35.dbamp, 0]), 16,6)),
 		~rhodesCounter,
-        Pbindf(~kickPattern,\tone,Pgauss(56,5,inf),\amp, Pseg(Pseq([-10.dbamp, 0]), 16)),
+        Pbindf(~kickPattern,\tone,Pgauss(56,5,inf),\amp, Pseg(Pseq([-8.dbamp, 0]), 16)),
         Pbindf(~snarePattern,\amp, Pseg(Pseq([-25.dbamp, 0]), 16)),
 		Pbindf(~hiHatPattern,\amp, Pseg(Pseq([Pgauss(-20.dbamp,0.1), 0]), 16)),
-        Pbindf(~clavPattern, \amp, Pseg(Pseq([-34.dbamp, 0]), 16))
+        Pbindf(~glockPattern, \amp, Pseg(Pseq([-34.dbamp, 0]), 16))
     ])
 );
 
@@ -452,7 +457,7 @@ t = TempoClock(100/60);
 
 (
 t = TempoClock(100/60);
-~mainSection_repeat.play(t);
+~breakSection.play(t);
 )
 
 //////////////////////////////////////////////////////////////////////////////////////////////

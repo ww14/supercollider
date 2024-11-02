@@ -196,6 +196,20 @@ Pdef.removeAll;
 	\freq,(36 + Pwrand([0,[0,-7],[0,5,12]],[0.8,0.1,0.1],inf) +Pseq(
 		[12,7,12,15,12,7,8,15,12]
 		,inf)).midicps,  // [8,8,8,12,15] [8,7,12]
+	\dur, 0.175,//0.35,  //[1,1,2,3,2] //[1,2,1,2,3], //[ 1, 3, 1, 2, 2 ], //[ 3, 1, 2, 2, 1 ]
+	\puffDuration,Pwhite(0.0025,0.015), //10
+	\rq,Pwhite(0.001,0.01),
+	\amp,-1.dbamp,
+	\out,0
+);
+);
+
+
+(Pbindef(\pluck_subdivide,
+	\instrument,\pluck,
+	\freq,(36 + Pwrand([0,[0,-7],[0,5,12]],[0.8,0.1,0.1],inf) +Pseq(
+		[12,7,12,15,12,7,8,15,12]
+		,inf)).midicps,  // [8,8,8,12,15] [8,7,12]
 	\dur, 0.175 * Pwrand([1,2],[24,1].normalizeSum,inf),//0.35,  //[1,1,2,3,2] //[1,2,1,2,3], //[ 1, 3, 1, 2, 2 ], //[ 3, 1, 2, 2, 1 ]
 	\puffDuration,Pwhite(0.0025,0.015), //10
 	\rq,Pwhite(0.001,0.01),
@@ -241,7 +255,7 @@ Pspawner({|sp|
 	sp.par( Pfindur(0.945 * 2, Pbindef(\pluck_down)));
 	sp.wait(1.89);
 
-	sp.par( Pfindur(~phrase * 4, Pbindef(\pluck)));
+	sp.par( Pfindur(~phrase * 4, Pbindef(\pluck_subdivide)));
 	sp.wait(~breath + (~phrase * 4));
 
 	"second break".postln;
@@ -255,8 +269,8 @@ Pspawner({|sp|
 
 	"section 2a".postln;
 
-	sp.par( Pfindur(~phrase * 6, Pbindef(\plucked)));
-	sp.wait(~phrase * 6);
+	sp.par( Pfindur(~phrase * 5, Pbindef(\plucked)));
+	sp.wait(~phrase * 5);
 
 	"section 2b".postln;
 	sp.par( Pfindur(~phrase * 6, (Pbindef(\plucked,\dur,0.175*Pn(Pshuf([
