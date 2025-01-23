@@ -64,7 +64,7 @@ Synth(\glockenspiel)
     \instrument, \glockenspiel,
 	\dur, Pseq([Rest(1), 1, Rest(0.5), 0.5, Rest(0.5), 0.5], inf),
     \degree, Pseq([4, 4, 4, 6, 4, 4, 4, 7], inf),
-    \octave, 4,
+    \octave, 3,
 	\t60,Pgauss(0.8,0.05),
 	\shift,Plprand(2,4),
     \amp, -35.dbamp,
