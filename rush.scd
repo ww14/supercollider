@@ -45,7 +45,7 @@ SynthDef(\rush,{
 
     //perc = DelayC.ar(perc, 1, SinOsc.ar(20.reciprocal, [0, pi]).range(0, 1));
 	snd = LeakDC.ar(snd).sum;
-	snd = MoogFF.ar(snd, LFNoise2.kr(0.75).linexp(-1, 1, 500, 16000), 0);
+	snd = MoogFF.ar(snd, LFNoise2.kr(0.75).linexp(-1, 1, 300, 16000), 0.1);
 	snd = snd +perc
 	         //+ DelayC.ar(snd, 0.1, SinOsc.ar(0.00005, [0, pi]).range(0, 0.01));
 	;

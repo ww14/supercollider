@@ -119,7 +119,7 @@ Pdef(\hat,Pbind(
 	\dur,Psubdivide(Pseq([1!6,2!6,4!6].flatten,inf), Pseq([12,12,3],inf)),// Pseq([0.2, 0.2, 0.2],inf), 2.4,2.4,0.6
 	\pan,Pwhite(-0.3,0.0),
 	\amp,-20.dbamp,
-	\out,~bus[\nhhall]
+	\out,~bus[\nhhall],
 ));
 
 Pdef(\drum,Pbind(
@@ -129,10 +129,10 @@ Pdef(\drum,Pbind(
 	\rq, 10,//1
 	\freq,24.midicps,
 	\dur,Pwrand([3,6],[2,1].normalizeSum,inf),// Pseq([0.2, 0.2, 0.2],inf), 2.4,2.4,0.6
-	\pan,Pwhite(0.2,0.4),
+	\pan,Pwhite(0.0,0.4),
 	\amp,-18.dbamp, //-4.dbamp // -18.dbamp
 
-	\out,~bus[\nhhall]
+	\out,0
 ));
 
 // old drum
@@ -146,7 +146,7 @@ Pdef(\hihat,Pbind(
 	\dur,Psubdivide(Pseq([1!8,2!8].flatten,inf), Pseq([6,3,2,1],inf)),// Pseq([0.2, 0.2, 0.2],inf), 2.4,2.4,0.6
 	\pan,Pwhite(-0.5,0.5),
 	\amp,-27.dbamp,
-	\out,~bus[\reverb],
+	\out,~bus[\nhhall],
 ));
 
 //close
@@ -185,7 +185,7 @@ Pdef(\bell_close,
 	\dur,4,// Pseq([0.2, 0.2, 0.2],inf), 2.4,2.4,0.6
 	\pan,Pwhite(-0.3,0.0),
 	\amp,-8.dbamp,
-	\out,~bus[\reverb],
+	\out,~bus[\nhhall],
 );)
 
 Pdef(\drum).play;
@@ -218,12 +218,12 @@ t = TempoClock.default.tempo_(300/60);
 Pspawner({|sp|
 	//s.record;
 	sp.wait(1);
-
+/*
 	t = TempoClock.default.tempo_(60/60);
 	sp.par( Pfindur(32, Pdef(\intro)));
 
 	sp.wait(32);
-
+*/
 	t = TempoClock.default.tempo_(300/60);
 	sp.par( Pfindur(48*4, Pdef(\bell)));
 	sp.par( Pfindur(48*5, Pdef(\drum)));

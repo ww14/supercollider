@@ -90,7 +90,7 @@ Pbindef(\impulse,\amp,Pseg([0,-100],12,\lin).dbamp);
 	\num, Pseq([Pn([50],5),Pn([25],5),Pn([12],3),Pn([5],2)],inf), // -0.001
 	\cur,Pwhite(5,-5,inf),
 	\pan,Pwhite(-0.3,0.3,inf),
-	\out,~bus[\reverb2],
+	\out,~bus[\nhhall],
 	\amp,-6.dbamp,
 );
 
@@ -108,7 +108,7 @@ Pbindef(\harmony,
 	\amp,Pseg(Pseq([-60,-15,-90].dbamp,inf),Pseq([70,30],inf),Pseq([1,-3],inf),inf),
 );
 
-
+~nhhallSynth.set(\splay,0.5,\rt60,0.5,\stereo,0.5);
 )
 
 

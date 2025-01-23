@@ -39,8 +39,13 @@ SynthDef(\gabor, {
 ~a = ~a.scramble;
 ~b =5;
 
+Synth(\gabor,[\freq,150,\dur,1])
+
 
 TempoClock.default.tempo_(105/60);
+
+Pbind(\instrument,\gabor,\dur,3,\slope,-4,\fltRange,8000).play
+
 
 (
 Pdef.removeAll;
@@ -70,7 +75,7 @@ Pbindef(\gabor,
 )
 
 Pbindef(\gabor).play;
-Pbindef(\gabor,\dur,1/Pseq([6!12,1,4].flatten,inf));
+Pbindef(\gabor,\dur,2,\slope,2,\rel,1,\fRel,0.9,\out,0,\freq,48.midicps);
 Pbindef(\gabor,\freq,[55,110,440],\rel,0.3,\atk,0.01,\slope,-0.1);
 Pbindef(\gabor,\dur,l);
 

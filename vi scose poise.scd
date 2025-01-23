@@ -193,7 +193,7 @@ Pbindef(\background,
 	\pan, Phprand(0,0.4),
 	//\sus,0.00,
 	\amp, -40.dbamp,//-58.dbamp,
-	\out,~bus[\reverb]
+	\out,~bus[\nhhall]
 );
 )
 )
@@ -230,7 +230,7 @@ t = Task({
 	"start".postln;
 	//~nhhallSynth.set(\splay,0.9,\rt60,2,\stereo,0.5);
 	1.wait;
-	x = Synth(\fm_grain, [\envbuf, b[\deskBells][8],\carfreq,220,\dur,1.9,\modfreq,440,\amp,-4.dbamp]);
+	x = Synth(\fm_grain, [\envbuf, b[\deskBells][8],\carfreq,220,\dur,1.9,\modfreq,440,\amp,-8.dbamp]);
 
 	24.wait;
 	y = Synth(\fm_grain, [\envbuf, z,\modfreq,330,\carfreq, 1760, \dur,4,\amp,-50.dbamp,\pan,-0.25, \out,~bus[\nhhall],\rel,0.5]);
@@ -300,7 +300,7 @@ t = Task({
 	23.wait;
 	"slow it down".postln;
 	y.set(\modfreq,330,\carfreq,1760,\amp,-43.dbamp,\pan,-0.25);
-	x.set(\out,\amp,-3.dbamp);
+	x.set(\out,\amp,-6.dbamp);
 	x.set(\lower,1,\upper,1);
 	Pbindef(\harmony,\pan,0.25);
 

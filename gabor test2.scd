@@ -11,6 +11,7 @@ SynthDef(\gabor, {
 	var n = (1..numPartials);
 	var freqs = \freq.kr(150) * (n + (n * n * 0.05));
 	var cutoff, amps, sig;
+	var perc_env = Env.perc.ar;
 
 	cutoff = fltEnv * \fltRange.kr(8000);
 
@@ -22,6 +23,24 @@ SynthDef(\gabor, {
 	sig = SinOsc.ar(freqs * freqEnv.midiratio, 0, amps).sum * -25.dbamp;
 
 	sig = sig * gainEnv;
+
+
+
+	sig = sig * (1+ SinOsc.ar(\cycle.kr(2.reciprocal)*(1+perc_env)));
+	sig = BHiShelf.ar(sig,1200,0.3,5);
+	sig = sig.fold2;
+	sig = BHiShelf.ar(sig,1200,0.3,-5);
+	sig = sig + PitchShift.ar(sig,0.03,1+(0.3*perc_env));
+	sig = sig + PitchShift.ar(sig,0.012,0.5+perc_env);
+	sig = FreqShift.ar(sig,perc_env.linlin(0,1,0,\downshift.kr(-30)));
+	sig = sig.tanh;
+	sig = sig + CombC.ar(sig * -10.dbamp,0.1,1/(60 * (1+perc_env)),0.15);
+	sig = FreqShift.ar(sig,perc_env.linlin(0,1,0,\upshift.kr(30)));
+	sig = sig.tanh;
+
+
+	sig = HPF.ar(sig,30);
+	sig = LPF.ar(sig,7000);
 
 	sig = Pan2.ar(sig, \pan.kr(0), \amp.kr(0.25));
 	Out.ar(\out.kr(0), sig);
@@ -44,7 +63,7 @@ Pbindef(\gabor,
 		\fltRange, 1000,
 
 		\fAtk, 0.1,
-		\fRel, 3,
+		\fRel, 1,
 
 	    \freq, 68,
 
@@ -54,7 +73,11 @@ Pbindef(\gabor,
 	)
 );
 
-Pbindef(\gabor).play
+Pbindef(\gabor).play;
+Pbindef(\gabor,\freq,68,\fAtk,0.05,\fRel,1,\slope,-3,\cycle,0.5)
+Pbindef(\gabor,\freq,64,\fAtk,0.5,\fRel,4,\slope,-5,\cycle,5)
+Pbindef(\gabor,\freq,64,\fAtk,0.05,\fRel,4,\slope,-1,\cycle,50)
+Pbindef(\gabor,\freq,64,\fAtk,0.5,\fRel,1,\slope,-1,\cycle,5)
 
 
 Pdef(\gabor).stop;

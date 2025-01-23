@@ -269,6 +269,7 @@ Pdef.removeAll;
 
 t = Task({
 	//s.record;
+	//start bass
 	a = Synth(\vink,[\freq,38.midicps,\low,1,\high,1,\amp,0.26,\decaytime,3.5,\coef,0.4]);
 
 	8.wait;
@@ -301,17 +302,17 @@ t = Task({
 	24.wait;
 	"removeAll".postln;
 
-	a.release;
-	//c.release;
+	a.set(\gate,0);
 	4.wait;
+	c.set(\gate,0);
+	Pbindef(\vink).stop;
+	16.wait;
 	//s.stopRecording;
 });
 )
 
 
 t.play;
-
-
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

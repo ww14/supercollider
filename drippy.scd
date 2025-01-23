@@ -6,29 +6,42 @@
 
 
 (
-~xox = {|str| str.collectAs({|l| switch(l.toLower,$x, {1}, $o, {Rest(1)})}, Array)};
-)
-
-
-(
-SynthDef(\acid, { arg out, freq = 1000, gate = 1, pan = 1, cut = 4000, rez = 0.8, amp = 1, sustain = 1, release = 0.5;
-    var sig, env;
+SynthDef(\acid, { arg out=0, freq = 440, gate = 1, pan = 1, cut = 4000, rez = 0.8, amp = 1, sustain = 1, release = 0.5;
+    var sig, env, perc_env, perc;
 	env = EnvGen.kr(Env.linen(0.01, sustain, sustain * release), gate, amp, doneAction: Done.freeSelf);
-
+	sig = Pulse.ar([freq,freq*1.001], 0.5);
 	sig = sig + Pulse.ar(freq*0.501, 0.01, [0,0.5]);
 	sig = sig + Pulse.ar(freq*1.99, 0.11, [0.5,0]);
 	sig = RLPF.ar(sig, cut, rez);
-	sig = Pan2.ar(sig);
-	sig = sig * env;
 
+	perc_env = Env.perc.ar;
+	perc = sig.fold2;
+	perc = BHiShelf.ar(perc,1200,0.3,-5);
+	perc = sig + PitchShift.ar(perc,0.9,1+(0.3*perc_env));
+	perc = sig + PitchShift.ar(perc,0.12,0.5+perc_env);
+	perc = FreqShift.ar(perc,perc_env.linlin(0,1,0,\downshift.kr(-3)));
+	perc = perc.tanh;
+	perc = sig + CombC.ar(perc * -10.dbamp,0.1,1/(60 * (1+perc_env)),0.15);
+	perc = FreqShift.ar(perc,perc_env.linlin(0,1,0,\upshift.kr(3)));
+	perc = perc.tanh;
+
+	sig = sig +perc;
+
+
+	sig = Pan2.ar(sig,pan);
+	sig = sig * env;
 	Out.ar(out, sig);
 }).add;
 )
 
 (
+~xox = {|str| str.collectAs({|l| switch(l.toLower,$x, {1}, $o, {Rest(1)})}, Array)};
+)
+
+(
 Pbind(
 	\instrument, \acid,
-	\dur, Pseq(~xox.("xxooxoxo") * 8/120, inf),
+	\dur, Pseq(~xox.("xxooxoxo") * 8/60, inf),
 	\scale, Scale.minor,
 	\degree, Pseq([0,4,5,3,3], inf),
 	\cut, Pwhite(100, 1500),
@@ -128,11 +141,21 @@ Pdef(\ikeda, Ppar([
 		\duration,Pkey(\dur)*Pwhite(1.0,1.5),
 		\freqStart,Pseg([200,200,100,50,500],10,-3,inf),
 		\freqEnd,Pseg([10,10,100,1,5],10,-1,inf),
-		\amp, -10.dbamp,)
-	// Pbind(\instrument, \bass,      \dur, Pseq(~tick16 * ~xox.(~p3), inf)),
+		\amp, -10.dbamp,),
+
+	Pbind(\instrument, \acid,
+		\dur, Pseq(~tick16 * ~xox.(~p2), inf),
+		\duration,Pkey(\dur)*Pwhite(1.0,1.5),
+		\scale, Scale.minor,
+	\degree, Pseq([0,4,5,3,3], inf),
+	\cut, Pwhite(100, 1500),
+	\rez, Pwhite(0.1, 0.8),
+		\amp, -10.dbamp,),
+
+	// Pbind(\instrument, \acid,      \dur, Pseq(~tick16 * ~xox.(~p3), inf)),
 	// Pbind(\instrument, \envsine,   \dur, Pseq(~tick16 * ~xox.(~p4), inf)),
 	// Pbind(\instrument, \highlong,  \dur, Pseq(~tick16 * ~xox.(~p5), inf)),
-	// Pbind(\instrument, \midsine,   \dur, Pseq(~tick32 * ~xox.(~p6), inf)),
+	// Pbind(\instrument, \acid,   \dur, Pseq(~tick32 * ~xox.(~p6), inf)),
 	// Pbind(\instrument, \burst,     \dur, Pseq(~p7, inf)),
 ])).play;
 )

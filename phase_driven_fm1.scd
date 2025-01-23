@@ -48,7 +48,7 @@ Pbind(\instrument,\fm1, \dur,Pseq([2,1,1,1,2,1],inf)/8, \rel,Pkey(\dur)*1.1,\pha
 
 
 // a beat
-
+o
 
 (Pbind(\instrument,\fm1,
 	\dur,Pseq([

@@ -61,26 +61,32 @@ SynthDef(\reverb_ef, {
 
 )
 
+Synth(\gabor)
+
 (
+Pdef.removeAll;
 a = Synth(\reverb_ef, [\in, ~bus, \out, 0]);
 Pbindef(\gabor,
 
 		\instrument, \gabor,
 
-		\atk, 0.01,
-		\rel, 0.8,
+		\atk, 0.1,
+		\rel, 1,
+
+	\dur,3,
+
 
 		// Bandpass Filter sweep
-		\slope, 5,
+		\slope, -5,
 		\fltRange, 8000, //1400 lower bound at slope 5
 
 		\trig_low,1,
 		\trig_high, 1000,
 
 		\fAtk, 0.3,
-		\fRel, 0.08,
+		\fRel, 0.8,
 
-		\freq, 100,//Pseq([[256,8]!8,[128,4]!4].flatten,inf), //Pseq([100,50],inf),// 400,//
+		\freq, 64,//Pseq([[256,8]!8,[128,4]!4].flatten,inf), //Pseq([100,50],inf),// 400,//
 
 		\amp, 0.70,
 		\pan, 0,

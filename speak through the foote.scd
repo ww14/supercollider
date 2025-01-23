@@ -16,7 +16,7 @@ Server.killAll;
 	chain = FFT(LocalBuf(2048), in, 0.85, 1);
 
 	// the lead voice
-	chain1 = PV_RandComb(chain, \wipe.kr(0.68), trig);//Impulse.kr(2)); // 0.68
+	chain1 = PV_RandComb(chain, \wipe.kr(0.75), trig);//Impulse.kr(2)); // 0.68
 	    //chain1 = PV_RectComb(chain1, 1, LFTri.kr(0.097,0,0.4,0.5),LFTri.kr(0.24,0,-0.5,0.5));//Impulse.kr(2));
 	snd = \amp_snd.kr(1).lag3 * IFFT(chain1,1);
 	//snd2 = IFFT(chain2,1).poll;
